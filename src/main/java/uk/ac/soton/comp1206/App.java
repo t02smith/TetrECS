@@ -1,19 +1,54 @@
 package uk.ac.soton.comp1206;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
-import uk.ac.soton.comp1206.Scenes.Menu;
+
+import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class App extends Application {
-    public void start(Stage stage) {
-        Stage test = new Stage();
-        test.setScene(new Menu(700, 500));
-        test.setTitle("TetrECS");
+    private static App instance;
+    private static final Logger logger = LogManager.getLogger(App.class);
 
-        test.show();
-    }
+    private Stage stage;
 
     public static void main(String[] args) {
+        logger.info("Starting client");
         launch();
     }
+
+    public void start(Stage stage) {
+        instance = this;
+        this.stage = stage;
+
+        this.openGame();
+
+    }
+
+    public void openGame() {
+        logger.info("Opening game window");
+        var window = new GameWindow(this.stage, 700, 500);
+
+        this.stage.show();
+    }
+
+    /**
+     * Shutdowns the game
+     */
+    public void shutdown() {
+        logger.info("Shutting down");
+        System.exit(0);
+    }
+
+    /**
+     * Returns the current instance of App
+     * @return
+     */
+    public static App getInstance() {
+        return instance;
+    }
+
+    
 }

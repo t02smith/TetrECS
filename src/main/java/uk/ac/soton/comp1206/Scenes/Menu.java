@@ -5,25 +5,25 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Components.Menu.MenuItem;
 import uk.ac.soton.comp1206.Utility.Utility;
+import uk.ac.soton.comp1206.ui.GameWindow;
 
-public class Menu extends Scene {
-    private BorderPane root = new BorderPane();
+public class Menu extends BaseScene {
 
-    public Menu(double width, double height) {
-        super(new BorderPane(), width, height);
+    public Menu(GameWindow window) {
+        super(window);
+    }
+
+    public void build() {
+        logger.info("Creating Menu scene");
         this.getStylesheets().add(Utility.getStyle("Menu.css"));
-
-        //Sets the root as a border pane
-        this.setRoot(this.root);
-        this.root.getStyleClass().add("menu-shell");
+        this.getRoot().getStyleClass().add("menu-shell");
 
         var menuComponents = new VBox(
             this.createTitle(), 
@@ -33,7 +33,7 @@ public class Menu extends Scene {
         menuComponents.setAlignment(Pos.CENTER);
         menuComponents.setSpacing(50);
 
-        this.root.setCenter(
+        ((BorderPane)this.getRoot()).setCenter(
             menuComponents
         );
     }
@@ -42,9 +42,16 @@ public class Menu extends Scene {
      * Creates and animates the title for the menu
      * @return The title
      */
-    private Label createTitle() {
-        var title = new Label("TetrECS!");
-        title.getStyleClass().add("menu-title");
+    private ImageView createTitle() {
+        //Title//
+        var title = new ImageView(Utility.getImage("TetrECS.png"));
+        title.setPreserveRatio(true);
+        title.setFitHeight(this.getHeight()*0.2);
+
+        //Changes size based upon height of window
+        this.heightProperty().addListener(event -> {
+            title.setFitHeight(this.getHeight()*0.2);
+        });
 
         //Causes the title to bob up and down forever
         var timeline = new Timeline(
@@ -64,19 +71,25 @@ public class Menu extends Scene {
      * @return The menu options
      */
     private HBox createMenuItems() {
+        //Smaller boxes//
         var vbox = new VBox(
-            new MenuItem("Settings", Utility.getImage("smallMe.jpg")),
-            new MenuItem("How\nTo Play", Utility.getImage("smallMe.jpg"))
+            new MenuItem("Settings", Utility.getImage("smallMe.jpg"), () -> {
+                logger.info("Opening settings");
+            }),
+            new MenuItem("How\nTo Play", Utility.getImage("smallMe.jpg"), () -> {logger.info("Opening instructions");})
         );
 
         vbox.setSpacing(20);
 
-
+        //All options//
         var options = new HBox();
 
         options.getChildren().addAll(
-            new MenuItem("Single\nPlayer", Utility.getImage("me.jpg")),
-            new MenuItem("Multi\nPlayer", Utility.getImage("me.jpg")),
+            new MenuItem("Single\nPlayer", Utility.getImage("me.jpg"), () -> {
+                logger.info("Opening singleplayer");
+                this.window.loadScene(new GameScene(this.window));
+            }),
+            new MenuItem("Multi\nPlayer", Utility.getImage("me.jpg"), () -> {logger.info("Opening multiplayer");}),
             vbox
         );
 

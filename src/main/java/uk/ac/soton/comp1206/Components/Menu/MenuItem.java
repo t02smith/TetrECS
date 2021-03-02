@@ -15,9 +15,11 @@ import uk.ac.soton.comp1206.Event.MenuItemListener;
 public class MenuItem extends StackPane {
     private MenuItemListener mil;
    
-    public MenuItem(String text, Image img) {
+    public MenuItem(String text, Image img, MenuItemListener onClick) {
         this.setMaxHeight(img.getHeight());
         this.setMaxWidth(img.getWidth());
+
+        this.mil = onClick;
 
         this.getStyleClass().add("menu-item-shell");
 

@@ -2,7 +2,9 @@
 /*Menu*/
 
 .menu-shell {
-    -fx-background-color: rgb(30, 11, 53);
+    -fx-background-image: url("../images/2.jpg");
+    -fx-background-size: cover;
+    -fx-background-color: transparent;
 }
 
 .menu-title {
