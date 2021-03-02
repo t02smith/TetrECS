@@ -1,0 +1,29 @@
+
+/*Menu*/
+
+.menu-shell {
+    -fx-background-color: rgb(30, 11, 53);
+}
+
+.menu-title {
+    -fx-font-size: 50px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/*Menu Items*/
+
+.menu-item-shell {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.menu-item-text {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-padding: 7px;
+    -fx-line-spacing: -15px;
+}
+
+
+
