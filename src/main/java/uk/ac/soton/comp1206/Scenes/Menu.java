@@ -76,7 +76,7 @@ public class Menu extends BaseScene {
             new MenuItem("Settings", Utility.getImage("smallMe.jpg"), () -> {
                 logger.info("Opening settings");
             }),
-            new MenuItem("How\nTo Play", Utility.getImage("smallMe.jpg"), () -> {logger.info("Opening instructions");})
+            new MenuItem("Help", Utility.getImage("help.png"), () -> {logger.info("Opening instructions");})
         );
 
         vbox.setSpacing(20);
@@ -85,11 +85,11 @@ public class Menu extends BaseScene {
         var options = new HBox();
 
         options.getChildren().addAll(
-            new MenuItem("Single\nPlayer", Utility.getImage("me.jpg"), () -> {
+            new MenuItem("Single\nPlayer", Utility.getImage("singleplayer.png"), () -> {
                 logger.info("Opening singleplayer");
                 this.window.loadScene(new GameScene(this.window));
             }),
-            new MenuItem("Multi\nPlayer", Utility.getImage("me.jpg"), () -> {logger.info("Opening multiplayer");}),
+            new MenuItem("Multi\nPlayer", Utility.getImage("multiplayer.png"), () -> {logger.info("Opening multiplayer");}),
             vbox
         );
 
