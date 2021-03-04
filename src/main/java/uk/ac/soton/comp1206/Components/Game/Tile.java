@@ -8,14 +8,22 @@ import uk.ac.soton.comp1206.Errors.TileFullException;
  * Each tile can change colour to match some image icons I made
  */
 public class Tile extends ImageView {
-    private boolean isEmpty = true;
+    private boolean isEmpty;
 
     private final int x;
     private final int y;
 
-    public Tile(int x, int y) {
+
+    public Tile(int x, int y, int sideLength) {
         this.x = x;
         this.y = y;
+
+        this.setPreserveRatio(true);
+        this.setFitHeight(sideLength);
+    } 
+
+    public Tile(int x, int y) {
+        this(x, y, 100);
     }
 
     /**
@@ -23,15 +31,19 @@ public class Tile extends ImageView {
      * @param colour The colour it is changing to
      * @throws TileFullException If the tile is already taken
      */
-    public void setTile(Colour colour) throws TileFullException {
-        if (isEmpty) {
-            this.setImage(colour.getIcon());
-        } else throw new TileFullException();
+    public void setTile(Colour colour) {
+        this.setImage(colour.getIcon());
+        this.isEmpty = false;
     }
 
     public void clearTile() {
-        this.setImage(null);
+        this.setImage(Colour.TRANSPARENT.getIcon());
+        this.isEmpty = true;
         //Some animation
+    }
+
+    public boolean isEmpty() {
+        return this.isEmpty;
     }
 
     public int getXPos() {

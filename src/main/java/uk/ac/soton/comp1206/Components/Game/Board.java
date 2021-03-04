@@ -4,9 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.scene.layout.GridPane;
-import uk.ac.soton.comp1206.Errors.TileFullException;
 import uk.ac.soton.comp1206.Event.TileClickListener;
-import uk.ac.soton.comp1206.game.GamePiece;
 
 public class Board extends GridPane {
     private static final Logger logger = LogManager.getLogger(Board.class);
@@ -17,12 +15,28 @@ public class Board extends GridPane {
     private int width;
     private int height;
 
+    private BoardSize tileLength;
+
     //Called when a tile is clicked
     private TileClickListener tcl;
 
-    public Board(int width, int height, TileClickListener tcl) {
+    public enum BoardSize {
+        LARGE(100),
+        MEDIUM(40),
+        SMALL(25);
+
+        private int sideLength;
+
+        private BoardSize(int length) {
+            this.sideLength = length;
+        }
+        
+    }
+
+    public Board(int width, int height, BoardSize sideLength, TileClickListener tcl) {
         this.width = width;
         this.height = height;
+        this.tileLength = sideLength;
 
         this.tcl = tcl;
 
@@ -36,14 +50,15 @@ public class Board extends GridPane {
         //Creates a grid of tiles
         for (int y = 0; y < this.height; y++) {
             for (int x = 0; x < this.width; x++) {
-                var tile = new Tile(x, y);
-                try {tile.setTile(Colour.TRANSPARENT);}
-                catch (TileFullException e) {}
+                var tile = new Tile(x, y, this.tileLength.sideLength);
+                tile.clearTile(); //Gives every tile the transparent icon
 
                 //Calls the given function when clicked
                 tile.setOnMouseClicked(event -> {
-                    tcl.onClick(tile.getXPos(), tile.getYPos());
+                    this.tcl.onClick(tile.getXPos(), tile.getYPos());
                 });
+
+                
 
                 this.tiles[y][x] = tile;
                 this.add(tile, x, y);
@@ -52,11 +67,24 @@ public class Board extends GridPane {
     }
 
     /**
-     * Adds a game piece to the board
-     * @param gp the piece being added
+     * Changes the colour of a tile
+     * @param colour The new colour
+     * @param x column number
+     * @param y row number
      */
-    public void addGamePiece(GamePiece gp) {
-        logger.info("Attempting to add gamepiece: {}", gp);
-        
+    public void changeTile(Colour colour, int x, int y) {
+        this.tiles[x][y].setTile(colour);
+    }
+
+    /**
+     * Returns whether a square is empty or not
+     * @param x the column
+     * @param y the row
+     * @return whether it is empty
+     */
+    public boolean isSquareEmpty(int x, int y) {
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height) return false;
+
+        return this.tiles[y][x].isEmpty();
     }
 }

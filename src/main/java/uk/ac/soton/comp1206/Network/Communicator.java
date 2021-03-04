@@ -79,6 +79,13 @@ public class Communicator {
     }
 
     /**
+     * Removes all currently in use listeners
+     */
+    public void clearListeners() {
+        this.listeners.clear();
+    }
+
+    /**
      * Adds a given listener
      * @param listener
      */

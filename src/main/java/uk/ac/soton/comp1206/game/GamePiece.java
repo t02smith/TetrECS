@@ -41,7 +41,7 @@ public enum GamePiece {
     private int[][] blocks;
 
     //The colour the piece will be
-    private Colour colour = Colour.randomColour();
+    private Colour colour = Colour.nextColour();
 
     /**
      * Constructor for each piece

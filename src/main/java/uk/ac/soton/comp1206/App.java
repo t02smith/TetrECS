@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-
+import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class App extends Application {
@@ -27,9 +27,11 @@ public class App extends Application {
 
     }
 
+    @SuppressWarnings("unused")
     public void openGame() {
         logger.info("Opening game window");
         var window = new GameWindow(this.stage, 700, 500);
+        var game = new Game(window);
 
         this.stage.show();
     }

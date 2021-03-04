@@ -87,7 +87,7 @@ public class Menu extends BaseScene {
         options.getChildren().addAll(
             new MenuItem("Single\nPlayer", Utility.getImage("singleplayer.png"), () -> {
                 logger.info("Opening singleplayer");
-                this.window.loadScene(new GameScene(this.window));
+                this.window.loadGame();
             }),
             new MenuItem("Multi\nPlayer", Utility.getImage("multiplayer.png"), () -> {logger.info("Opening multiplayer");}),
             vbox
