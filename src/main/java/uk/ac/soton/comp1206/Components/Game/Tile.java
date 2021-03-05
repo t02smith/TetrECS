@@ -13,7 +13,6 @@ public class Tile extends ImageView {
     private final int x;
     private final int y;
 
-
     public Tile(int x, int y, int sideLength) {
         this.x = x;
         this.y = y;

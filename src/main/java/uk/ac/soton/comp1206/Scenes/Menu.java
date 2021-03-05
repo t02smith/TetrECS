@@ -3,6 +3,7 @@ package uk.ac.soton.comp1206.Scenes;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
@@ -15,6 +16,8 @@ import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class Menu extends BaseScene {
+
+    private SimpleDoubleProperty scale = new SimpleDoubleProperty(1);
 
     public Menu(GameWindow window) {
         super(window);

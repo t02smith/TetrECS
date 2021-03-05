@@ -20,6 +20,9 @@ public class Board extends GridPane {
     //Called when a tile is clicked
     private TileClickListener tcl;
 
+    /**
+     * Different sizes of board
+     */
     public enum BoardSize {
         LARGE(100),
         MEDIUM(40),
@@ -33,6 +36,13 @@ public class Board extends GridPane {
         
     }
 
+    /**
+     * Creates a board to display game pieces of
+     * @param width squares wide
+     * @param height squares tall
+     * @param sideLength length in pixels for each square
+     * @param tcl what happens when a square is clicked
+     */
     public Board(int width, int height, BoardSize sideLength, TileClickListener tcl) {
         this.width = width;
         this.height = height;
@@ -56,9 +66,7 @@ public class Board extends GridPane {
                 //Calls the given function when clicked
                 tile.setOnMouseClicked(event -> {
                     this.tcl.onClick(tile.getXPos(), tile.getYPos());
-                });
-
-                
+                }); 
 
                 this.tiles[y][x] = tile;
                 this.add(tile, x, y);
@@ -86,5 +94,51 @@ public class Board extends GridPane {
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) return false;
 
         return this.tiles[y][x].isEmpty();
+    }
+
+    /**
+     * Checks if a row has been filled
+     * @param rowNo the row number
+     * @return whether it is full
+     */
+    public boolean checkRow(int rowNo) {
+        var row = this.tiles[rowNo];
+        for (Tile tile: row) {
+            if (tile.isEmpty()) return false;
+        }
+
+        return true;
+    }
+
+    public void clearRow(int rowNo) {
+        logger.info("row {} cleared", rowNo);
+        var row = this.tiles[rowNo];
+        for (Tile tile: row) {
+            tile.clearTile();
+        }
+    }
+
+    /**
+     * Checks whether a column has been filled
+     * @param columnNo the column number
+     * @return whether it is full
+     */
+    public boolean checkColumn(int columnNo) {
+        for (Tile[] row: this.tiles) {
+            if (row[columnNo].isEmpty()) return false;
+        }
+
+        return true;
+    }
+
+    public void clearColumn(int columnNo) {
+        logger.info("column {} cleared", columnNo);
+        for (Tile[] row: this.tiles) {
+            row[columnNo].clearTile();
+        }
+    }
+
+    public int getGridWidth() {
+        return this.width;
     }
 }

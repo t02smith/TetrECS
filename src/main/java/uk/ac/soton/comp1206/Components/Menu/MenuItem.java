@@ -1,6 +1,7 @@
 package uk.ac.soton.comp1206.Components.Menu;
 
 import javafx.animation.TranslateTransition;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -16,10 +17,12 @@ import uk.ac.soton.comp1206.Event.MenuItemListener;
 
 public class MenuItem extends StackPane {
     private MenuItemListener mil;
+
+    private SimpleDoubleProperty scale = new SimpleDoubleProperty(1);
    
     public MenuItem(String text, Image img, MenuItemListener onClick) {
-        this.setMaxHeight(img.getHeight());
-        this.setMaxWidth(img.getWidth());
+        //this.setMaxHeight(img.getHeight());
+        //this.setMaxWidth(img.getWidth());
 
         this.mil = onClick;
 
@@ -36,7 +39,8 @@ public class MenuItem extends StackPane {
         //default//
         Stop[] stops = new Stop[] {new Stop(0.42, new Color(0, 0, 0, 0.8)), new Stop(1, new Color(1, 1, 1, 0))};
         var gradient = new LinearGradient(0, 1, 0, 0, true, CycleMethod.NO_CYCLE, stops);
-        var rectangle = new Rectangle(img.getWidth(), img.getHeight());
+        var rectangle = new Rectangle();
+
         rectangle.setFill(gradient);
 
         //hover over//
@@ -66,8 +70,20 @@ public class MenuItem extends StackPane {
 
         //Item background image
         var background = new ImageView(img);
+
+        //background.fitHeightProperty().bind(this.scale);
+        //background.fitWidthProperty().bind(this.scale);
+
+        background.setFitHeight(this.scale.get() * img.getHeight());
+        background.setFitWidth(this.scale.get() * img.getWidth());
+
         background.getStyleClass().add("menu-item-image");
 
+        //Changes the background gradient to match the image
+        rectangle.widthProperty().bind(background.fitWidthProperty());
+        rectangle.heightProperty().bind(background.fitHeightProperty());
+
+        //Fills thhe vbox
         this.getChildren().addAll(
             background,
             rectangle,
@@ -83,4 +99,18 @@ public class MenuItem extends StackPane {
     public void setOnAction(MenuItemListener mil) {
         this.mil = mil;
     }
+
+    public void setScale(double scale) {
+        this.scale.set(scale);
+    }
+
+    public double getScale() {
+        return this.scale.get();
+    }
+
+    public SimpleDoubleProperty getScaleProperty() {
+        return this.scale;
+    }
+
+
 }

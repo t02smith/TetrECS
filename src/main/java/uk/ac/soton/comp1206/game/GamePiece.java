@@ -30,7 +30,7 @@ public enum GamePiece {
      * Returns a random gamepiece
      * @return a random gamepiece
      */
-    public static GamePiece getRandomPiece() {
+    public static GamePiece createPiece() {
         var pieces = GamePiece.values();
         return pieces[
             new Random().nextInt(pieces.length)
@@ -41,7 +41,7 @@ public enum GamePiece {
     private int[][] blocks;
 
     //The colour the piece will be
-    private Colour colour = Colour.nextColour();
+    private Colour colour = Colour.randomColour();
 
     /**
      * Constructor for each piece

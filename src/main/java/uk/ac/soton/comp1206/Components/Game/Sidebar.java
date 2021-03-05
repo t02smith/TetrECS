@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.Game.Board.BoardSize;
@@ -17,6 +18,8 @@ public class Sidebar extends StackPane {
     private static final Logger logger = LogManager.getLogger(Sidebar.class);
 
     private VBox components = new VBox();
+
+    private Label score = new Label("Score: 0");
 
     private Board nextPiece;
     private Board reservePiece;
@@ -29,8 +32,7 @@ public class Sidebar extends StackPane {
         this.components.setPadding(new Insets(0, 30, 0, 15));
 
         //Title
-
-        //Score
+        this.score.getStyleClass().addAll("score");
 
         //Next piece//
         this.nextPiece = new Board(3, 3, BoardSize.MEDIUM, this.listeners.get("next-piece"));
@@ -38,7 +40,7 @@ public class Sidebar extends StackPane {
         //Reserve piece
         this.reservePiece = new Board(3, 3, BoardSize.SMALL, this.listeners.get("reserve-piece"));
 
-        this.components.getChildren().addAll(this.nextPiece, this.reservePiece);
+        this.components.getChildren().addAll(this.score, this.nextPiece, this.reservePiece);
         this.getChildren().add(this.components);
     }
 
@@ -64,6 +66,10 @@ public class Sidebar extends StackPane {
             }
         }
 
+    }
+
+    public void updateScore(int score) {
+        this.score.setText("Score: " + score);
     }
 
     public void addTileClickListener(String name, TileClickListener tcl) {

@@ -10,3 +10,11 @@
     -fx-alignment: center;
     
 }
+
+/*side bar*/
+
+.score {
+    -fx-font-size: 35px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}

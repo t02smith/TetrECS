@@ -5,14 +5,21 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import uk.ac.soton.comp1206.Scenes.GameScene;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class Game {
     private static final Logger logger = LogManager.getLogger(Game.class);
 
+    //Game properties
+    private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
+    private SimpleIntegerProperty level = new SimpleIntegerProperty(1);
+    private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
+    private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
+
     //The next piece to be played
-    private GamePiece nextPiece;
+    private GamePiece currentPiece;
 
     //Piece in reserve that can be switched to
     private GamePiece reservePiece;
@@ -32,23 +39,38 @@ public class Game {
         this.gameScene = new GameScene(this.gameWindow);
         this.gameWindow.setGameScene(this.gameScene);
 
+        //When the score updates
+        this.score.addListener(event -> {
+            this.gameScene.updateScore(score.get());
+            if ((this.score.get()/1000) + 1 != this.level.get()) {
+                this.level.set((this.score.get()/1000) + 1);
+                logger.info("level increased to {}", this.level.get());
+            } 
+        });
+
+        //Clicking a tile//
+
+        //On the game grid
         this.gameScene.addTileClickListener("game-grid", (x, y) -> {
             this.insertPiece(x, y);
         });
 
+        //On the next piece grid
         this.gameScene.addTileClickListener("next-piece", (x, y) -> {
             if (x == 1 && y == 1) {
-                this.nextPiece.rotate();
-                this.gameScene.setNextPiece(this.nextPiece);
+                this.currentPiece.rotate();
+                this.gameScene.setNextPiece(this.currentPiece);
             } else {
                 this.swapNextPiece();
             }
         });
 
+        //On the reserve piece grid
         this.gameScene.addTileClickListener("reserve-piece", (x, y) -> {
             this.swapNextPiece();
         });
 
+        //When the game is started//
         this.gameWindow.addGameStartListener(() -> {
             this.nextPiece();
             this.nextPiece();
@@ -67,7 +89,7 @@ public class Game {
         //We have to wait for all squares to be checked
         var buffer = new ArrayList<int[]>();
 
-        int[][] pieceBlocks = this.nextPiece.getBlocks();
+        int[][] pieceBlocks = this.currentPiece.getBlocks();
         var board = this.gameScene.getBoard();
 
         //Checks the availability of every tile
@@ -89,11 +111,45 @@ public class Game {
 
         //Fills in the tile
         buffer.forEach(pos -> {
-            board.changeTile(this.nextPiece.getColour(), pos[1], pos[0]);
+            board.changeTile(this.currentPiece.getColour(), pos[1], pos[0]);
         });
+
+        this.afterPiece();
 
         //Grabs the next piece
         this.nextPiece();
+    }
+
+    /**
+     * Called after a piece is played
+     */
+    private void afterPiece() {
+        var board = this.gameScene.getBoard();
+
+        //Buffers for which rows/columns are full
+        //rows and columns share tiles so we can't remove any tiles before checking both
+        var rowBuffer = new ArrayList<Integer>();
+        var columnBuffer = new ArrayList<Integer>();
+
+        for (int i = 0; i < this.gameScene.getGridHeight(); i++) {
+            if (board.checkRow(i)) rowBuffer.add(i);
+            if (board.checkColumn(i)) columnBuffer.add(i);
+        }
+
+        rowBuffer.forEach(row -> {
+            board.clearRow(row);
+        });
+
+        columnBuffer.forEach(column -> {
+            board.clearColumn(column);
+        });
+
+        int linesCleared = rowBuffer.size()+columnBuffer.size();
+        this.score(linesCleared, linesCleared*board.getGridWidth()); 
+    }
+
+    private void score(int lines, int blocks) {
+        this.score.set(this.score.get() + 100 * lines * blocks * this.multiplier.get());
     }
 
     /**
@@ -101,11 +157,11 @@ public class Game {
      */
     public void swapNextPiece() {
         logger.info("Swapping pieces");
-        var temp = this.nextPiece;
-        this.nextPiece = this.reservePiece;
+        var temp = this.currentPiece;
+        this.currentPiece = this.reservePiece;
         this.reservePiece = temp;
 
-        this.gameScene.setNextPiece(this.nextPiece);
+        this.gameScene.setNextPiece(this.currentPiece);
         this.gameScene.setReservePiece(this.reservePiece);
     }
 
@@ -115,10 +171,10 @@ public class Game {
      * Randomly gets the next piece
      */
     public void nextPiece() {
-        this.nextPiece = this.reservePiece;
-        this.gameScene.setNextPiece(this.nextPiece);
+        this.currentPiece = this.reservePiece;
+        this.gameScene.setNextPiece(this.currentPiece);
 
-        this.reservePiece = GamePiece.getRandomPiece();
+        this.reservePiece = GamePiece.createPiece();
         this.gameScene.setReservePiece(this.reservePiece);
         logger.info("Piece {} added", this.reservePiece);
     }

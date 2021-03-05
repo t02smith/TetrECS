@@ -34,7 +34,8 @@ public class GameScene extends BaseScene {
         this.root.getStyleClass().add("game-shell");
 
         //Game grid//
-        this.grid = new Board(this.width, this.height, BoardSize.LARGE, this.listeners.get("game-grid"));
+        this.grid = new Board(this.width, this.height, BoardSize.LARGE, this.listeners.get("game-grid"));        
+
         this.root.setCenter(this.grid);
 
         //Sidebar//
@@ -62,6 +63,10 @@ public class GameScene extends BaseScene {
         this.sidebar.setReserveElement(gp);
     }
 
+    public void updateScore(int score) {
+        this.sidebar.updateScore(score);
+    }
+
     /**
      * Adds the listener for whenever a tile is clicked
      * @param tcl the listener
@@ -72,5 +77,13 @@ public class GameScene extends BaseScene {
 
     public Board getBoard() {
         return this.grid;
+    }
+
+    public int getGridWidth() {
+        return this.width;
+    }
+
+    public int getGridHeight() {
+        return this.height;
     }
 }
