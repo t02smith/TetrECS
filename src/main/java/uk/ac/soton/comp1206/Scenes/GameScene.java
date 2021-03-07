@@ -2,21 +2,24 @@ package uk.ac.soton.comp1206.Scenes;
 
 import java.util.HashMap;
 
-import javafx.scene.input.KeyCode;
+import javafx.geometry.Pos;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
-import uk.ac.soton.comp1206.Components.Game.Board;
+import javafx.scene.layout.VBox;
+import uk.ac.soton.comp1206.Components.Game.Grid;
 import uk.ac.soton.comp1206.Components.Game.Sidebar;
-import uk.ac.soton.comp1206.Components.Game.Board.BoardSize;
+import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Event.TileClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class GameScene extends BaseScene {
-    private Board grid;
+    private Grid grid;
     private BorderPane root;
 
     private Sidebar sidebar;
+    private ProgressBar timer;
 
     private HashMap<String,TileClickListener> listeners = new HashMap<>();
 
@@ -33,10 +36,20 @@ public class GameScene extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Game.css"));
         this.root.getStyleClass().add("game-shell");
 
+        //Center of screen//
         //Game grid//
-        this.grid = new Board(this.width, this.height, BoardSize.LARGE, this.listeners.get("game-grid"));        
+        this.grid = new Grid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
 
-        this.root.setCenter(this.grid);
+        this.timer = new ProgressBar();
+        this.timer.setMinWidth(GridSize.LARGE.getSideLength()*this.width);
+        this.timer.setMinHeight(GridSize.LARGE.getSideLength()/4);
+        this.timer.getStyleClass().add("timer");
+
+        var center = new VBox(this.grid, this.timer);
+        center.setAlignment(Pos.CENTER);
+        center.setSpacing(25);
+
+        this.root.setCenter(center);
 
         //Sidebar//
         this.sidebar = new Sidebar();
@@ -46,13 +59,7 @@ public class GameScene extends BaseScene {
 
         this.root.setRight(this.sidebar);
 
-        //Key events//
-        this.setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                logger.info("Returning to menu");
-                this.window.loadMenu();
-            }
-        });
+
     }
 
     public void setNextPiece(GamePiece gp) {
@@ -67,6 +74,10 @@ public class GameScene extends BaseScene {
         this.sidebar.updateScore(score);
     }
 
+    public void loseLife() {
+        this.sidebar.getLives().loseLife();
+    }
+
     /**
      * Adds the listener for whenever a tile is clicked
      * @param tcl the listener
@@ -75,7 +86,11 @@ public class GameScene extends BaseScene {
         this.listeners.put(name, tcl);
     }
 
-    public Board getBoard() {
+    public ProgressBar getTimer() {
+        return this.timer;
+    }
+
+    public Grid getBoard() {
         return this.grid;
     }
 

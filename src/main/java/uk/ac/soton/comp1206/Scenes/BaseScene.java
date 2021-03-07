@@ -12,7 +12,7 @@ public abstract class BaseScene extends Scene {
     protected static final Logger logger = LogManager.getLogger(BaseScene.class);
 
     protected final GameWindow window;
-    protected GamePane root;
+    //protected GamePane root;
 
     public BaseScene(GameWindow window) {
         super(new BorderPane(), window.getWidth(), window.getHeight());

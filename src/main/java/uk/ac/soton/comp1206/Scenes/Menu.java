@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Components.Menu.MenuItem;
+import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -39,6 +40,8 @@ public class Menu extends BaseScene {
         ((BorderPane)this.getRoot()).setCenter(
             menuComponents
         );
+
+        Media.playMusic("menu.mp3");
     }
 
     /**

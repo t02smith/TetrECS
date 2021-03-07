@@ -1,7 +1,6 @@
 package uk.ac.soton.comp1206.Components.Game;
 
 import javafx.scene.image.ImageView;
-import uk.ac.soton.comp1206.Errors.TileFullException;
 
 /**
  * This class represents each individual tile on the game board
@@ -28,7 +27,6 @@ public class Tile extends ImageView {
     /**
      * Will change a tile to a specific colour unless it's already taken
      * @param colour The colour it is changing to
-     * @throws TileFullException If the tile is already taken
      */
     public void setTile(Colour colour) {
         this.setImage(colour.getIcon());
@@ -39,6 +37,7 @@ public class Tile extends ImageView {
         this.setImage(Colour.TRANSPARENT.getIcon());
         this.isEmpty = true;
         //Some animation
+        
     }
 
     public boolean isEmpty() {

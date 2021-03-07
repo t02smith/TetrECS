@@ -58,8 +58,8 @@ public class GameWindow {
      */
     public void loadGame() {
         this.loadScene(this.gameScene);
-        this.stage.setMinWidth(750);
-        this.stage.setMinHeight(675);
+        this.stage.setMinWidth(850);
+        this.stage.setMinHeight(700);
 
         this.gsl.start();
     }

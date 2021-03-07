@@ -2,6 +2,9 @@ package uk.ac.soton.comp1206.game;
 
 import java.util.Random;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import uk.ac.soton.comp1206.Components.Game.Colour;
 
 /**
@@ -26,6 +29,22 @@ public enum GamePiece {
     DIAGONAL    (new int[][] {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}),
     INV_CORNER  (new int[][] {{1, 0, 0}, {1, 1, 0}, {0, 0, 0}});
 
+    //Stores 2D grid representation of the piece
+    private int[][] blocks;
+
+    //The colour the piece will be
+    private Colour colour = Colour.nextColour();
+
+    /**
+     * Constructor for each piece
+     * @param blocks The 2D grid layout of the piece
+     */
+    private GamePiece(int[][] blocks) {
+        this.blocks = blocks;
+    }
+
+    private static final Logger logger = LogManager.getLogger(GamePiece.class);
+
     /**
      * Returns a random gamepiece
      * @return a random gamepiece
@@ -37,30 +56,31 @@ public enum GamePiece {
         ];
     }
 
-    //Stores 2D grid representation of the piece
-    private int[][] blocks;
-
-    //The colour the piece will be
-    private Colour colour = Colour.randomColour();
-
-    /**
-     * Constructor for each piece
-     * @param blocks The 2D grid layout of the piece
-     */
-    private GamePiece(int[][] blocks) {
-        this.blocks = blocks;
-    }
-
     /**
      * Rotates a piece 90deg clockwise
      */
-    public void rotate() {
+    public void rotateLeft() {
+        logger.info("Rotating {} left", this);
         int[][] rotated = new int[this.blocks.length][this.blocks[0].length];
 
         for (int row = 0; row < rotated.length; row++) {
             for (int column = 0; column < rotated[0].length; column++) {
                 //Uses a matrix transformation in an adjusted 3x3 grid
                 rotated [2-column][row] = this.blocks[row][column];
+            }
+        }
+
+        this.blocks = rotated;
+    }
+
+    public void rotateRight() {
+        logger.info("Rotating {} right", this);
+        int[][] rotated = new int[this.blocks.length][this.blocks[0].length];
+
+        for (int row = 0; row < rotated.length; row++) {
+            for (int column = 0; column < rotated[0].length; column++) {
+                //Uses a matrix transformation in an adjusted 3x3 grid
+                rotated [column][2-row] = this.blocks[row][column];
             }
         }
 

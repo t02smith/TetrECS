@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.util.Duration;
 import uk.ac.soton.comp1206.Scenes.GameScene;
+import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class Game {
@@ -14,9 +20,11 @@ public class Game {
 
     //Game properties
     private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
-    private SimpleIntegerProperty level = new SimpleIntegerProperty(1);
+    private SimpleIntegerProperty level = new SimpleIntegerProperty(0);
     private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
     private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
+
+    private boolean gameOver;
 
     //The next piece to be played
     private GamePiece currentPiece;
@@ -24,6 +32,9 @@ public class Game {
     //Piece in reserve that can be switched to
     private GamePiece reservePiece;
 
+    private Timeline timeline;
+
+    //
     private GameWindow gameWindow;
     private GameScene gameScene;
 
@@ -42,10 +53,40 @@ public class Game {
         //When the score updates
         this.score.addListener(event -> {
             this.gameScene.updateScore(score.get());
-            if ((this.score.get()/1000) + 1 != this.level.get()) {
-                this.level.set((this.score.get()/1000) + 1);
+            if (this.score.get()/1000 != this.level.get()) {
+                this.level.set(this.score.get()/1000);
                 logger.info("level increased to {}", this.level.get());
             } 
+        });
+
+        //When a life is lost
+        this.lives.addListener(event -> {
+            this.gameScene.loseLife();
+        });
+
+        //Key press actions//
+        this.gameScene.setOnKeyReleased(event -> {
+            switch (event.getCode()) {
+                case ESCAPE:
+                    logger.info("Returning to menu");
+                    this.gameWindow.loadMenu();
+                    this.resetGame();
+                    break;
+                case LEFT:
+                    this.currentPiece.rotateLeft();
+                    this.gameScene.setNextPiece(this.currentPiece);
+                    break;
+                case RIGHT:
+                    this.currentPiece.rotateRight();
+                    this.gameScene.setNextPiece(this.currentPiece);
+                    break;
+                case UP:
+                case DOWN:
+                    logger.info("Swapping pieces");
+                    this.swapNextPiece();
+                default:
+                    break;
+            }
         });
 
         //Clicking a tile//
@@ -57,11 +98,12 @@ public class Game {
 
         //On the next piece grid
         this.gameScene.addTileClickListener("next-piece", (x, y) -> {
-            if (x == 1 && y == 1) {
-                this.currentPiece.rotate();
+            if (x == 0) { //click middle square to rotate
+                this.currentPiece.rotateLeft();
                 this.gameScene.setNextPiece(this.currentPiece);
             } else {
-                this.swapNextPiece();
+                this.currentPiece.rotateRight();
+                this.gameScene.setNextPiece(this.currentPiece);
             }
         });
 
@@ -75,14 +117,64 @@ public class Game {
             this.nextPiece();
             this.nextPiece();
 
+            this.gameOver = false;
+
+            //Plays background music
+            Media.playMusic("game.wav");
+
             //start timer
+            this.gameLoop();
         });
 
         this.gameScene.build();
 
     }
 
+    /**
+     * Game loop to keep track of the time
+     */
+    public void gameLoop() {
+        var timer = this.gameScene.getTimer();
+
+        this.timeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(timer.progressProperty(), 1)),
+            new KeyFrame(Duration.millis(this.getTimerDelay()), e-> {
+                logger.info(this.timeline.getDelay());
+                this.lives.set(this.lives.get() - 1);
+                logger.info("Life lost! {} remaining", this.lives.get());
+
+                if (this.lives.get() < 0) this.stopGame();
+                else {
+                    this.nextPiece();
+                    this.multiplier.set(1);
+                }
+            }, new KeyValue(timer.progressProperty(), 0))
+        );
+
+        this.timeline.setCycleCount(Animation.INDEFINITE);
+        this.timeline.play();
+    }
+
+    public void stopGame() {
+        logger.info("GAME OVER");
+        this.timeline.stop();
+        this.gameOver = true;
+
+        //Bring up scoreboard
+    }
+
+    public void resetGame() {
+        logger.info("Resetting game");
+        this.timeline.stop();
+        this.score.set(0);
+        this.lives.set(3);
+        this.level.set(0);
+        this.multiplier.set(1);
+    }
+
     public void insertPiece(int x, int y) {
+        if (this.gameOver) return;
+
         logger.info("Location {} {}", x, y);
 
         //Blocks that can be added to the game board go here
@@ -98,7 +190,7 @@ public class Game {
                 //Checks if the position is going to be filled in
                 if (pieceBlocks[row][column] == 1) {
                     //Checks if the position can be filled in
-                    if (board.isSquareEmpty(x+column-1, y+row-1)) {
+                    if (board.canPlayPiece(x+column-1, y+row-1)) {
                         buffer.add(new int[] {x+column-1, y+row-1});
                     } else {
                         //The whole shape must fit in to insert the block
@@ -118,6 +210,10 @@ public class Game {
 
         //Grabs the next piece
         this.nextPiece();
+
+        //Resets the timer
+        this.timeline.stop();
+        this.timeline.playFromStart();
     }
 
     /**
@@ -145,11 +241,26 @@ public class Game {
         });
 
         int linesCleared = rowBuffer.size()+columnBuffer.size();
-        this.score(linesCleared, linesCleared*board.getGridWidth()); 
+        int blocks = columnBuffer.size()*board.getGridHeight() + rowBuffer.size() * (board.getGridWidth() - columnBuffer.size());
+
+        //Update the score
+        this.score(linesCleared, blocks); 
+
+        //Updates the multiplier
+        if (columnBuffer.size() == 0 && rowBuffer.size() == 0) this.multiplier.set(1);
+        else this.multiplier.set(this.multiplier.get() + 1);
+
+        logger.info("Multiplier set to {}", this.multiplier.get());
+
     }
 
+    /**
+     * Updates the score 
+     * @param lines How many lines have been cleared
+     * @param blocks How many blocks have been cleared
+     */
     private void score(int lines, int blocks) {
-        this.score.set(this.score.get() + 100 * lines * blocks * this.multiplier.get());
+        this.score.set(this.score.get() + 10 * lines * blocks * this.multiplier.get());
     }
 
     /**
@@ -177,5 +288,16 @@ public class Game {
         this.reservePiece = GamePiece.createPiece();
         this.gameScene.setReservePiece(this.reservePiece);
         logger.info("Piece {} added", this.reservePiece);
+    }
+
+    //Timer//
+
+    /**
+     * Returns the delay time in ms
+     * @return time to make a move
+     */
+    public int getTimerDelay() {
+        if (this.level.get() < 19) return (12000 - 500*this.level.get());
+        else return 2500;
     }
 }

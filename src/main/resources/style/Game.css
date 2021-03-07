@@ -8,13 +8,36 @@
 
 .game-board {
     -fx-alignment: center;
-    
+    -fx-background-color: rgba(0, 0, 0, 0.377);
+    -fx-border-width: 2px;
+    -fx-border-color: black;
+}
+
+.timer {
+    -fx-accent: red;
+    -fx-padding: 0;
+    -fx-text-box-border: black;
+    -fx-border-color: black;
+    -fx-control-inner-background: black;
 }
 
 /*side bar*/
 
+.sidebar {
+    -fx-padding: 15px;
+    -fx-background-insets: 15px;
+    -fx-border-insets: 15px;
+}
+
 .score {
-    -fx-font-size: 35px;
+    -fx-font-size: 25px;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+
+}
+
+.lives {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
 }
