@@ -1,9 +1,15 @@
 package uk.ac.soton.comp1206.Components.Game;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 import java.util.Stack;
@@ -14,7 +20,7 @@ import java.util.Stack;
  */
 public class Lives extends HBox {
     //The starting number of lives
-    private int lives;
+    private final int lives;
 
     //Lives left
     private Stack<ImageView> remaining = new Stack<>();
@@ -39,18 +45,41 @@ public class Lives extends HBox {
             life.setFitHeight(65);
 
             this.remaining.push(life);
-
             this.getChildren().add(life);
         }
     
     }
 
+    /**
+     * Called when the user loses a life in game
+     */
     public void loseLife() {
+        //If they have no lives left the game will end
         if (this.remaining.size() == 0) return;
 
+        //Remove the rightmost heart from display
         var life = this.remaining.pop();
         life.setImage(null);
 
-        if (this.remaining.size() == 0) this.setStyle("-fx-background-color: transparent;");
+        //If the user now has no lives remove the background
+        if (this.remaining.size() == 0) {
+            //this.setStyle("-fx-background-color: transparent;");
+            this.warningLabel();
+        }
+    }
+
+    public void warningLabel() {
+        var warning = new Label("NO LIVES!");
+        warning.getStyleClass().add("warning");
+
+        var timeline = new Timeline(
+            new KeyFrame(Duration.millis(1000), new KeyValue(warning.opacityProperty(), 0)),
+            new KeyFrame(Duration.millis(1000), new KeyValue(warning.opacityProperty(), 1))
+        );
+
+        timeline.setCycleCount(Animation.INDEFINITE);
+        
+        this.getChildren().add(warning);
+        timeline.play();
     }
 }

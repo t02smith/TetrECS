@@ -66,6 +66,15 @@ public class Communicator {
     }
 
     /**
+     * Sends a message to the server
+     * @param message message to send
+     */
+    public void send(String message) {
+        logger.info("Sending message: '{}'", message);
+        this.ws.sendText(message);
+    }
+
+    /**
      * Called when a message is received from the server
      * @param ws the socket it came from
      * @param message the content of the message
@@ -79,17 +88,17 @@ public class Communicator {
     }
 
     /**
-     * Removes all currently in use listeners
-     */
-    public void clearListeners() {
-        this.listeners.clear();
-    }
-
-    /**
      * Adds a given listener
      * @param listener
      */
     public void addListener(NetworkListener listener) {
         this.listeners.add(listener);
+    }
+
+    /**
+     * Removes all currently in use listeners
+     */
+    public void clearListeners() {
+        this.listeners.clear();
     }
 }

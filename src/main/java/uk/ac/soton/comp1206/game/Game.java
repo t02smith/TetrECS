@@ -11,12 +11,16 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
+import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Scenes.GameScene;
+import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class Game {
     private static final Logger logger = LogManager.getLogger(Game.class);
+
+    private Communicator communicator;
 
     //Game properties
     private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
@@ -24,6 +28,7 @@ public class Game {
     private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
     private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
+    //Whether the game is still on going
     private boolean gameOver;
 
     //The next piece to be played
@@ -32,23 +37,32 @@ public class Game {
     //Piece in reserve that can be switched to
     private GamePiece reservePiece;
 
+    //Main game loop timeline
     private Timeline timeline;
 
-    //
+    //visuals
     private GameWindow gameWindow;
     private GameScene gameScene;
+    private ScoresScene scoresScene;
 
-    public Game(GameWindow gameWindow) {
+    public Game(GameWindow gameWindow, Communicator communicator) {
         logger.info("Starting game");
         this.gameWindow = gameWindow;
+        this.communicator = communicator;
 
         this.buildGame();
 
     }
 
     public void buildGame() {
+        this.setupCommunicator();
+
         this.gameScene = new GameScene(this.gameWindow);
         this.gameWindow.setGameScene(this.gameScene);
+
+        //Creates a score scene so we can collect the scores
+        this.scoresScene = new ScoresScene(this.gameWindow);
+        this.communicator.send("HISCORES");
 
         //When the score updates
         this.score.addListener(event -> {
@@ -57,6 +71,17 @@ public class Game {
                 this.level.set(this.score.get()/1000);
                 logger.info("level increased to {}", this.level.get());
             } 
+        });
+        
+        //When the user levels up
+        this.level.addListener(event -> {
+            if (this.timeline == null) return;
+
+            //Decrease the time given to place a piece
+            this.timeline.stop();
+            this.timeline.getKeyFrames().set(1, this.updateTime());
+            logger.info("Time decreased to {}ms", this.getTimerDelay());
+
         });
 
         //When a life is lost
@@ -72,16 +97,20 @@ public class Game {
                     this.gameWindow.loadMenu();
                     this.resetGame();
                     break;
-                case LEFT:
+                case Q:
+                case Z:
+                case OPEN_BRACKET:
                     this.currentPiece.rotateLeft();
                     this.gameScene.setNextPiece(this.currentPiece);
                     break;
-                case RIGHT:
+                case E:
+                case C:
+                case CLOSE_BRACKET:
                     this.currentPiece.rotateRight();
                     this.gameScene.setNextPiece(this.currentPiece);
                     break;
-                case UP:
-                case DOWN:
+                case SPACE:
+                case R:
                     logger.info("Swapping pieces");
                     this.swapNextPiece();
                 default:
@@ -134,25 +163,32 @@ public class Game {
      * Game loop to keep track of the time
      */
     public void gameLoop() {
-        var timer = this.gameScene.getTimer();
+        var timer = this.gameScene.getTimer();      
 
         this.timeline = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(timer.progressProperty(), 1)),
-            new KeyFrame(Duration.millis(this.getTimerDelay()), e-> {
-                logger.info(this.timeline.getDelay());
-                this.lives.set(this.lives.get() - 1);
-                logger.info("Life lost! {} remaining", this.lives.get());
-
-                if (this.lives.get() < 0) this.stopGame();
-                else {
-                    this.nextPiece();
-                    this.multiplier.set(1);
-                }
-            }, new KeyValue(timer.progressProperty(), 0))
+            this.updateTime()
         );
 
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.timeline.play();
+    }
+
+    /**
+     * Updates the time after a piece is played
+     * @return
+     */
+    public KeyFrame updateTime() {
+        return new KeyFrame(Duration.millis(this.getTimerDelay()), e -> {
+            this.lives.set(this.lives.get() -1);
+            logger.info("Life lost! {} remaining", this.lives.get());
+
+            if (this.lives.get() < 0) this.stopGame();
+            else {
+                this.nextPiece();
+                this.multiplier.set(1);
+            }
+        }, new KeyValue(this.gameScene.getTimer().progressProperty(), 0));
     }
 
     public void stopGame() {
@@ -161,6 +197,7 @@ public class Game {
         this.gameOver = true;
 
         //Bring up scoreboard
+        this.gameWindow.loadScene(this.scoresScene);
     }
 
     public void resetGame() {
@@ -212,7 +249,7 @@ public class Game {
         this.nextPiece();
 
         //Resets the timer
-        this.timeline.stop();
+
         this.timeline.playFromStart();
     }
 
@@ -260,7 +297,7 @@ public class Game {
      * @param blocks How many blocks have been cleared
      */
     private void score(int lines, int blocks) {
-        this.score.set(this.score.get() + 10 * lines * blocks * this.multiplier.get());
+        this.score.set(this.score.get() + 10000 * lines * blocks * this.multiplier.get());
     }
 
     /**
@@ -299,5 +336,16 @@ public class Game {
     public int getTimerDelay() {
         if (this.level.get() < 19) return (12000 - 500*this.level.get());
         else return 2500;
+    }
+
+    //Network//
+
+    private void setupCommunicator() {
+        this.communicator.addListener(message -> {
+            if (message.matches("HISCORES (\\w+:\\d+\\s*)+")) {
+                this.scoresScene.setOnlineScores(message);
+            }
+
+        });
     }
 }

@@ -10,6 +10,7 @@ import uk.ac.soton.comp1206.Event.TileClickListener;
 public class Grid extends GridPane {
     private static final Logger logger = LogManager.getLogger(Grid.class);
 
+    //the game tiles
     private Tile[][] tiles;
 
     //The dimensions of the board

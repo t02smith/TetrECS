@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -14,6 +16,8 @@ public class App extends Application {
 
     private Stage stage;
 
+    private Communicator communicator;
+
     public static void main(String[] args) {
         logger.info("Starting client");
         launch();
@@ -22,6 +26,7 @@ public class App extends Application {
     public void start(Stage stage) {
         instance = this;
         this.stage = stage;
+        this.communicator = new Communicator("ws://discord.ecs.soton.ac.uk:9700");
 
         this.openGame();
 
@@ -31,7 +36,7 @@ public class App extends Application {
     public void openGame() {
         logger.info("Opening game window");
         var window = new GameWindow(this.stage, 700, 500);
-        var game = new Game(window);
+        var game = new Game(window, this.communicator);
 
         this.stage.show();
     }
@@ -51,6 +56,8 @@ public class App extends Application {
     public static App getInstance() {
         return instance;
     }
+
+
 
     
 }

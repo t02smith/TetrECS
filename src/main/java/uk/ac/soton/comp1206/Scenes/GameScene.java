@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.Game.Grid;
 import uk.ac.soton.comp1206.Components.Game.Sidebar;
@@ -16,7 +15,6 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class GameScene extends BaseScene {
     private Grid grid;
-    private BorderPane root;
 
     private Sidebar sidebar;
     private ProgressBar timer;
@@ -28,9 +26,9 @@ public class GameScene extends BaseScene {
 
     public GameScene(GameWindow window) {
         super(window);
-        this.root = (BorderPane)this.getRoot();
     }
 
+    @Override
     public void build() {
         logger.info("Creating game scene");
         this.getStylesheets().add(Utility.getStyle("Game.css"));

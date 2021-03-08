@@ -1,11 +1,13 @@
 package uk.ac.soton.comp1206.ui;
 
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Event.GameStartListener;
 import uk.ac.soton.comp1206.Scenes.BaseScene;
 import uk.ac.soton.comp1206.Scenes.GameScene;
 import uk.ac.soton.comp1206.Scenes.Menu;
+import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 public class GameWindow {
@@ -16,6 +18,7 @@ public class GameWindow {
 
     private Menu menu;
     private GameScene gameScene;
+    private ScoresScene scoreScene;
 
     private GameStartListener gsl;
 
@@ -24,7 +27,9 @@ public class GameWindow {
         this.width = width;
         this.height = height;
 
-        this.setupStage();  
+        this.setupStage();
+        
+        this.getResources();
 
         this.loadMenu();
     }
@@ -37,7 +42,13 @@ public class GameWindow {
         this.stage.setOnCloseRequest(event -> {
             App.getInstance().shutdown();
         });
+
         
+        
+    }
+
+    private void getResources() {
+        Font.loadFont(this.getClass().getResourceAsStream("/font/ka1.ttf"), 16);
     }
 
     public void loadScene(BaseScene scene) {
@@ -50,18 +61,34 @@ public class GameWindow {
      */
     public void loadMenu() {
         this.menu = new Menu(this);
+        this.stage.setMaxWidth(700);
+        this.stage.setMinWidth(700);
+        this.stage.setMaxHeight(500);
+        this.stage.setMinHeight(500);
         this.loadScene(this.menu);
     }
+
+
 
     /**
      * Called to load the game onto the stage
      */
     public void loadGame() {
         this.loadScene(this.gameScene);
-        this.stage.setMinWidth(850);
+        this.stage.setMaxWidth(881);
+        this.stage.setMinWidth(881);
+        this.stage.setMaxHeight(700);
         this.stage.setMinHeight(700);
 
         this.gsl.start();
+    }
+
+    /**
+     * Loads the scoreboard once the game has finished
+     */
+    public void loadScores() {
+        this.scoreScene = new ScoresScene(this);
+        this.loadScene(this.scoreScene);
     }
 
     public void addGameStartListener(GameStartListener gsl) {

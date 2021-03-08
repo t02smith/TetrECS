@@ -3,11 +3,9 @@ package uk.ac.soton.comp1206.Scenes;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -18,16 +16,15 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class Menu extends BaseScene {
 
-    private SimpleDoubleProperty scale = new SimpleDoubleProperty(1);
-
     public Menu(GameWindow window) {
         super(window);
     }
 
+    @Override
     public void build() {
         logger.info("Creating Menu scene");
         this.getStylesheets().add(Utility.getStyle("Menu.css"));
-        this.getRoot().getStyleClass().add("menu-shell");
+        this.root.getStyleClass().add("menu-shell");
 
         var menuComponents = new VBox(
             this.createTitle(), 
@@ -37,7 +34,7 @@ public class Menu extends BaseScene {
         menuComponents.setAlignment(Pos.CENTER);
         menuComponents.setSpacing(50);
 
-        ((BorderPane)this.getRoot()).setCenter(
+        this.root.setCenter(
             menuComponents
         );
 
@@ -79,8 +76,8 @@ public class Menu extends BaseScene {
     private HBox createMenuItems() {
         //Smaller boxes//
         var vbox = new VBox(
-            new MenuItem("Settings", Utility.getImage("smallMe.jpg"), () -> {
-                logger.info("Opening settings");
+            new MenuItem("Scores", Utility.getImage("smallMe.jpg"), () -> {
+                logger.info("Opening leaderboard");
             }),
             new MenuItem("Help", Utility.getImage("help.png"), () -> {logger.info("Opening instructions");})
         );

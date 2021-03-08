@@ -1,7 +1,7 @@
 /*Game window*/
 
 .game-shell {
-    -fx-background-image: url("../images/2.jpg");
+    -fx-background-image: url("../images/background.jpg");
     -fx-background-size: cover;
     -fx-background-color: transparent;
 }
@@ -11,15 +11,18 @@
     -fx-background-color: rgba(0, 0, 0, 0.377);
     -fx-border-width: 2px;
     -fx-border-color: black;
+    -fx-background-image: url("../images/2.jpg");
+    -fx-background-size: cover;
+    -fx-background-color: transparent;
 }
 
 .timer {
     -fx-accent: red;
     -fx-padding: 0;
     -fx-text-box-border: black;
-    -fx-border-color: black;
     -fx-control-inner-background: black;
 }
+
 
 /*side bar*/
 
@@ -30,14 +33,28 @@
 }
 
 .score {
-    -fx-font-size: 25px;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 26;
+    
 }
 
+/*
 .lives {
     -fx-background-color: rgba(0, 0, 0, 0.5);
     -fx-background-radius: 20px;
     -fx-border-radius: 20px;
+}*/
+
+.props {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+    -fx-padding: 10px;
+}
+
+.warning {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 35px;
 }

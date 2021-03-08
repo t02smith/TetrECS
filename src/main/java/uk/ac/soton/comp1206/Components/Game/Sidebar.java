@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Event.TileClickListener;
@@ -34,17 +35,25 @@ public class Sidebar extends StackPane {
 
         this.components.getStyleClass().add("sidebar");
 
-        this.setMaxWidth(250);
-        this.setMinWidth(250);
+        this.setMaxWidth(300);
+        this.setMinWidth(300);
 
         //Title
+
+        
 
         //lives//
         this.lives = new Lives(3);
 
         //Score//
+
         this.score.setTextAlignment(TextAlignment.CENTER);
         this.score.getStyleClass().addAll("score");
+        //this.score.setFont(Font.font("Karmatic Arcade"));
+
+        var props = new VBox(this.lives, this.score);
+        props.getStyleClass().add("props");
+        props.setAlignment(Pos.TOP_CENTER);
 
         //Next piece//
         this.nextPiece = new Grid(3, 3, GridSize.MEDIUM, this.listeners.get("next-piece"));
@@ -52,7 +61,9 @@ public class Sidebar extends StackPane {
         //Reserve piece
         this.reservePiece = new Grid(3, 3, GridSize.SMALL, this.listeners.get("reserve-piece"));
 
-        this.components.getChildren().addAll(this.lives, this.score, this.nextPiece, this.reservePiece);
+        this.components.getChildren().addAll(props, this.nextPiece, this.reservePiece);
+        this.components.setSpacing(24);
+
         this.getChildren().add(this.components);
     }
 
