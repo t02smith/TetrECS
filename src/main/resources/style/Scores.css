@@ -1,0 +1,21 @@
+
+.label {
+    -fx-text-fill: white;
+}
+
+.final-score {
+    -fx-font-size: 36;
+    -fx-text-fill: white;
+    -fx-font-family: "Karmatic Arcade";
+}
+
+.scoreboard {
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 20;
+}
+
+.score-shell {
+    -fx-background-image: url("../images/2.jpg");
+    -fx-background-size: cover;
+    -fx-background-color: transparent;
+}

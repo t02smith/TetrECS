@@ -32,19 +32,12 @@
     -fx-border-insets: 15px;
 }
 
-.score {
+.sidebar-text {
     -fx-text-fill: white;
     -fx-font-family: "Karmatic Arcade";
     -fx-font-size: 26;
     
 }
-
-/*
-.lives {
-    -fx-background-color: rgba(0, 0, 0, 0.5);
-    -fx-background-radius: 20px;
-    -fx-border-radius: 20px;
-}*/
 
 .props {
     -fx-background-color: rgba(0, 0, 0, 0.5);
@@ -55,6 +48,7 @@
 
 .warning {
     -fx-text-fill: red;
+    -fx-font-family: "Karmatic Arcade";
     -fx-font-weight: bold;
     -fx-font-size: 35px;
 }

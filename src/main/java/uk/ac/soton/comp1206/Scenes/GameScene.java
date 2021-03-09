@@ -68,12 +68,16 @@ public class GameScene extends BaseScene {
         this.sidebar.setReserveElement(gp);
     }
 
+    public void loseLife() {
+        this.sidebar.getLives().loseLife();
+    }
+
     public void updateScore(int score) {
         this.sidebar.updateScore(score);
     }
 
-    public void loseLife() {
-        this.sidebar.getLives().loseLife();
+    public void updateMultiplier(int multiplier) {
+        this.sidebar.updateMultiplier(multiplier);
     }
 
     /**

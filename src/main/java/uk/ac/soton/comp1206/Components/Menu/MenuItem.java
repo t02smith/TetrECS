@@ -21,9 +21,6 @@ public class MenuItem extends StackPane {
     private SimpleDoubleProperty scale = new SimpleDoubleProperty(1);
    
     public MenuItem(String text, Image img, MenuItemListener onClick) {
-        //this.setMaxHeight(img.getHeight());
-        //this.setMaxWidth(img.getWidth());
-
         this.mil = onClick;
 
         this.getStyleClass().add("menu-item-shell");
@@ -37,14 +34,14 @@ public class MenuItem extends StackPane {
         //This makes the white text easier to read
 
         //default//
-        Stop[] stops = new Stop[] {new Stop(0.42, new Color(0, 0, 0, 0.8)), new Stop(1, new Color(1, 1, 1, 0))};
+        Stop[] stops = new Stop[] {new Stop(0.2, new Color(0, 0, 0, 0.8)), new Stop(1, new Color(1, 1, 1, 0))};
         var gradient = new LinearGradient(0, 1, 0, 0, true, CycleMethod.NO_CYCLE, stops);
         var rectangle = new Rectangle();
 
         rectangle.setFill(gradient);
 
         //hover over//
-        Stop[] hoverStops = new Stop[] {new Stop(0.6, new Color(0, 0, 0, 0.8)), new Stop(1, new Color(1, 1, 1, 0))};
+        Stop[] hoverStops = new Stop[] {new Stop(0.45, new Color(0, 0, 0, 0.8)), new Stop(1, new Color(1, 1, 1, 0))};
         var hoverGradient = new LinearGradient(0, 1, 0, 0, true, CycleMethod.NO_CYCLE, hoverStops);
 
         var up = new TranslateTransition(Duration.millis(60), lbl);

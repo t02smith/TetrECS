@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.application.Application;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.game.Game;

@@ -21,10 +21,11 @@
 
 .menu-item-text {
     -fx-text-fill: white;
-    -fx-font-size: 32px;
+    -fx-font-size: 25px;
     -fx-font-weight: bold;
-    -fx-padding: 7px;
-    -fx-line-spacing: -15px;
+    -fx-font-family: "Karmatic Arcade";
+    -fx-padding: 12px;
+    -fx-line-spacing: -7px;
 }
 
 

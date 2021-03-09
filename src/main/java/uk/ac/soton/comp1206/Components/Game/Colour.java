@@ -20,6 +20,12 @@ public enum Colour {
     RED("red.png"),
     YELLOW("yellow.png"),
     PINK("pink.png"),
+    GREY("grey.png"),
+    LILAC("lilac.png"),
+    TURQOISE("turqoise.png"),
+    LIME("lime.png"),
+    RAINBOW("rainbow.png"),
+    LIGHT_RED("light-red.png"),
     TRANSPARENT("transparent.png");
 
     private Image icon;

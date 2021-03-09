@@ -61,8 +61,16 @@ public class Game {
         this.gameWindow.setGameScene(this.gameScene);
 
         //Creates a score scene so we can collect the scores
-        this.scoresScene = new ScoresScene(this.gameWindow);
+        this.scoresScene = this.gameWindow.getScoresScene();
         this.communicator.send("HISCORES");
+
+        //Submits a score
+        this.scoresScene.addSubmitScoreListener((name, score) -> {
+            logger.info("Submitting new score");
+            this.communicator.send(
+                String.format("HISCORE %s:%d", name, score)
+            );
+        });
 
         //When the score updates
         this.score.addListener(event -> {
@@ -87,6 +95,11 @@ public class Game {
         //When a life is lost
         this.lives.addListener(event -> {
             this.gameScene.loseLife();
+        });
+
+        //When the multiplier changes
+        this.multiplier.addListener(event -> {
+            this.gameScene.updateMultiplier(this.multiplier.get());
         });
 
         //Key press actions//
@@ -197,6 +210,10 @@ public class Game {
         this.gameOver = true;
 
         //Bring up scoreboard
+        this.scoresScene.setUserScore(this.score.get());
+        this.scoresScene.setHasPlayed(true);
+
+        this.resetGame();
         this.gameWindow.loadScene(this.scoresScene);
     }
 
@@ -269,6 +286,7 @@ public class Game {
             if (board.checkColumn(i)) columnBuffer.add(i);
         }
 
+        //Clears the rows and columns that are full
         rowBuffer.forEach(row -> {
             board.clearRow(row);
         });
@@ -277,6 +295,7 @@ public class Game {
             board.clearColumn(column);
         });
 
+        //Values needed for the score
         int linesCleared = rowBuffer.size()+columnBuffer.size();
         int blocks = columnBuffer.size()*board.getGridHeight() + rowBuffer.size() * (board.getGridWidth() - columnBuffer.size());
 
@@ -297,7 +316,7 @@ public class Game {
      * @param blocks How many blocks have been cleared
      */
     private void score(int lines, int blocks) {
-        this.score.set(this.score.get() + 10000 * lines * blocks * this.multiplier.get());
+        this.score.set(this.score.get() + 10 * lines * blocks * this.multiplier.get());
     }
 
     /**
@@ -340,6 +359,9 @@ public class Game {
 
     //Network//
 
+    /**
+     * Sets up the communicator for the game
+     */
     private void setupCommunicator() {
         this.communicator.addListener(message -> {
             if (message.matches("HISCORES (\\w+:\\d+\\s*)+")) {

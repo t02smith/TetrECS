@@ -8,17 +8,29 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Pair;
+import uk.ac.soton.comp1206.Event.SubmitScoreListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class ScoresScene extends BaseScene {
     private SimpleListProperty<Pair<String, Integer>> localScores;
     private SimpleListProperty<Pair<String, Integer>> onlineScores;
+
+    private boolean userPlayed = false;
+    private int userScore;
+
+    private SubmitScoreListener ssl;
+
+    private static final Color[] scoreColors = {
+        Color.HOTPINK, Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.LIME, Color.GREEN, Color.DARKGREEN, Color.CYAN, Color.BLUE};
 
     public ScoresScene(GameWindow gw) {
         super(gw);
@@ -28,17 +40,41 @@ public class ScoresScene extends BaseScene {
     @Override
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Scores.css"));
+        this.root.getStyleClass().add("score-shell");
 
         var components = new VBox();
+        components.setSpacing(25);
         components.setAlignment(Pos.CENTER);
 
         //Enter usernme//
 
-        var name = new TextField();
-        name.getStyleClass().add("name-input");
-        name.setPromptText("Enter your name :)");
-        name.setMaxWidth(250);
-        name.setMinHeight(100);
+        HBox submit = null;
+        Label finalScore = null;
+        if (this.userPlayed) {
+            finalScore = new Label("Final Score " + this.userScore);
+            finalScore.getStyleClass().add("final-score");
+
+            var name = new TextField();
+            name.getStyleClass().add("name-input");
+            name.setPromptText("Enter your name :)");
+            name.setMaxWidth(250);
+            name.setMinHeight(30);
+    
+            var submitScore = new Button();
+            submitScore.setOnAction(e -> {
+                this.ssl.submit(name.getText(), this.userScore);
+                this.userPlayed = false;
+                this.window.loadScores();
+            });
+    
+            submit = new HBox(
+                name,
+                submitScore
+            );
+
+            submit.setAlignment(Pos.CENTER);
+        }
+
 
         //SCORES//
         var scoreLists = new HBox();
@@ -50,7 +86,9 @@ public class ScoresScene extends BaseScene {
         scoreLists.setAlignment(Pos.TOP_CENTER);
         scoreLists.setSpacing(25);
 
-        components.getChildren().addAll(name, scoreLists);
+        if (this.userPlayed) components.getChildren().addAll(finalScore, submit, scoreLists);
+        else components.getChildren().addAll(scoreLists);
+        
 
         this.root.setCenter(components);
     }
@@ -62,19 +100,34 @@ public class ScoresScene extends BaseScene {
      * @return The scoreboard component
      */
     private VBox createScoreboard(String name, SimpleListProperty<Pair<String, Integer>> scores) {
-        var vbox = new VBox(
-            new Label(name)
-        );
+        var scoreList = new GridPane();
 
         int max = scores.getSize() < 10 ? scores.getSize(): 10;
         for (int i = 0; i < max; i++) {
             var score = scores.get(i);
-            var lbl = new Label(
-                String.format("%d. %-15s %d", i+1, score.getKey(), score.getValue())
-            );
 
-            vbox.getChildren().add(lbl);
+            var pos = new Label(String.valueOf(i+1) + " ");
+            pos.setStyle("-fx-text-fill: '#" + scoreColors[i].toString().substring(2) + "';");
+            scoreList.add(pos, 0, i);
+
+            var username = new Label(score.getKey() + " ");
+            username.setStyle("-fx-text-fill: '#" + scoreColors[i].toString().substring(2) + "';");
+            scoreList.add(username, 1, i);
+
+            var scoreLbl = new Label(score.getValue().toString());
+            scoreLbl.setStyle("-fx-text-fill: '#" + scoreColors[i].toString().substring(2) + "';");
+            scoreList.add(scoreLbl, 2, i);
+
+
         }
+
+        var vbox = new VBox(
+            new Label(name),
+            scoreList
+        );
+
+        vbox.getStyleClass().add("scoreboard");
+        vbox.setAlignment(Pos.TOP_CENTER);
 
         return vbox;
     }
@@ -116,7 +169,12 @@ public class ScoresScene extends BaseScene {
         return new SimpleListProperty<>(observableList);
     }
 
-    public void addScore(String name, int score) {
+    /**
+     * Sends the score off to the server
+     * @param name
+     * @param score
+     */
+    public void sendScore(String name, int score) {
 
     }
 
@@ -132,5 +190,17 @@ public class ScoresScene extends BaseScene {
            (localHigh.getValue() > onlineHigh.getValue()) ?
             String.format("%s: %d", localHigh.getKey(), localHigh.getValue())
             : String.format("%s: %d", onlineHigh.getKey(), onlineHigh.getValue());
+    }
+
+    public void addSubmitScoreListener(SubmitScoreListener ssl) {
+        this.ssl = ssl;
+    }
+
+    public void setUserScore(int score) {
+        this.userScore = score;
+    }
+
+    public void setHasPlayed(boolean hasPlayed) {
+        this.userPlayed = hasPlayed;
     }
 }

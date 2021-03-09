@@ -18,7 +18,7 @@ public class GameWindow {
 
     private Menu menu;
     private GameScene gameScene;
-    private ScoresScene scoreScene;
+    private ScoresScene scoresScene;
 
     private GameStartListener gsl;
 
@@ -26,6 +26,8 @@ public class GameWindow {
         this.stage = stage;
         this.width = width;
         this.height = height;
+
+        this.scoresScene = new ScoresScene(this);
 
         this.setupStage();
         
@@ -43,12 +45,14 @@ public class GameWindow {
             App.getInstance().shutdown();
         });
 
-        
-        
     }
 
+    /**
+     * Collects any necessaruy resources at launch
+     */
     private void getResources() {
         Font.loadFont(this.getClass().getResourceAsStream("/font/ka1.ttf"), 16);
+        Font.loadFont(this.getClass().getResourceAsStream("/font/Tally Mark.ttf"), 16);
     }
 
     public void loadScene(BaseScene scene) {
@@ -66,6 +70,8 @@ public class GameWindow {
         this.stage.setMaxHeight(500);
         this.stage.setMinHeight(500);
         this.loadScene(this.menu);
+
+
     }
 
 
@@ -87,8 +93,7 @@ public class GameWindow {
      * Loads the scoreboard once the game has finished
      */
     public void loadScores() {
-        this.scoreScene = new ScoresScene(this);
-        this.loadScene(this.scoreScene);
+        this.loadScene(this.scoresScene);
     }
 
     public void addGameStartListener(GameStartListener gsl) {
@@ -101,6 +106,10 @@ public class GameWindow {
 
     public void setGameScene(GameScene scene) {
         this.gameScene = scene;
+    }
+
+    public ScoresScene getScoresScene() {
+        return this.scoresScene;
     }
 
     public int getWidth() {

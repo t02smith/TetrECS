@@ -9,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Event.TileClickListener;
@@ -22,6 +21,7 @@ public class Sidebar extends StackPane {
 
     private Lives lives;
     private Label score = new Label("Score: 0");
+    private Label multiplier = new Label("x 1");
 
     private Grid nextPiece;
     private Grid reservePiece;
@@ -40,18 +40,17 @@ public class Sidebar extends StackPane {
 
         //Title
 
-        
-
         //lives//
         this.lives = new Lives(3);
 
         //Score//
-
         this.score.setTextAlignment(TextAlignment.CENTER);
-        this.score.getStyleClass().addAll("score");
-        //this.score.setFont(Font.font("Karmatic Arcade"));
+        this.score.getStyleClass().addAll("sidebar-text");
 
-        var props = new VBox(this.lives, this.score);
+        //multiplier//
+        this.multiplier.getStyleClass().addAll("sidebar-text");
+
+        var props = new VBox(this.lives, this.score, this.multiplier);
         props.getStyleClass().add("props");
         props.setAlignment(Pos.TOP_CENTER);
 
@@ -100,8 +99,15 @@ public class Sidebar extends StackPane {
      * @param score the new score
      */
     public void updateScore(int score) {
-        logger.info("Score: {}", score);
-        this.score.setText("Score: " + score);
+        this.score.setText("Score " + score);
+    }
+
+    /**
+     * Updates the multipler displayed on screen
+     * @param multiplier the new multiplier
+     */
+    public void updateMultiplier(int multiplier) {
+        this.multiplier.setText("x " + multiplier);
     }
 
     public void addTileClickListener(String name, TileClickListener tcl) {
