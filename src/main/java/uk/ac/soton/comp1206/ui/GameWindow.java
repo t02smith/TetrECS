@@ -28,6 +28,7 @@ public class GameWindow {
         this.height = height;
 
         this.scoresScene = new ScoresScene(this);
+        this.menu = new Menu(this);
 
         this.setupStage();
         
@@ -64,13 +65,11 @@ public class GameWindow {
      * Called to load the menu into the stage
      */
     public void loadMenu() {
-        this.menu = new Menu(this);
         this.stage.setMaxWidth(700);
         this.stage.setMinWidth(700);
         this.stage.setMaxHeight(500);
         this.stage.setMinHeight(500);
         this.loadScene(this.menu);
-
 
     }
 
@@ -81,7 +80,7 @@ public class GameWindow {
      */
     public void loadGame() {
         this.loadScene(this.gameScene);
-        this.stage.setMaxWidth(881);
+        //this.stage.setMaxWidth(881);
         this.stage.setMinWidth(881);
         this.stage.setMaxHeight(700);
         this.stage.setMinHeight(700);

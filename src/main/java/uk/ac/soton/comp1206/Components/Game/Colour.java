@@ -28,7 +28,7 @@ public enum Colour {
     LIGHT_RED("light-red.png"),
     TRANSPARENT("transparent.png");
 
-    private Image icon;
+    private final Image icon;
 
     private static final CircularQueue<Colour> colourCycle = new CircularQueue<>(Arrays.asList(Colour.values()));
 

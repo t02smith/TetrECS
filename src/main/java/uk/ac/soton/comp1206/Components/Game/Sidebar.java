@@ -7,11 +7,15 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
+import uk.ac.soton.comp1206.Components.misc.ToggleSwitch;
+import uk.ac.soton.comp1206.Components.misc.ToggleSwitch.ToggleSize;
 import uk.ac.soton.comp1206.Event.TileClickListener;
+import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 
 public class Sidebar extends StackPane {
@@ -40,25 +44,30 @@ public class Sidebar extends StackPane {
 
         //Title
 
+        //toggle//
+        var toggle = new ToggleSwitch(true, ToggleSize.MEDIUM, Utility.getImage("ECS.png"));
+
         //lives//
         this.lives = new Lives(3);
 
         //Score//
         this.score.setTextAlignment(TextAlignment.CENTER);
         this.score.getStyleClass().addAll("sidebar-text");
-
+        
         //multiplier//
         this.multiplier.getStyleClass().addAll("sidebar-text");
 
-        var props = new VBox(this.lives, this.score, this.multiplier);
+        var props = new VBox(toggle, this.lives, this.score, this.multiplier);
         props.getStyleClass().add("props");
         props.setAlignment(Pos.TOP_CENTER);
 
         //Next piece//
         this.nextPiece = new Grid(3, 3, GridSize.MEDIUM, this.listeners.get("next-piece"));
+        this.nextPiece.lockSelected(1, 1);
 
         //Reserve piece
         this.reservePiece = new Grid(3, 3, GridSize.SMALL, this.listeners.get("reserve-piece"));
+        this.reservePiece.lockSelected();
 
         this.components.getChildren().addAll(props, this.nextPiece, this.reservePiece);
         this.components.setSpacing(24);

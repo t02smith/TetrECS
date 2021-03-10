@@ -20,7 +20,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class Game {
     private static final Logger logger = LogManager.getLogger(Game.class);
 
-    private Communicator communicator;
+    private final Communicator communicator;
 
     //Game properties
     private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
@@ -62,6 +62,9 @@ public class Game {
 
         //Creates a score scene so we can collect the scores
         this.scoresScene = this.gameWindow.getScoresScene();
+        this.gameScene.setLocalScores(this.scoresScene.getLocalScoreboard());
+        this.gameScene.setHighScore(this.scoresScene.getHighScore());
+
         this.communicator.send("HISCORES");
 
         //Submits a score
@@ -109,6 +112,26 @@ public class Game {
                     logger.info("Returning to menu");
                     this.gameWindow.loadMenu();
                     this.resetGame();
+                    break;
+                case UP:
+                case W:
+                    this.moveSelected(0, -1);
+                    break;
+                case DOWN:
+                case A:
+                    this.moveSelected(0, 1);
+                    break;
+                case LEFT:
+                case S:
+                    this.moveSelected(-1, 0);
+                    break;
+                case RIGHT:
+                case D:
+                    this.moveSelected(1, 0);
+                    break;
+                case ENTER:
+                case X:
+                    this.insertSelected();
                     break;
                 case Q:
                 case Z:
@@ -213,6 +236,7 @@ public class Game {
         this.scoresScene.setUserScore(this.score.get());
         this.scoresScene.setHasPlayed(true);
 
+        //Resets the game for the next round
         this.resetGame();
         this.gameWindow.loadScene(this.scoresScene);
     }
@@ -322,7 +346,7 @@ public class Game {
     /**
      * Swaps the next piece to be played with the reserve
      */
-    public void swapNextPiece() {
+    private void swapNextPiece() {
         logger.info("Swapping pieces");
         var temp = this.currentPiece;
         this.currentPiece = this.reservePiece;
@@ -337,7 +361,7 @@ public class Game {
      * Moves the reserve piece to be played next
      * Randomly gets the next piece
      */
-    public void nextPiece() {
+    private void nextPiece() {
         this.currentPiece = this.reservePiece;
         this.gameScene.setNextPiece(this.currentPiece);
 
@@ -346,13 +370,27 @@ public class Game {
         logger.info("Piece {} added", this.reservePiece);
     }
 
+    /**
+     * Moves selected tile
+     * @param byX
+     * @param byY
+     */
+    private void moveSelected(int byX, int byY) {
+        this.gameScene.getBoard().moveSelected(byX, byY);
+    }
+    
+    private void insertSelected() {
+        int[] selected = this.gameScene.getBoard().getSelectedPos();
+        this.insertPiece(selected[0], selected[1]);
+    }
+
     //Timer//
 
     /**
      * Returns the delay time in ms
      * @return time to make a move
      */
-    public int getTimerDelay() {
+    private int getTimerDelay() {
         if (this.level.get() < 19) return (12000 - 500*this.level.get());
         else return 2500;
     }
@@ -366,8 +404,8 @@ public class Game {
         this.communicator.addListener(message -> {
             if (message.matches("HISCORES (\\w+:\\d+\\s*)+")) {
                 this.scoresScene.setOnlineScores(message);
-            }
 
+            }
         });
     }
 }

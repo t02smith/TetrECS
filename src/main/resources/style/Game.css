@@ -1,10 +1,22 @@
 /*Game window*/
 
+
 .game-shell {
     -fx-background-image: url("../images/background.jpg");
     -fx-background-size: cover;
     -fx-background-color: transparent;
 }
+
+.banner {
+    -fx-font-family: "Karmatic Arcade";
+    -fx-text-fill: white;
+    -fx-font-size: 26;
+    -fx-border-insets: 12;
+    -fx-background-insets: 12;
+    -fx-padding: 16;
+}
+
+/*center */
 
 .game-board {
     -fx-alignment: center;
@@ -17,7 +29,7 @@
 }
 
 .timer {
-    -fx-accent: red;
+    -fx-accent: green;
     -fx-padding: 0;
     -fx-text-box-border: black;
     -fx-control-inner-background: black;
@@ -51,4 +63,9 @@
     -fx-font-family: "Karmatic Arcade";
     -fx-font-weight: bold;
     -fx-font-size: 35px;
+}
+
+.scoreboard {
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 20;
 }
