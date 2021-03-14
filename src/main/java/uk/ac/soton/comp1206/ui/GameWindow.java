@@ -5,7 +5,8 @@ import javafx.stage.Stage;
 import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Event.GameStartListener;
 import uk.ac.soton.comp1206.Scenes.BaseScene;
-import uk.ac.soton.comp1206.Scenes.GameScene;
+import uk.ac.soton.comp1206.Scenes.ChallengeScene;
+import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.Menu;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Utility;
@@ -17,8 +18,9 @@ public class GameWindow {
     private int height;
 
     private Menu menu;
-    private GameScene gameScene;
+    private ChallengeScene gameScene;
     private ScoresScene scoresScene;
+    private LobbyScene lobbyScene;
 
     private GameStartListener gsl;
 
@@ -65,14 +67,13 @@ public class GameWindow {
      * Called to load the menu into the stage
      */
     public void loadMenu() {
-        this.stage.setMaxWidth(700);
+        //this.stage.setMaxWidth(700);
         this.stage.setMinWidth(700);
-        this.stage.setMaxHeight(500);
+        //this.stage.setMaxHeight(500);
         this.stage.setMinHeight(500);
         this.loadScene(this.menu);
 
     }
-
 
 
     /**
@@ -82,10 +83,14 @@ public class GameWindow {
         this.loadScene(this.gameScene);
         //this.stage.setMaxWidth(881);
         this.stage.setMinWidth(881);
-        this.stage.setMaxHeight(700);
+        //this.stage.setMaxHeight(700);
         this.stage.setMinHeight(700);
 
         this.gsl.start();
+    }
+
+    public void loadMultiplayer() {
+        this.loadScene(this.lobbyScene);
     }
 
     /**
@@ -99,16 +104,20 @@ public class GameWindow {
         this.gsl = gsl;
     }
 
-    public GameScene getGameScene() {
+    public ChallengeScene getGameScene() {
         return this.gameScene;
     }
 
-    public void setGameScene(GameScene scene) {
+    public void setGameScene(ChallengeScene scene) {
         this.gameScene = scene;
     }
 
     public ScoresScene getScoresScene() {
         return this.scoresScene;
+    }
+
+    public void setLobbyScene(LobbyScene scene) {
+        this.lobbyScene = scene;
     }
 
     public int getWidth() {

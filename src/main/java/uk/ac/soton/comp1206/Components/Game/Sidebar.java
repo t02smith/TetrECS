@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -23,8 +22,9 @@ public class Sidebar extends StackPane {
 
     private VBox components = new VBox();
 
+    private ToggleSwitch toggle;
     private Lives lives;
-    private Label score = new Label("Score: 0");
+    private Label score = new Label("Score 0");
     private Label multiplier = new Label("x 1");
 
     private Grid nextPiece;
@@ -45,7 +45,7 @@ public class Sidebar extends StackPane {
         //Title
 
         //toggle//
-        var toggle = new ToggleSwitch(true, ToggleSize.MEDIUM, Utility.getImage("ECS.png"));
+        this.toggle = new ToggleSwitch(true, ToggleSize.MEDIUM, Utility.getImage("ECS.png"));
 
         //lives//
         this.lives = new Lives(3);
@@ -57,7 +57,7 @@ public class Sidebar extends StackPane {
         //multiplier//
         this.multiplier.getStyleClass().addAll("sidebar-text");
 
-        var props = new VBox(toggle, this.lives, this.score, this.multiplier);
+        var props = new VBox(this.lives, this.score, this.multiplier);
         props.getStyleClass().add("props");
         props.setAlignment(Pos.TOP_CENTER);
 
@@ -125,5 +125,9 @@ public class Sidebar extends StackPane {
 
     public Lives getLives() {
         return this.lives;
+    }
+
+    public ToggleSwitch getToggle() {
+        return this.toggle;
     }
 }

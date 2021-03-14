@@ -84,7 +84,7 @@ public class ScoresScene extends BaseScene {
         //SCORES//
         var scoreLists = new HBox();
         scoreLists.getChildren().addAll(
-            this.createScoreboard("Local scores", this.localScores), 
+            this.createScoreboard("Local scores", this.localScores),
             this.createScoreboard("Online score", this.onlineScores)
         );
 

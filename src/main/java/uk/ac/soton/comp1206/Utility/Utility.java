@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.scene.image.Image;
 
+/**
+ * Utility class to handle file IO
+ */
 public class Utility {
     protected static final Logger logger = LogManager.getLogger(Utility.class);
     
@@ -52,6 +55,8 @@ public class Utility {
 
             String line;
             var output = new ArrayList<String>();
+
+            //Reads file line by line
             while ((line = br.readLine()) != null) output.add(line);
 
             return output;
@@ -64,6 +69,11 @@ public class Utility {
         return null;
     }
 
+    /**
+     * Writes a given string to a file
+     * @param filename the file to write to
+     * @param lines the string to write to the file
+     */
     public static void writeToFile(String filename, String lines) {
         try {
             var fw = new FileWriter(

@@ -86,7 +86,7 @@ public class ToggleSwitch extends HBox {
         this.back.setOnMouseClicked(e -> {this.state.set(!this.state.get());});
 
         this.state.addListener(event -> {
-            if (!this.state.get()) {
+            if (this.state.get()) {
                 this.back.setFill(Color.RED);
                 StackPane.setAlignment(this.button, Pos.CENTER_LEFT);
             } else {

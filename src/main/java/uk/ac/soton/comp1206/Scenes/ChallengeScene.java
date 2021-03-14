@@ -18,7 +18,7 @@ import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
-public class GameScene extends BaseScene {
+public class ChallengeScene extends BaseScene {
     private Grid grid;
     private ProgressBar timer;
 
@@ -32,7 +32,7 @@ public class GameScene extends BaseScene {
 
     private Pair<String, Integer> highScore;
 
-    public GameScene(GameWindow window) {
+    public ChallengeScene(GameWindow window) {
         super(window);
     }
 
@@ -88,9 +88,12 @@ public class GameScene extends BaseScene {
         this.sidebar.addTileClickListener("reserve-piece", this.listeners.get("reserve-piece"));
         this.sidebar.build();
 
+        this.sidebar.getToggle().stateProperty().bindBidirectional(this.grid.lockSelectedProperty());
+
         var sidePanel = new HBox(this.sidebar);
 
         //When the window gets wider
+        /*
         this.widthProperty().addListener(event -> {
             if (this.getWidth() > 1000) {
                 if (sidePanel.getChildren().size() != 2) {
@@ -101,7 +104,7 @@ public class GameScene extends BaseScene {
                     sidePanel.getChildren().remove(1);
                 }
             }
-        });
+        });*/
 
         this.root.setRight(sidePanel);
     }

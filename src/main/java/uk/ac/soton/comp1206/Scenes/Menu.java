@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Components.Menu.MenuItem;
 import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.Utility.Utility;
@@ -91,9 +92,12 @@ public class Menu extends BaseScene {
         options.getChildren().addAll(
             new MenuItem("Single\nPlayer", Utility.getImage("singleplayer.png"), () -> {
                 logger.info("Opening singleplayer");
-                this.window.loadGame();
+                App.getInstance().openGame();
             }),
-            new MenuItem("Multi\nPlayer", Utility.getImage("multiplayer.png"), () -> {logger.info("Opening multiplayer");}),
+            new MenuItem("Multi\nPlayer", Utility.getImage("multiplayer.png"), () -> {
+                logger.info("Opening multiplayer");
+                App.getInstance().openMultiplayer();
+            }),
             vbox
         );
 

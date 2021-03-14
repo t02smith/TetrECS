@@ -1,0 +1,49 @@
+
+.lobby-shell {
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-size: cover;
+    -fx-background-color: transparent;
+}
+
+.channel-title {
+    -fx-text-fill: white;
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 40;
+}
+
+
+.channel-name {
+    -fx-text-fill: white;
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 32;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.no-channels {
+    -fx-text-fill: red;
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 25;
+}
+
+/*Chat*/
+
+/*Message toolbar*/
+
+.msg-toolbar {
+    -fx-background-color: white;
+}
+
+.msg-input {
+    -fx-background-color: transparent;
+
+}
+
+.msg-send {
+    -fx-background-color: transparent;
+}
+
+/*Chat */
+.scroll-pane .viewport {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}

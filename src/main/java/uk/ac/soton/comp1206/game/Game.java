@@ -12,37 +12,38 @@ import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Network.Communicator;
-import uk.ac.soton.comp1206.Scenes.GameScene;
+import uk.ac.soton.comp1206.Network.NetworkProtocol;
+import uk.ac.soton.comp1206.Scenes.ChallengeScene;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class Game {
-    private static final Logger logger = LogManager.getLogger(Game.class);
+    protected static final Logger logger = LogManager.getLogger(Game.class);
 
-    private final Communicator communicator;
+    protected final Communicator communicator;
 
     //Game properties
-    private SimpleIntegerProperty score = new SimpleIntegerProperty(0);
-    private SimpleIntegerProperty level = new SimpleIntegerProperty(0);
-    private SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
-    private SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
+    protected SimpleIntegerProperty score = new SimpleIntegerProperty(0);
+    protected SimpleIntegerProperty level = new SimpleIntegerProperty(0);
+    protected SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
+    protected SimpleIntegerProperty multiplier = new SimpleIntegerProperty(1);
 
     //Whether the game is still on going
-    private boolean gameOver;
+    protected boolean gameOver;
 
     //The next piece to be played
-    private GamePiece currentPiece;
+    protected GamePiece currentPiece;
 
     //Piece in reserve that can be switched to
-    private GamePiece reservePiece;
+    protected GamePiece reservePiece;
 
     //Main game loop timeline
-    private Timeline timeline;
+    protected Timeline timeline;
 
     //visuals
-    private GameWindow gameWindow;
-    private GameScene gameScene;
+    protected GameWindow gameWindow;
+    private ChallengeScene gameScene;
     private ScoresScene scoresScene;
 
     public Game(GameWindow gameWindow, Communicator communicator) {
@@ -50,14 +51,12 @@ public class Game {
         this.gameWindow = gameWindow;
         this.communicator = communicator;
 
-        this.buildGame();
-
     }
 
     public void buildGame() {
         this.setupCommunicator();
 
-        this.gameScene = new GameScene(this.gameWindow);
+        this.gameScene = new ChallengeScene(this.gameWindow);
         this.gameWindow.setGameScene(this.gameScene);
 
         //Creates a score scene so we can collect the scores
@@ -390,7 +389,7 @@ public class Game {
      * Returns the delay time in ms
      * @return time to make a move
      */
-    private int getTimerDelay() {
+    protected int getTimerDelay() {
         if (this.level.get() < 19) return (12000 - 500*this.level.get());
         else return 2500;
     }
@@ -400,12 +399,10 @@ public class Game {
     /**
      * Sets up the communicator for the game
      */
-    private void setupCommunicator() {
-        this.communicator.addListener(message -> {
-            if (message.matches("HISCORES (\\w+:\\d+\\s*)+")) {
-                this.scoresScene.setOnlineScores(message);
+    protected void setupCommunicator() {
+        NetworkProtocol.HISCORES.addListener(message -> this.scoresScene.setOnlineScores(message));
+        NetworkProtocol.ERROR.addListener(message -> logger.error(message));
 
-            }
-        });
+
     }
 }

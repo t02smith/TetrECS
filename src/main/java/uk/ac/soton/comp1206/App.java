@@ -6,7 +6,9 @@ import org.apache.logging.log4j.Logger;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import uk.ac.soton.comp1206.Network.Communicator;
+import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.game.Game;
+import uk.ac.soton.comp1206.game.Multiplayer.MultiplayerGame;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class App extends Application {
@@ -15,6 +17,14 @@ public class App extends Application {
 
     private Stage stage;
 
+    //Window to display the game on
+    private GameWindow gameWindow; 
+
+    //Current instance of game
+    //Singleplayer and multiplayer cannot both be played at once
+    private Game game;
+
+    //Communicator to communicate with the ECS server for online play
     private Communicator communicator;
 
     public static void main(String[] args) {
@@ -22,31 +32,59 @@ public class App extends Application {
         launch();
     }
 
+    /**
+     * Starts the application
+     */
     public void start(Stage stage) {
         instance = this;
         this.stage = stage;
+        this.gameWindow = new GameWindow(this.stage, 700, 500);
         this.communicator = new Communicator("ws://discord.ecs.soton.ac.uk:9700");
 
-        this.openGame();
-
-    }
-
-    @SuppressWarnings("unused")
-    public void openGame() {
-        logger.info("Opening game window");
-        var window = new GameWindow(this.stage, 700, 500);
-        var game = new Game(window, this.communicator);
+        //Checks if we have setup a network protocol for a received message
+        this.communicator.addListener(message -> {
+            for (NetworkProtocol received: NetworkProtocol.values()) {
+                if (message.matches(received.getResult())) {
+                    received.doAction(message);
+                    break;
+                }
+            }
+        });
 
         this.stage.show();
+
     }
 
     /**
-     * Shutdowns the game
+     * Opens up a singlepayer game onto the window
+     */
+    public void openGame() {
+        logger.info("Opening game window");
+        this.game = new Game(this.gameWindow, this.communicator);
+        this.game.buildGame();
+        this.gameWindow.loadGame();
+    }
+
+    /**
+     * Opens up a multiplayer game onto the window
+     */
+    public void openMultiplayer() {
+        logger.info("Starting multiplayer");
+        this.game = new MultiplayerGame(this.gameWindow, this.communicator);
+        this.game.buildGame();
+        this.gameWindow.loadMultiplayer();
+
+    }
+
+    /**
+     * Shuts down the game
      */
     public void shutdown() {
         logger.info("Shutting down");
+        this.communicator.send("QUIT");
         System.exit(0);
     }
+
 
     /**
      * Returns the current instance of App
@@ -55,7 +93,6 @@ public class App extends Application {
     public static App getInstance() {
         return instance;
     }
-
 
 
     

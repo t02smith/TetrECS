@@ -93,6 +93,10 @@ final public class Grid extends GridPane {
             }
         }
 
+        this.lockSelected.addListener(event -> {
+            if (!this.lockSelected.get()) this.clearSelected();
+        });
+
         this.setMaxWidth(this.tileLength.sideLength*this.width);
     }
 
@@ -206,6 +210,17 @@ final public class Grid extends GridPane {
     public void lockSelected(int x, int y) {
         this.selectTile(x, y);
         this.lockSelected.set(true);
+    }
+
+    /**
+     * Unlocks the selected property
+     */
+    public void unlockSelected() {
+        this.lockSelected.set(false);
+    }
+
+    public SimpleBooleanProperty lockSelectedProperty() {
+        return this.lockSelected;
     }
 
     /**

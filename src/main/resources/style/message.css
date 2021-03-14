@@ -1,0 +1,17 @@
+
+/* message styling */
+.BOLD {
+    -fx-font-weight: bold;
+}
+
+.UNDERLINE {
+    -fx-underline: true;
+}
+
+.ITALIC {
+    -fx-font-style: italic;
+}
+
+.STRIKE {
+    -fx-strikethrough: true;
+}
