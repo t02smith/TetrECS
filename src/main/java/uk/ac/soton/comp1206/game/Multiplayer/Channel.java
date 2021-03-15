@@ -58,4 +58,8 @@ public class Channel {
     public String getName() {
         return this.name;
     }
+
+    public String[] getUsers() {
+        return this.messages.keySet().toArray(String[]::new);
+    }
 }

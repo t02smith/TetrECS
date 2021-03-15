@@ -9,6 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.util.Duration;
+import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
@@ -18,6 +19,10 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class MultiplayerGame extends Game {
     private HashMap<String, Channel> channels = new HashMap<>();
     private Channel currentChannel;
+
+    private String name;
+
+    private Timeline updateChannelList;
 
     private LobbyScene lobby;
 
@@ -30,12 +35,27 @@ public class MultiplayerGame extends Game {
     @Override
     public void buildGame() {
         this.lobby = new LobbyScene(this.gameWindow);
+        this.lobby.setCreateChannelListener(channelName -> {
+            this.communicator.send("CREATE " + channelName);
+        });
+
+        //When you leave a channel
+        this.lobby.inChannelProperty().addListener(event -> {
+            if (!this.lobby.getInChannel()) {
+                this.leaveChannel();
+            }
+        });
+
+
         this.gameWindow.setLobbyScene(this.lobby);
 
         this.setupCommunicator();
 
     }
 
+    /**
+     * Sets up any network protocols that will be used
+     */
     @Override
     protected void setupCommunicator() {
         //List of channels
@@ -44,8 +64,34 @@ public class MultiplayerGame extends Game {
         //Join a channel
         NetworkProtocol.JOIN.addListener(message -> {
             var name = message.split("\\s+")[1];
-            this.currentChannel = this.channels.get(name);
-            logger.info("Channel changed to {}", name);
+            if (this.currentChannel == null) {
+                if (!this.channels.containsKey(name)) {
+                    var channel = new Channel(name);
+                    this.channels.put(name, channel);
+                }
+
+                this.currentChannel = this.channels.get(name);
+                this.displayChannel();
+
+            } else logger.error("You are already in a channel");
+        });
+
+        //Updates the list of users in the channel
+        NetworkProtocol.USERS.addListener(message -> {
+            this.currentChannel.updateUsers(message);
+            Platform.runLater(() -> this.lobby.updateUserList(this.currentChannel));
+        });
+
+        NetworkProtocol.MSG.addListener(message -> {  
+            String[] msg = message.substring(4).split(":");
+            this.lobby.addMessage(
+                new Message(msg[0], msg[1], msg[0].equals(this.name))
+            );
+        });
+
+        //Sets nickname
+        NetworkProtocol.NICK.addListener(message -> {
+            this.name = message.split("\\s+")[1];
         });
 
         //Set a nickname
@@ -56,17 +102,24 @@ public class MultiplayerGame extends Game {
 
         NetworkProtocol.HOST.addListener(message -> logger.info("You are the host"));
 
+        //Leave the current channel
+        NetworkProtocol.PART.addListener(message -> {
+            this.currentChannel = null;
+        });
+
+
         this.communicator.send("LIST");
         //Updates the channel list at regular intervals
-        var getChannelList = new Timeline(
-            new KeyFrame(Duration.millis(5000), e -> {
+        this.updateChannelList = new Timeline(
+            new KeyFrame(Duration.ZERO, e -> {
                 logger.info("Updating channel list");
                 this.communicator.send("LIST");
-            })
+            }),
+            new KeyFrame(Duration.millis(5000))
         );
 
-        getChannelList.setCycleCount(Animation.INDEFINITE);
-        getChannelList.play();
+        this.updateChannelList.setCycleCount(Animation.INDEFINITE);
+        this.updateChannelList.play();
     }
 
     /**
@@ -96,4 +149,31 @@ public class MultiplayerGame extends Game {
 
         logger.info("Channel list updated");
     }
+
+    /**
+     * Called when joining a channel
+     * Displays the chat window and list of users
+     */
+    private void displayChannel() {
+        this.updateChannelList.stop();
+        Platform.runLater(() -> {
+            this.lobby.buildInChannel(this.currentChannel, message -> {
+                this.communicator.send("MSG " + message);
+
+            });
+        });
+
+    }
+
+    /**
+     * Called when a user leaves a channel
+     */
+    private void leaveChannel() {
+        this.communicator.send("PART");
+        this.currentChannel = null;
+        this.updateChannelList.playFromStart();
+
+        //some ui updates
+    }
+
 }

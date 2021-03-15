@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import uk.ac.soton.comp1206.Event.SendMessageListener;
@@ -38,6 +39,14 @@ public class MsgToolbar extends HBox {
         this.send.getStyleClass().add("msg-send");
         this.send.setOnAction(event -> {
             this.sml.sendMsg(this.msg.getText());
+            this.msg.setText("");
+        });
+
+        this.msg.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                this.sml.sendMsg(this.msg.getText());
+                this.msg.setText("");
+            }
         });
 
         this.getChildren().addAll(this.msg, this.send);

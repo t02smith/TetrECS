@@ -4,6 +4,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Event.SendMessageListener;
+import uk.ac.soton.comp1206.Utility.Utility;
 
 public class ChatPane extends BorderPane {
     
@@ -15,9 +16,12 @@ public class ChatPane extends BorderPane {
 
     public ChatPane(SendMessageListener sml) {
         this.sendMsg = sml;
+        this.build();
     }
 
     public void build() {
+        this.getStylesheets().add(Utility.getStyle("message.css"));
+        this.getStyleClass().add("chat-pane");
         this.msgList = new VBox(5);
 
         this.msgWindow = new ScrollPane(this.msgList);

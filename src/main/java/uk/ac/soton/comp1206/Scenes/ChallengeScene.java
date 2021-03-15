@@ -109,6 +109,7 @@ public class ChallengeScene extends BaseScene {
         this.root.setRight(sidePanel);
     }
 
+
     /**
      * Displays the next piece to be played in the appropriate grid
      * @param gp the new piece

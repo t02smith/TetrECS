@@ -190,7 +190,7 @@ public class Message extends HBox {
     private Label createMsgTime() {
         var time = new Label(formatter.format(LocalDateTime.now()));
         time.setMinWidth(40);
-        time.setId("time");
+        time.getStyleClass().add("time");
 
         return time;
     }

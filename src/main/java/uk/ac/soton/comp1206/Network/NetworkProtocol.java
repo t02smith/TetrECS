@@ -15,19 +15,19 @@ import uk.ac.soton.comp1206.Event.NetworkListener;
  * @TODO boolean for whether you would expect a result after sending?
  */
 public enum NetworkProtocol {
-    HISCORES    ("HISCORES", "HISCORES (\\w+:\\d+\\s*)+"),  //List of high scores
-    LIST        ("LIST", "CHANNELS ((\\w+\\s*)+\\n*)*"),    //List of open channels
-    CREATE      ("CREATE (\\w+\\s*)+", ""), //Create a channel
-    JOIN        ("JOIN (\\w+\\s*)+", "JOIN (\\w+\\s*)+"),   //Join a channel by name
-    QUIT        ("QUIT", ""),                               //Disconnect from server
-    MSG         ("MSG (\\w+\\s*)+", "MSG (\\w+\\s*)+"),     //Send/receive a message in a channel
-    NICK        ("NICK \\w+", "NICK \\w+"),                 //change of nickname -> yours or someones elses
+    HISCORES    ("HISCORES", "HISCORES (\\w+:\\d+\\s*)+"),                  //List of high scores
+    LIST        ("LIST", "CHANNELS ((\\w+\\s*)+\\n*)*"),                    //List of open channels
+    CREATE      ("CREATE (\\w+\\s*)+", ""),                                 //Create a channel
+    JOIN        ("JOIN (\\w+\\s*)+", "JOIN (\\w+\\s*)+"),                   //Join a channel by name
+    QUIT        ("QUIT", ""),                                               //Disconnect from server
+    MSG         ("MSG (\\w+\\s*)+", "MSG \\w+:((\\W+)*\\w+(\\W+)*\\s*)+"),  //Send/receive a message in a channel
+    NICK        ("NICK \\w+", "NICK \\w+"),                                 //change of nickname -> yours or someones elses
     CHANGE_NICK ("", "NICK (\\w+):(\\w+)"),
-    START       ("START", "START"),                         //Request start or notification to say game is starting
-    PART        ("", "PARTED"),                             //Disconnect from current channel
-    USERS       ("USERS", "USERS (\\w+\\n?)+"),             //Gets a list of users in channel
-    HOST        ("", "HOST"),                               //Received if user is the channel's host
-    ERROR       ("", "ERROR (\\w+\\s*)+");                  //If any network errors occur
+    START       ("START", "START"),                                         //Request start or notification to say game is starting
+    PART        ("", "PARTED"),                                             //Disconnect from current channel
+    USERS       ("USERS", "USERS (\\w+\\n?)+"),                             //Gets a list of users in channel
+    HOST        ("", "HOST"),                                               //Received if user is the channel's host
+    ERROR       ("", "ERROR (\\w+\\s*)+");                                  //If any network errors occur
 
 
     //Any arguments passed through when sending message

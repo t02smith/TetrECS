@@ -14,13 +14,16 @@ public abstract class BaseScene extends Scene {
     protected final GameWindow window;
 
     protected BorderPane root;
-    //protected GamePane root;
 
     public BaseScene(GameWindow window) {
         super(new BorderPane(), window.getWidth(), window.getHeight());
         this.window = window;
         this.root = (BorderPane)this.getRoot();
 
+        this.setKeyBindings();
+    }
+
+    public void setKeyBindings() {
         this.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 logger.info("Returning to menu");
