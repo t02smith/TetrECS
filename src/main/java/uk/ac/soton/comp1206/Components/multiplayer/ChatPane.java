@@ -20,7 +20,7 @@ public class ChatPane extends BorderPane {
     }
 
     public void build() {
-        this.getStylesheets().add(Utility.getStyle("message.css"));
+        this.getStylesheets().add(Utility.getStyle("chatpane.css"));
         this.getStyleClass().add("chat-pane");
         this.msgList = new VBox(5);
 

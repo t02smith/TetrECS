@@ -20,6 +20,14 @@
     -fx-border-color: transparent;
 }
 
+.start-multiplayer {
+    -fx-bacgkround-color: transparent;
+    -fx-border-color: transparent;
+
+    -fx-text-fill: rgb(11, 126, 11);
+    -fx-font-size: 32px;
+}
+
 .no-channels {
     -fx-text-fill: red;
     -fx-font-family: "Karmatic Arcade";
@@ -28,70 +36,32 @@
 
 .expanding-tf-name {
     -fx-text-fill: white;
-    -fx-font-size: 15;
-    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 26;
+    -fx-font-weight: bold;
 }
 
 .expanding-tf-shell {
-    -fx-background-color: rgb(11, 126, 11);
+    -fx-background-color: rgb(11, 126, 11, 0.5);
     -fx-padding: 7px;
-    -fx-background-radius: 20 0 0 20;
-    -fx-border-radius: 20 0 0 20;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
 
 .expanding-tf-input {
-    -fx-font-family: "Karmatic Arcade";
     -fx-padding: 5px;
-    -fx-font-size: 13px;
-
-}
-
-.tf-left {
-    -fx-background-radius: 0 10 10 10;
-    -fx-border-radius: 0 10 10 0;
-}
-
-.tf-center {
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-}
-
-.tf-right {
-    -fx-background-radius: 10 0 0 10;
-    -fx-border-radius: 10 0 0 10;
-}
-
-/*Chat*/
-
-/*Message toolbar*/
-
-.msg-toolbar {
+    -fx-border-color: transparent;
     -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-size: 15;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-font-weight: bold;
 }
 
-.msg-input {
-    -fx-background-color: transparent;
 
-}
 
-.msg-send {
-    -fx-background-color: transparent;
-}
 
-/*Chat */
-.scroll-pane .viewport {
-    -fx-background-color: rgba(0, 0, 0, 0.5);
-    -fx-border-color: transparent;
-}
-
-.scroll-pane {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-}
-
-.chat-pane {
-    -fx-background-color: transparent;
-}
 
 /*list of users*/
 

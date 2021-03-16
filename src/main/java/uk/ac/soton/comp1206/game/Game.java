@@ -43,7 +43,7 @@ public class Game {
 
     //visuals
     protected GameWindow gameWindow;
-    private ChallengeScene gameScene;
+    protected ChallengeScene gameScene;
     private ScoresScene scoresScene;
 
     public Game(GameWindow gameWindow, Communicator communicator) {
@@ -74,36 +74,32 @@ public class Game {
             );
         });
 
-        //When the score updates
-        this.score.addListener(event -> {
-            this.gameScene.updateScore(score.get());
-            if (this.score.get()/1000 != this.level.get()) {
-                this.level.set(this.score.get()/1000);
-                logger.info("level increased to {}", this.level.get());
-            } 
-        });
-        
-        //When the user levels up
-        this.level.addListener(event -> {
-            if (this.timeline == null) return;
 
-            //Decrease the time given to place a piece
-            this.timeline.stop();
-            this.timeline.getKeyFrames().set(1, this.updateTime());
-            logger.info("Time decreased to {}ms", this.getTimerDelay());
+        //When the game is started//
+        this.gameWindow.addGameStartListener(() -> {
+            this.nextPiece();
+            this.nextPiece();
 
+            this.gameOver = false;
+
+            //Plays background music
+            Media.playMusic("game.wav");
+
+            //start timer
+            this.gameLoop();
         });
 
-        //When a life is lost
-        this.lives.addListener(event -> {
-            this.gameScene.loseLife();
-        });
+        this.setKeyBindings();
+        this.setUserPropertyListeners();
+        this.setTileClickListeners();
+        this.gameScene.build();
 
-        //When the multiplier changes
-        this.multiplier.addListener(event -> {
-            this.gameScene.updateMultiplier(this.multiplier.get());
-        });
+    }
 
+    /**
+     * Sets the game's keybindings
+     */
+    protected void setKeyBindings() {
         //Key press actions//
         this.gameScene.setOnKeyReleased(event -> {
             switch (event.getCode()) {
@@ -152,9 +148,13 @@ public class Game {
                     break;
             }
         });
+    }
 
-        //Clicking a tile//
-
+    /**
+     * Sets up the actions when a tile is clicked
+     * What happens depends on what grid
+     */
+    protected void setTileClickListeners() {
         //On the game grid
         this.gameScene.addTileClickListener("game-grid", (x, y) -> {
             this.insertPiece(x, y);
@@ -175,29 +175,48 @@ public class Game {
         this.gameScene.addTileClickListener("reserve-piece", (x, y) -> {
             this.swapNextPiece();
         });
+    }
 
-        //When the game is started//
-        this.gameWindow.addGameStartListener(() -> {
-            this.nextPiece();
-            this.nextPiece();
+    /**
+     * Sets the properties for altering the user's 
+     */
+    protected void setUserPropertyListeners() {
+        //When the score updates
+        this.score.addListener(event -> {
+            this.gameScene.updateScore(score.get());
+            if (this.score.get()/1000 != this.level.get()) {
+                this.level.set(this.score.get()/1000);
+                logger.info("level increased to {}", this.level.get());
+            } 
+        });
+        
+        //When the user levels up
+        this.level.addListener(event -> {
+            if (this.timeline == null) return;
 
-            this.gameOver = false;
+            //Decrease the time given to place a piece
+            this.timeline.stop();
+            this.timeline.getKeyFrames().set(1, this.updateTime());
+            logger.info("Time decreased to {}ms", this.getTimerDelay());
 
-            //Plays background music
-            Media.playMusic("game.wav");
-
-            //start timer
-            this.gameLoop();
         });
 
-        this.gameScene.build();
+        //When a life is lost
+        this.lives.addListener(event -> {
+            this.gameScene.loseLife();
+        });
 
+        //When the multiplier changes
+        this.multiplier.addListener(event -> {
+            this.gameScene.updateMultiplier(this.multiplier.get());
+        });
     }
+
 
     /**
      * Game loop to keep track of the time
      */
-    public void gameLoop() {
+    protected void gameLoop() {
         var timer = this.gameScene.getTimer();      
 
         this.timeline = new Timeline(
@@ -213,7 +232,7 @@ public class Game {
      * Updates the time after a piece is played
      * @return
      */
-    public KeyFrame updateTime() {
+    protected KeyFrame updateTime() {
         return new KeyFrame(Duration.millis(this.getTimerDelay()), e -> {
             this.lives.set(this.lives.get() -1);
             logger.info("Life lost! {} remaining", this.lives.get());
@@ -249,8 +268,30 @@ public class Game {
         this.multiplier.set(1);
     }
 
-    public void insertPiece(int x, int y) {
-        if (this.gameOver) return;
+    /**
+     * Called when a piece needs to be inserted
+     * @param x
+     * @param y
+     */
+    protected void insertPiece(int x, int y) {
+        if (this.placePiece(x, y)) {
+            this.afterPiece();
+
+            //Grabs the next piece
+            this.nextPiece();
+    
+            //Resets the timer
+            this.timeline.playFromStart();
+        }
+    }
+
+    /**
+     * Attempts to insert a piece at a given square
+     * @param x 
+     * @param y
+     */
+    protected boolean placePiece(int x, int y) {
+        if (this.gameOver) return false;
 
         logger.info("Location {} {}", x, y);
 
@@ -272,31 +313,32 @@ public class Game {
                     } else {
                         //The whole shape must fit in to insert the block
                         logger.error("Failed to add tile.");
-                        return;
+                        return false;
                     }
                 }
             }
         }
 
+        this.fillTiles(buffer);
+        logger.error("Hello");
+        return true;
+    }
+
+    /**
+     * Called to fill a given set of tiles from the board
+     * @param buffer The tiles to be removed
+     */
+    protected void fillTiles(ArrayList<int[]> buffer) {
         //Fills in the tile
         buffer.forEach(pos -> {
-            board.changeTile(this.currentPiece.getColour(), pos[1], pos[0]);
+            this.gameScene.getBoard().changeTile(this.currentPiece.getColour(), pos[1], pos[0]);
         });
-
-        this.afterPiece();
-
-        //Grabs the next piece
-        this.nextPiece();
-
-        //Resets the timer
-
-        this.timeline.playFromStart();
     }
 
     /**
      * Called after a piece is played
      */
-    private void afterPiece() {
+    protected void afterPiece() {
         var board = this.gameScene.getBoard();
 
         //Buffers for which rows/columns are full
@@ -338,14 +380,14 @@ public class Game {
      * @param lines How many lines have been cleared
      * @param blocks How many blocks have been cleared
      */
-    private void score(int lines, int blocks) {
+    protected void score(int lines, int blocks) {
         this.score.set(this.score.get() + 10 * lines * blocks * this.multiplier.get());
     }
 
     /**
      * Swaps the next piece to be played with the reserve
      */
-    private void swapNextPiece() {
+    protected void swapNextPiece() {
         logger.info("Swapping pieces");
         var temp = this.currentPiece;
         this.currentPiece = this.reservePiece;
@@ -360,7 +402,7 @@ public class Game {
      * Moves the reserve piece to be played next
      * Randomly gets the next piece
      */
-    private void nextPiece() {
+    protected void nextPiece() {
         this.currentPiece = this.reservePiece;
         this.gameScene.setNextPiece(this.currentPiece);
 
@@ -374,11 +416,11 @@ public class Game {
      * @param byX
      * @param byY
      */
-    private void moveSelected(int byX, int byY) {
+    protected void moveSelected(int byX, int byY) {
         this.gameScene.getBoard().moveSelected(byX, byY);
     }
     
-    private void insertSelected() {
+    protected void insertSelected() {
         int[] selected = this.gameScene.getBoard().getSelectedPos();
         this.insertPiece(selected[0], selected[1]);
     }

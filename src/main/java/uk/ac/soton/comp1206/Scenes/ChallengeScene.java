@@ -50,7 +50,7 @@ public class ChallengeScene extends BaseScene {
         HBox.setHgrow(empty, Priority.ALWAYS);
 
         var highScoreLbl = new Label(
-            String.format("High Score %s -> %d", this.highScore.getKey(), this.highScore.getValue())
+            String.format("High Score %s -> %d", "Tom", 15000)
         );
         highScoreLbl.getStyleClass().add("banner");
 

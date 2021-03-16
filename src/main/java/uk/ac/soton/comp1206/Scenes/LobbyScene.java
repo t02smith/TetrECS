@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.misc.ExpandingTextField;
-import uk.ac.soton.comp1206.Components.misc.ExpandingTextField.Align;
 import uk.ac.soton.comp1206.Components.multiplayer.ChatPane;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Event.GameStartListener;
@@ -24,9 +23,11 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class LobbyScene extends BaseScene {
     private ChatPane chatpane;
     private GridPane users = new GridPane();
+    private ExpandingTextField nickname;
 
     private VBox channelList;
     private OnClickListener createChannel;
+    private OnClickListener changeNickname;
 
     private GameStartListener startListener;
     
@@ -36,20 +37,6 @@ public class LobbyScene extends BaseScene {
         super(gw);
     }
 
-    @Override
-    public void setKeyBindings() {
-        this.setOnKeyReleased(event -> {
-            switch(event.getCode()) {
-                default:
-                    break;
-                case ESCAPE:
-                    if (this.inChannel.get()) this.buildInLobby();
-                    else this.window.loadMenu();
-                
-            }
-        });
-    }
-    
     @Override
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Lobby.css"));
@@ -88,7 +75,7 @@ public class LobbyScene extends BaseScene {
 
         //Chat window
 
-        var createServer = new ExpandingTextField("create server", Align.RIGHT, this.createChannel);
+        var createServer = new ExpandingTextField("create server", this.createChannel);
         createServer.setPromptText("Enter server name");
         this.root.setBottom(createServer);
     }
@@ -118,19 +105,15 @@ public class LobbyScene extends BaseScene {
         var channelName = new Label(channel.getName());
         channelName.getStyleClass().add("channel-name");
 
-        var nickname = new ExpandingTextField("Nickname", Align.CENTER, text -> System.out.println());
-        nickname.setPromptText("Set nickname");
+        this.nickname = new ExpandingTextField("Nickname", this.changeNickname);
+        this.nickname.setPromptText("Set nickname");
 
         this.users.setAlignment(Pos.CENTER);
         this.users.getStyleClass().add("user-list");
         this.users.setHgap(25);
         this.users.setVgap(5);
 
-        var start = new Button("START");
-        start.setOnAction(event -> this.startListener.start());
-
-
-        channelInfo.getChildren().addAll(channelName, nickname, this.users, start);
+        channelInfo.getChildren().addAll(channelName, nickname, this.users);
 
         this.root.setCenter(channelInfo);
 
@@ -176,6 +159,10 @@ public class LobbyScene extends BaseScene {
         });
     }
 
+    /**
+     * Updates the list of users show in the menu
+     * @param channel The channel the user is in
+     */
     public void updateUserList(Channel channel) {
         this.users.getChildren().clear();
 
@@ -187,7 +174,25 @@ public class LobbyScene extends BaseScene {
 
             this.users.add(userLbl, i%2, i/2);
         }
+    }
 
+    /**
+     * Displays the components unique to the host
+     */
+    public void showHostComponents() {
+        var start = new Button("START");
+        start.getStyleClass().add("start-multiplayer");
+        start.setOnAction(event -> this.startListener.start());
+
+        ((VBox)this.root.getCenter()).getChildren().add(start);
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname.setTitle(nickname);
+    }
+
+    public void setChangeNicknameListener(OnClickListener listener) {
+        this.changeNickname = listener;
     }
 
     /**

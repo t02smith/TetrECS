@@ -13,24 +13,27 @@ import uk.ac.soton.comp1206.Components.Game.Colour;
  * This will also let you fetch one at random
  */
 public enum GamePiece {
-    C           (new int[][] {{0, 0, 0}, {1, 1, 1}, {1, 0, 1}}),
-    J           (new int[][] {{0, 0, 1}, {1, 1, 1}, {0, 0, 0}}),
-    L           (new int[][] {{0, 0, 0}, {1, 1, 1}, {0, 0, 1}}),
-    S           (new int[][] {{0, 0, 0}, {0, 1, 1}, {1, 1, 0}}),
-    T           (new int[][] {{1, 0, 0}, {1, 1, 0}, {1, 0, 0}}),
-    X           (new int[][] {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}}),
-    Z           (new int[][] {{1, 1, 0}, {0, 1, 1}, {0, 0, 0}}),
-    DOT         (new int[][] {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}}),
-    LINE        (new int[][] {{0, 0, 0}, {1, 1, 1}, {0, 0, 0}}),
-    PLUS        (new int[][] {{0, 1, 0}, {1, 1, 1}, {0, 1, 0}}),
-    SQUARE      (new int[][] {{1, 1, 0}, {1, 1, 0}, {0, 0, 0}}),
-    DOUBLE      (new int[][] {{0, 1, 0}, {0, 1, 0}, {0, 0, 0}}),
-    CORNER      (new int[][] {{0, 0, 0}, {1, 1, 0}, {1, 0, 0}}),
-    DIAGONAL    (new int[][] {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}),
-    INV_CORNER  (new int[][] {{1, 0, 0}, {1, 1, 0}, {0, 0, 0}});
+    C           (new int[][] {{0, 0, 0}, {1, 1, 1}, {1, 0, 1}}, 2),
+    J           (new int[][] {{0, 0, 1}, {1, 1, 1}, {0, 0, 0}}, 7),
+    L           (new int[][] {{0, 0, 0}, {1, 1, 1}, {0, 0, 1}}, 6),
+    S           (new int[][] {{0, 0, 0}, {0, 1, 1}, {1, 1, 0}}, 8),
+    T           (new int[][] {{1, 0, 0}, {1, 1, 0}, {1, 0, 0}}, 10),
+    X           (new int[][] {{1, 0, 1}, {0, 1, 0}, {1, 0, 1}}, 11),
+    Z           (new int[][] {{1, 1, 0}, {0, 1, 1}, {0, 0, 0}}, 9),
+    DOT         (new int[][] {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}}, 4),
+    LINE        (new int[][] {{0, 0, 0}, {1, 1, 1}, {0, 0, 0}}, 1),
+    PLUS        (new int[][] {{0, 1, 0}, {1, 1, 1}, {0, 1, 0}}, 3),
+    SQUARE      (new int[][] {{1, 1, 0}, {1, 1, 0}, {0, 0, 0}}, 5),
+    DOUBLE      (new int[][] {{0, 1, 0}, {0, 1, 0}, {0, 0, 0}}, 15),
+    CORNER      (new int[][] {{0, 0, 0}, {1, 1, 0}, {1, 0, 0}}, 12),
+    DIAGONAL    (new int[][] {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}, 14),
+    INV_CORNER  (new int[][] {{1, 0, 0}, {1, 1, 0}, {0, 0, 0}}, 13);
 
     //Stores 2D grid representation of the piece
     private int[][] blocks;
+
+    //The value of the piece
+    private final int value;
 
     //The colour the piece will be
     private Colour colour = Colour.nextColour();
@@ -39,8 +42,9 @@ public enum GamePiece {
      * Constructor for each piece
      * @param blocks The 2D grid layout of the piece
      */
-    private GamePiece(int[][] blocks) {
+    private GamePiece(int[][] blocks, int value) {
         this.blocks = blocks;
+        this.value = value;
     }
 
     private static final Logger logger = LogManager.getLogger(GamePiece.class);
@@ -54,6 +58,19 @@ public enum GamePiece {
         return pieces[
             new Random().nextInt(pieces.length)
         ];
+    }
+
+    /**
+     * Get a gamepiece by its value
+     * @param value The value of the gamepiece you want
+     * @return The gamepiece
+     */
+    public static GamePiece getByValue(int value) {
+        for (GamePiece gp: GamePiece.values()) {
+            if (gp.getValue() == value) return gp;
+        }
+
+        return null;
     }
 
     /**
@@ -101,5 +118,9 @@ public enum GamePiece {
      */
     public Colour getColour() {
         return this.colour;
+    }
+
+    public int getValue() {
+        return this.value;
     }
 }

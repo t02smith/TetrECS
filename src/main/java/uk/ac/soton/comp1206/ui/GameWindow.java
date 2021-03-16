@@ -90,6 +90,14 @@ public class GameWindow {
     }
 
     public void loadMultiplayer() {
+        this.loadScene(this.gameScene);
+        this.stage.setMinWidth(1150);
+        this.stage.setMinHeight(700);
+
+        this.gsl.start();
+    }
+
+    public void loadLobby() {
         this.loadScene(this.lobbyScene);
     }
 

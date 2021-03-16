@@ -88,6 +88,10 @@ final public class Grid extends GridPane {
                     
                 }); 
 
+                tile.setOnMouseEntered(event -> {
+                    this.selectTile(tile.getXPos(), tile.getYPos());
+                });
+
                 this.tiles[y][x] = tile;
                 this.add(tile, x, y);
             }

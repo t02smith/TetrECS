@@ -72,7 +72,7 @@ public class App extends Application {
         logger.info("Starting multiplayer");
         this.game = new MultiplayerGame(this.gameWindow, this.communicator);
         this.game.buildGame();
-        this.gameWindow.loadMultiplayer();
+        this.gameWindow.loadLobby();
 
     }
 

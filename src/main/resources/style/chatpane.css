@@ -38,3 +38,35 @@
     -fx-background-color: transparent;
     -fx-text-fill: white;
 }
+
+/*Chat*/
+
+/*Message toolbar*/
+
+.msg-toolbar {
+    -fx-background-color: white;
+}
+
+.msg-input {
+    -fx-background-color: transparent;
+
+}
+
+.msg-send {
+    -fx-background-color: transparent;
+}
+
+/*Chat */
+.scroll-pane .viewport {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-border-color: transparent;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.chat-pane {
+    -fx-background-color: transparent;
+}
