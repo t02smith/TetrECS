@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
@@ -45,8 +46,10 @@ public class MultiplayerGame extends Game {
 
     @Override
     public void buildGame() {
-        this.gameScene = new MultiplayerScene(this.gameWindow, message -> this.communicator.send("MSG " + message));
-        this.gameWindow.setGameScene(this.gameScene);
+        this.challengeScene = new MultiplayerScene(this.gameWindow, message -> this.communicator.send("MSG " + message));
+        this.gameWindow.setGameScene(this.challengeScene);
+
+        this.challengeScene.setHighScore(this.gameWindow.getScoresScene().getHighScore());
 
         //Lobby//
         this.lobby = new LobbyScene(this.gameWindow);
@@ -100,6 +103,21 @@ public class MultiplayerGame extends Game {
 
     }
 
+    @Override
+    protected void setKeyBindings() {
+        super.setKeyBindings();
+
+        KeyBinding.CHAT.setEvent(() -> {
+            KeyBinding.setKeysDisabled(true);
+        });
+
+        this.communicator.addListener(message -> {
+            if (message.startsWith("MSG " + this.name)) {
+                KeyBinding.setKeysDisabled(false);
+            }
+        });
+    }
+
     /**
      * Sets up any network protocols that will be used
      * @override Adds all the multiplayer protocols as well
@@ -109,18 +127,24 @@ public class MultiplayerGame extends Game {
         super.setupCommunicator();
 
         //List of channels
-        NetworkProtocol.LIST.addListener(message -> this.fillServerList(message));
+        NetworkProtocol.LIST.addListener(message -> {
+            this.fillServerList(message);
+            logger.error("yes");
+        });
 
         //Join a channel
         NetworkProtocol.JOIN.addListener(message -> {
+            logger.error("Hello");
             var name = message.split("\\s+")[1];
             if (this.currentChannel == null) {
+
                 if (!this.channels.containsKey(name)) {
                     var channel = new Channel(name);
                     this.channels.put(name, channel);
                 }
 
                 this.currentChannel = this.channels.get(name);
+                logger.info("test");
                 this.displayChannel();
 
             } else logger.error("You are already in a channel");
@@ -135,7 +159,7 @@ public class MultiplayerGame extends Game {
         NetworkProtocol.MSG.addListener(message -> {  
             String[] msg = message.substring(4).split(":");
             var msgComponent = new Message(msg[0], msg[1], msg[0].equals(this.name));
-            if (this.inGame) ((MultiplayerScene)this.gameScene).addMessage(msgComponent);
+            if (this.inGame) ((MultiplayerScene)this.challengeScene).addMessage(msgComponent);
             else this.lobby.addMessage(msgComponent);
         });
 
@@ -185,7 +209,7 @@ public class MultiplayerGame extends Game {
             logger.info("Adding piece {}", reserve);
 
             this.reservePiece = reserve;
-            this.gameScene.setReservePiece(this.reservePiece);
+            this.challengeScene.setReservePiece(this.reservePiece);
         });
 
 
@@ -268,14 +292,14 @@ public class MultiplayerGame extends Game {
      */
     @Override
     protected void afterPiece() {
-        var board = this.gameScene.getBoard();
+        var board = this.challengeScene.getBoard();
 
         //Buffers for which rows/columns are full
         //rows and columns share tiles so we can't remove any tiles before checking both
         var rowBuffer = new ArrayList<Integer>();
         var columnBuffer = new ArrayList<Integer>();
 
-        for (int i = 0; i < this.gameScene.getGridHeight(); i++) {
+        for (int i = 0; i < this.challengeScene.getGridHeight(); i++) {
             if (board.checkRow(i)) rowBuffer.add(i);
             if (board.checkColumn(i)) columnBuffer.add(i);
         }
@@ -286,12 +310,12 @@ public class MultiplayerGame extends Game {
         //Clears the rows and columns that are full
         rowBuffer.forEach(row -> {
             board.clearRow(row);
-            currentBoard[row] = new int[this.gameScene.getGridWidth()]; //removes any deleted rows
+            currentBoard[row] = new int[this.challengeScene.getGridWidth()]; //removes any deleted rows
         });
 
         columnBuffer.forEach(column -> {
             board.clearColumn(column);
-            for (int i = 0; i < this.gameScene.getGridHeight(); i++) { //removes deleted columns
+            for (int i = 0; i < this.challengeScene.getGridHeight(); i++) { //removes deleted columns
                 currentBoard[i][column] = 0;
             }
         });
@@ -332,7 +356,7 @@ public class MultiplayerGame extends Game {
     @Override
     protected void nextPiece() {
         this.currentPiece = this.reservePiece;
-        this.gameScene.setNextPiece(this.currentPiece);
+        this.challengeScene.setNextPiece(this.currentPiece);
     }
 
     /**

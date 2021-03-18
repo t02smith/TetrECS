@@ -9,11 +9,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import uk.ac.soton.comp1206.Components.Game.Grid;
 import uk.ac.soton.comp1206.Components.Game.Sidebar;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
-import uk.ac.soton.comp1206.Event.TileClickListener;
+import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -22,6 +23,7 @@ public class ChallengeScene extends BaseScene {
     private Grid grid;
     private ProgressBar timer;
 
+    private Label highScoreLbl;
     private VBox localScores;
     private Sidebar sidebar;
 
@@ -49,12 +51,12 @@ public class ChallengeScene extends BaseScene {
         var empty = new Region();
         HBox.setHgrow(empty, Priority.ALWAYS);
 
-        var highScoreLbl = new Label(
+        this.highScoreLbl = new Label(
             String.format("High Score %s -> %d", this.highScore.getKey(), this.highScore.getValue())
         );
-        highScoreLbl.getStyleClass().add("banner");
+        this.highScoreLbl.getStyleClass().add("banner");
 
-        var banner = new HBox(title, empty, highScoreLbl);
+        var banner = new HBox(title, empty, this.highScoreLbl);
         this.root.setTop(banner);
 
         //Center of screen//
@@ -153,6 +155,14 @@ public class ChallengeScene extends BaseScene {
      */
     public void updateScore(int score) {
         this.sidebar.updateScore(score);
+
+        if (score > this.highScore.getValue()) {
+            this.highScoreLbl.setText(
+                String.format("High Score %s -> %d", "User", score)
+            );
+
+            this.highScoreLbl.setTextFill(Color.GREEN);
+        }
     }
 
     /**

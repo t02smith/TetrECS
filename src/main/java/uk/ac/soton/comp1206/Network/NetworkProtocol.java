@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
 
+
 /**
  * Network protocol for how can communicate with the server
  * Contains the regex format of any arguments you need as well as

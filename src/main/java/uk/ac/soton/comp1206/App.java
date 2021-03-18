@@ -40,8 +40,7 @@ public class App extends Application {
         this.stage = stage;
         this.gameWindow = new GameWindow(this.stage, 700, 500);
         this.communicator = new Communicator("ws://discord.ecs.soton.ac.uk:9700");
-
-
+        this.setupCommunicator();
 
         this.stage.show();
 
@@ -94,10 +93,13 @@ public class App extends Application {
             }
         });
 
+        NetworkProtocol.ERROR.addListener(message -> logger.error(message));
+        
         NetworkProtocol.HISCORES.addListener(message -> {
-            //this.gameWindow.setOnlineScores(message)
-            
+            this.gameWindow.getScoresScene().setOnlineScores(message);
         });
+
+        this.communicator.send("HISCORES");
 
     }
 

@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Network.Communicator;
-import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Media;
@@ -44,8 +43,8 @@ public class Game {
 
     //visuals
     protected GameWindow gameWindow;
-    protected ChallengeScene gameScene;
-    private ScoresScene scoresScene;
+    protected ChallengeScene challengeScene;
+    protected ScoresScene scoresScene;
 
     public Game(GameWindow gameWindow, Communicator communicator) {
         logger.info("Starting game");
@@ -57,15 +56,14 @@ public class Game {
     public void buildGame() {
         this.setupCommunicator();
 
-        this.gameScene = new ChallengeScene(this.gameWindow);
-        this.gameWindow.setGameScene(this.gameScene);
+        this.challengeScene = new ChallengeScene(this.gameWindow);
+        this.gameWindow.setGameScene(this.challengeScene);
 
         //Creates a score scene so we can collect the scores
         this.scoresScene = this.gameWindow.getScoresScene();
-        this.communicator.send("HISCORES");
-
-        this.gameScene.setLocalScores(this.scoresScene.getLocalScoreboard());
-        this.gameScene.setHighScore(this.scoresScene.getHighScore());
+        
+        this.challengeScene.setLocalScores(this.scoresScene.getLocalScoreboard());
+        this.challengeScene.setHighScore(this.scoresScene.getHighScore());
 
         //Submits a score
         this.scoresScene.addSubmitScoreListener((name, score) -> {
@@ -93,28 +91,34 @@ public class Game {
         this.setKeyBindings();
         this.setUserPropertyListeners();
         this.setTileClickListeners();
-        this.gameScene.build();
+        this.challengeScene.build();
 
     }
 
     /**
      * Sets the game's keybindings
+     * By using an enum we can override individual commands in child classes
+     *  as well as add to it without having to rewrite the switch case as
+     *  setOnKeyReleased only allows one event
      */
     protected void setKeyBindings() {
+        //Next piece alterations
         KeyBinding.ROTATE_LEFT.setEvent(() -> {
             this.currentPiece.rotateLeft();
-            this.gameScene.setNextPiece(this.currentPiece);
+            this.challengeScene.setNextPiece(this.currentPiece);
         });
 
         KeyBinding.ROTATE_RIGHT.setEvent(() -> {
             this.currentPiece.rotateRight();
-            this.gameScene.setNextPiece(this.currentPiece);
+            this.challengeScene.setNextPiece(this.currentPiece);
         });
 
         KeyBinding.SWAP.setEvent(() -> this.swapNextPiece());
 
+        //Place a piece
         KeyBinding.PLACE.setEvent(() -> this.insertSelected());
 
+        //Movement on the board
         KeyBinding.MOVE_UP.setEvent(() -> this.moveSelected(0, -1));
         KeyBinding.MOVE_LEFT.setEvent(() -> this.moveSelected(-1, 0));
         KeyBinding.MOVE_RIGHT.setEvent(() -> this.moveSelected(1, 0));
@@ -127,7 +131,7 @@ public class Game {
             this.resetGame();
         });
 
-        this.gameScene.setOnKeyReleased(event -> {
+        this.challengeScene.setOnKeyReleased(event -> {
             KeyBinding.executeEvent(event.getCode());
         });
 
@@ -139,23 +143,23 @@ public class Game {
      */
     protected void setTileClickListeners() {
         //On the game grid
-        this.gameScene.addTileClickListener("game-grid", (x, y) -> {
+        this.challengeScene.addTileClickListener("game-grid", (x, y) -> {
             this.insertPiece(x, y);
         });
 
         //On the next piece grid
-        this.gameScene.addTileClickListener("next-piece", (x, y) -> {
+        this.challengeScene.addTileClickListener("next-piece", (x, y) -> {
             if (x == 0) { //click middle square to rotate
                 this.currentPiece.rotateLeft();
-                this.gameScene.setNextPiece(this.currentPiece);
+                this.challengeScene.setNextPiece(this.currentPiece);
             } else {
                 this.currentPiece.rotateRight();
-                this.gameScene.setNextPiece(this.currentPiece);
+                this.challengeScene.setNextPiece(this.currentPiece);
             }
         });
 
         //On the reserve piece grid
-        this.gameScene.addTileClickListener("reserve-piece", (x, y) -> {
+        this.challengeScene.addTileClickListener("reserve-piece", (x, y) -> {
             this.swapNextPiece();
         });
     }
@@ -166,11 +170,11 @@ public class Game {
     protected void setUserPropertyListeners() {
         //When the score updates
         this.score.addListener(event -> {
-            this.gameScene.updateScore(score.get());
+            this.challengeScene.updateScore(score.get());
             if (this.score.get()/1000 != this.level.get()) {
                 this.level.set(this.score.get()/1000);
                 logger.info("level increased to {}", this.level.get());
-            } 
+            }
         });
         
         //When the user levels up
@@ -186,12 +190,12 @@ public class Game {
 
         //When a life is lost
         this.lives.addListener(event -> {
-            this.gameScene.loseLife();
+            this.challengeScene.loseLife();
         });
 
         //When the multiplier changes
         this.multiplier.addListener(event -> {
-            this.gameScene.updateMultiplier(this.multiplier.get());
+            this.challengeScene.updateMultiplier(this.multiplier.get());
         });
     }
 
@@ -200,7 +204,7 @@ public class Game {
      * Game loop to keep track of the time
      */
     protected void gameLoop() {
-        var timer = this.gameScene.getTimer();      
+        var timer = this.challengeScene.getTimer();      
 
         this.timeline = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(timer.progressProperty(), 1)),
@@ -225,7 +229,7 @@ public class Game {
                 this.nextPiece();
                 this.multiplier.set(1);
             }
-        }, new KeyValue(this.gameScene.getTimer().progressProperty(), 0));
+        }, new KeyValue(this.challengeScene.getTimer().progressProperty(), 0));
     }
 
     public void stopGame() {
@@ -283,7 +287,7 @@ public class Game {
         var buffer = new ArrayList<int[]>();
 
         int[][] pieceBlocks = this.currentPiece.getBlocks();
-        var board = this.gameScene.getBoard();
+        var board = this.challengeScene.getBoard();
 
         //Checks the availability of every tile
         for (int row = 0; row < 3; row++) {
@@ -314,7 +318,7 @@ public class Game {
     protected void fillTiles(ArrayList<int[]> buffer) {
         //Fills in the tile
         buffer.forEach(pos -> {
-            this.gameScene.getBoard().changeTile(this.currentPiece.getColour(), pos[1], pos[0]);
+            this.challengeScene.getBoard().changeTile(this.currentPiece.getColour(), pos[1], pos[0]);
         });
     }
 
@@ -322,14 +326,14 @@ public class Game {
      * Called after a piece is played
      */
     protected void afterPiece() {
-        var board = this.gameScene.getBoard();
+        var board = this.challengeScene.getBoard();
 
         //Buffers for which rows/columns are full
         //rows and columns share tiles so we can't remove any tiles before checking both
         var rowBuffer = new ArrayList<Integer>();
         var columnBuffer = new ArrayList<Integer>();
 
-        for (int i = 0; i < this.gameScene.getGridHeight(); i++) {
+        for (int i = 0; i < this.challengeScene.getGridHeight(); i++) {
             if (board.checkRow(i)) rowBuffer.add(i);
             if (board.checkColumn(i)) columnBuffer.add(i);
         }
@@ -376,8 +380,8 @@ public class Game {
         this.currentPiece = this.reservePiece;
         this.reservePiece = temp;
 
-        this.gameScene.setNextPiece(this.currentPiece);
-        this.gameScene.setReservePiece(this.reservePiece);
+        this.challengeScene.setNextPiece(this.currentPiece);
+        this.challengeScene.setReservePiece(this.reservePiece);
     }
 
     /**
@@ -387,10 +391,10 @@ public class Game {
      */
     protected void nextPiece() {
         this.currentPiece = this.reservePiece;
-        this.gameScene.setNextPiece(this.currentPiece);
+        this.challengeScene.setNextPiece(this.currentPiece);
 
         this.reservePiece = GamePiece.createPiece();
-        this.gameScene.setReservePiece(this.reservePiece);
+        this.challengeScene.setReservePiece(this.reservePiece);
         logger.info("Piece {} added", this.reservePiece);
     }
 
@@ -400,11 +404,11 @@ public class Game {
      * @param byY
      */
     protected void moveSelected(int byX, int byY) {
-        this.gameScene.getBoard().moveSelected(byX, byY);
+        this.challengeScene.getBoard().moveSelected(byX, byY);
     }
     
     protected void insertSelected() {
-        int[] selected = this.gameScene.getBoard().getSelectedPos();
+        int[] selected = this.challengeScene.getBoard().getSelectedPos();
         this.insertPiece(selected[0], selected[1]);
     }
 
@@ -425,6 +429,6 @@ public class Game {
      * Sets up the communicator for the game
      */
     protected void setupCommunicator() {
-        NetworkProtocol.ERROR.addListener(message -> logger.error(message));
+
     }
 }

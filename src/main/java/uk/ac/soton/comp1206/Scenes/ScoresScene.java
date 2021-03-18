@@ -189,10 +189,9 @@ public class ScoresScene extends BaseScene {
      */
     public Pair<String, Integer> getHighScore() {
         var localHigh = this.localScores.get(0);
-        //var onlineHigh = this.onlineScores.get(0);
+        var onlineHigh = this.onlineScores.get(0);
 
-        return localHigh;
-        //return (localHigh.getValue() > onlineHigh.getValue()) ? localHigh : onlineHigh;
+        return (localHigh.getValue() > onlineHigh.getValue()) ? localHigh : onlineHigh;
     }
 
     /**

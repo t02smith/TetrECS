@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
-import uk.ac.soton.comp1206.Event.TileClickListener;
+import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 final public class Grid extends GridPane {

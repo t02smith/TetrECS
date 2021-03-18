@@ -11,9 +11,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
+import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Components.misc.ToggleSwitch;
 import uk.ac.soton.comp1206.Components.misc.ToggleSwitch.ToggleSize;
-import uk.ac.soton.comp1206.Event.TileClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 

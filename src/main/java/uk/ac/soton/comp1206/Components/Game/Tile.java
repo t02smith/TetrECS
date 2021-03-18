@@ -27,6 +27,8 @@ public class Tile extends StackPane {
     //Tile overlay -> i.e. to show that tile is selected
     private ImageView overlay = new ImageView();
 
+    
+
     public Tile(int x, int y, int sideLength) {
         this.x = x;
         this.y = y;
@@ -48,6 +50,11 @@ public class Tile extends StackPane {
     public Tile(int x, int y) {
         this(x, y, 100);
     }
+
+    public interface TileClickListener {
+        public void onClick(int x, int y);
+    }
+    
 
     /**
      * Will change a tile to a specific colour unless it's already taken

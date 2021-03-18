@@ -104,4 +104,5 @@ public class Communicator {
     public interface NetworkListener {
         public void receive(String message); 
     }
+
 }

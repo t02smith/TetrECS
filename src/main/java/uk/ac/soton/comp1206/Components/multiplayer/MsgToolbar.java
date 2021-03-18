@@ -27,6 +27,7 @@ public class MsgToolbar extends HBox {
         this.msg.setMaxHeight(20);
         this.msg.getStyleClass().add("msg-input");
         this.msg.setAlignment(Pos.CENTER_LEFT);
+        this.msg.setFocusTraversable(false);
 
         HBox.setHgrow(this.msg, Priority.ALWAYS);
 

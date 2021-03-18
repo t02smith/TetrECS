@@ -20,7 +20,10 @@ public enum KeyBinding {
     MOVE_LEFT       (new KeyCode[] {KeyCode.LEFT, KeyCode.A}),
     MOVE_RIGHT      (new KeyCode[] {KeyCode.RIGHT, KeyCode.D}),
     SWAP            (new KeyCode[] {KeyCode.SPACE, KeyCode.R}),
-    QUIT            (new KeyCode[] {KeyCode.ESCAPE});
+    QUIT            (new KeyCode[] {KeyCode.ESCAPE}),
+
+    //Multiplayer
+    CHAT            (new KeyCode[] {KeyCode.C});      
 
     //Hashmap of all the bindings
     private static HashMap<KeyCode, KeyBinding> bindings;
