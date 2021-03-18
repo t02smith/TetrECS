@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.scene.control.Alert;
-import uk.ac.soton.comp1206.Event.NetworkListener;
 
 public class Communicator {
     private static final Logger logger = LogManager.getLogger(Communicator.class);
@@ -100,5 +99,9 @@ public class Communicator {
      */
     public void clearListeners() {
         this.listeners.clear();
+    }
+
+    public interface NetworkListener {
+        public void receive(String message); 
     }
 }

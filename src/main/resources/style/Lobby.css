@@ -15,7 +15,7 @@
 .channel-name {
     -fx-text-fill: white;
     -fx-font-family: "Karmatic Arcade";
-    -fx-font-size: 32;
+    -fx-font-size: 45;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
@@ -58,9 +58,6 @@
     -fx-background-radius: 20px;
     -fx-font-weight: bold;
 }
-
-
-
 
 
 /*list of users*/

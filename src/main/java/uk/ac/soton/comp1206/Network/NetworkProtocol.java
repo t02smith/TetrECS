@@ -3,7 +3,7 @@ package uk.ac.soton.comp1206.Network;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import uk.ac.soton.comp1206.Event.NetworkListener;
+import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
 
 /**
  * Network protocol for how can communicate with the server

@@ -107,5 +107,12 @@ public class Menu extends BaseScene {
 
         return options;
     }
+
+    /**
+     * Called when a menu item is clicked
+     */
+    public interface MenuItemListener {
+        public void onClick();
+    }
     
 }

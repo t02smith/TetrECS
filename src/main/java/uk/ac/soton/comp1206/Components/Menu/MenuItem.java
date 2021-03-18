@@ -13,7 +13,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import uk.ac.soton.comp1206.Event.MenuItemListener;
+import uk.ac.soton.comp1206.Scenes.Menu.MenuItemListener;
 
 public class MenuItem extends StackPane {
     private MenuItemListener mil;

@@ -146,10 +146,11 @@ public class ScoresScene extends BaseScene {
      * @param onlineScores The string received from the server
      */
     public void setOnlineScores(String onlineScores) {
+        logger.info("Retrieved online scores");
         ArrayList<String> online = new ArrayList<>(Arrays.asList(onlineScores.split("\\s+")));
         online.remove(0);
 
-        Utility.writeToFile("/scores/remoteScores.txt", onlineScores);
+        //Utility.writeToFile("/scores/remoteScores.txt", onlineScores);
         this.onlineScores = this.createScoreList(online);
     }
 

@@ -11,6 +11,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
@@ -61,10 +62,10 @@ public class Game {
 
         //Creates a score scene so we can collect the scores
         this.scoresScene = this.gameWindow.getScoresScene();
+        this.communicator.send("HISCORES");
+
         this.gameScene.setLocalScores(this.scoresScene.getLocalScoreboard());
         this.gameScene.setHighScore(this.scoresScene.getHighScore());
-
-        this.communicator.send("HISCORES");
 
         //Submits a score
         this.scoresScene.addSubmitScoreListener((name, score) -> {
@@ -100,54 +101,36 @@ public class Game {
      * Sets the game's keybindings
      */
     protected void setKeyBindings() {
-        //Key press actions//
-        this.gameScene.setOnKeyReleased(event -> {
-            switch (event.getCode()) {
-                case ESCAPE:
-                    logger.info("Returning to menu");
-                    this.gameWindow.loadMenu();
-                    this.resetGame();
-                    break;
-                case UP:
-                case W:
-                    this.moveSelected(0, -1);
-                    break;
-                case DOWN:
-                case A:
-                    this.moveSelected(0, 1);
-                    break;
-                case LEFT:
-                case S:
-                    this.moveSelected(-1, 0);
-                    break;
-                case RIGHT:
-                case D:
-                    this.moveSelected(1, 0);
-                    break;
-                case ENTER:
-                case X:
-                    this.insertSelected();
-                    break;
-                case Q:
-                case Z:
-                case OPEN_BRACKET:
-                    this.currentPiece.rotateLeft();
-                    this.gameScene.setNextPiece(this.currentPiece);
-                    break;
-                case E:
-                case C:
-                case CLOSE_BRACKET:
-                    this.currentPiece.rotateRight();
-                    this.gameScene.setNextPiece(this.currentPiece);
-                    break;
-                case SPACE:
-                case R:
-                    logger.info("Swapping pieces");
-                    this.swapNextPiece();
-                default:
-                    break;
-            }
+        KeyBinding.ROTATE_LEFT.setEvent(() -> {
+            this.currentPiece.rotateLeft();
+            this.gameScene.setNextPiece(this.currentPiece);
         });
+
+        KeyBinding.ROTATE_RIGHT.setEvent(() -> {
+            this.currentPiece.rotateRight();
+            this.gameScene.setNextPiece(this.currentPiece);
+        });
+
+        KeyBinding.SWAP.setEvent(() -> this.swapNextPiece());
+
+        KeyBinding.PLACE.setEvent(() -> this.insertSelected());
+
+        KeyBinding.MOVE_UP.setEvent(() -> this.moveSelected(0, -1));
+        KeyBinding.MOVE_LEFT.setEvent(() -> this.moveSelected(-1, 0));
+        KeyBinding.MOVE_RIGHT.setEvent(() -> this.moveSelected(1, 0));
+        KeyBinding.MOVE_DOWN.setEvent(() -> this.moveSelected(0, 1));
+
+
+        KeyBinding.QUIT.setEvent(() -> {
+            logger.info("Returning to menu");
+            this.gameWindow.loadMenu();
+            this.resetGame();
+        });
+
+        this.gameScene.setOnKeyReleased(event -> {
+            KeyBinding.executeEvent(event.getCode());
+        });
+
     }
 
     /**
@@ -442,9 +425,6 @@ public class Game {
      * Sets up the communicator for the game
      */
     protected void setupCommunicator() {
-        NetworkProtocol.HISCORES.addListener(message -> this.scoresScene.setOnlineScores(message));
         NetworkProtocol.ERROR.addListener(message -> logger.error(message));
-
-
     }
 }

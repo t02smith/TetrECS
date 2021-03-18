@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,12 @@ import javafx.scene.image.Image;
  */
 public class Utility {
     protected static final Logger logger = LogManager.getLogger(Utility.class);
+
+    //Stores all images to prevent them being loaded multiple times
+    protected static HashMap<String, Image> images = new HashMap<>();
+
+    //Stores all needed stylesheets
+    protected static HashMap<String, String> stylesheets = new HashMap<>();
     
     /**
      * Gets a stylesheet from the style folder
@@ -26,8 +33,13 @@ public class Utility {
      * @return the stylesheet
      */
     public static String getStyle(String filename) {
-        logger.info("Getting stylesheet '{}'", filename);
-        return Utility.class.getResource("/style/" + filename).toExternalForm();
+        if (stylesheets.containsKey(filename)) return stylesheets.get(filename);
+        else {
+            logger.info("Getting stylesheet '{}'", filename);
+            var stylesheet = Utility.class.getResource("/style/" + filename).toExternalForm();
+            stylesheets.put(filename, stylesheet);
+            return stylesheet;
+        }
     }
 
     /**
@@ -36,8 +48,14 @@ public class Utility {
      * @return the image
      */
     public static Image getImage(String filename) {
-        logger.info("Getting image '{}'", filename);
-        return new Image(Utility.class.getResource("/images/" + filename).toExternalForm());
+        if (images.containsKey(filename)) return images.get(filename);
+        else {
+            logger.info("Getting image '{}'", filename);
+            var image =  new Image(Utility.class.getResource("/images/" + filename).toExternalForm());
+            images.put(filename, image);
+            return image;
+        }
+
     }
 
     /**

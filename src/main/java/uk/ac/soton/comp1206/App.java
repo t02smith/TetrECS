@@ -41,15 +41,7 @@ public class App extends Application {
         this.gameWindow = new GameWindow(this.stage, 700, 500);
         this.communicator = new Communicator("ws://discord.ecs.soton.ac.uk:9700");
 
-        //Checks if we have setup a network protocol for a received message
-        this.communicator.addListener(message -> {
-            for (NetworkProtocol received: NetworkProtocol.values()) {
-                if (message.matches(received.getResult())) {
-                    received.doAction(message);
-                    break;
-                }
-            }
-        });
+
 
         this.stage.show();
 
@@ -76,6 +68,12 @@ public class App extends Application {
 
     }
 
+    public void openScores() {
+        logger.info("Opening scores");
+        this.communicator.send("HISCORES");
+        this.gameWindow.loadScores();
+    }
+
     /**
      * Shuts down the game
      */
@@ -83,6 +81,24 @@ public class App extends Application {
         logger.info("Shutting down");
         this.communicator.send("QUIT");
         System.exit(0);
+    }
+
+    public void setupCommunicator() {
+        //Checks if we have setup a network protocol for a received message
+        this.communicator.addListener(message -> {
+            for (NetworkProtocol received: NetworkProtocol.values()) {
+                if (message.matches(received.getResult())) {
+                    received.doAction(message);
+                    break;
+                }
+            }
+        });
+
+        NetworkProtocol.HISCORES.addListener(message -> {
+            //this.gameWindow.setOnlineScores(message)
+            
+        });
+
     }
 
 

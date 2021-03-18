@@ -187,10 +187,11 @@ final public class Grid extends GridPane {
      * @param byY spaces move vertically
      */
     public void moveSelected(int byX, int byY) {
+        logger.info("{} {}", byX, byY);
         if (this.selectedTile != null) {
             this.selectTile(
-                (this.selectedTile.getXPos() + byX) % this.width,
-                (this.selectedTile.getYPos() + byY) % this.height
+                (this.selectedTile.getXPos() + byX + this.width) % this.width,
+                (this.selectedTile.getYPos() + byY + this.height) % this.height
             );
         } else {
             this.selectTile((int)Math.ceil(this.width/2), (int)Math.ceil(this.height/2));

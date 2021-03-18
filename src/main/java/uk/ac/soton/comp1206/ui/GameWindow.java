@@ -75,7 +75,6 @@ public class GameWindow {
 
     }
 
-
     /**
      * Called to load the game onto the stage
      */
