@@ -181,6 +181,7 @@ public class Game {
         this.level.addListener(event -> {
             if (this.timeline == null) return;
 
+            Media.playAudio("SFX/level.wav");
             //Decrease the time given to place a piece
             this.timeline.stop();
             this.timeline.getKeyFrames().set(1, this.updateTime());
@@ -191,6 +192,7 @@ public class Game {
         //When a life is lost
         this.lives.addListener(event -> {
             this.challengeScene.loseLife();
+            Media.playAudio("SFX/lifelose.wav");
         });
 
         //When the multiplier changes
@@ -261,7 +263,10 @@ public class Game {
      * @param y
      */
     protected void insertPiece(int x, int y) {
-        if (this.placePiece(x, y)) {
+        var grid = this.challengeScene.getBoard();
+
+        if (!this.gameOver && grid.placePiece(this.currentPiece, x, y)) {
+            Media.playAudio("SFX/place.wav");
             this.afterPiece();
 
             //Grabs the next piece
@@ -269,57 +274,9 @@ public class Game {
     
             //Resets the timer
             this.timeline.playFromStart();
+        } else {
+            Media.playAudio("SFX/fail.wav");
         }
-    }
-
-    /**
-     * Attempts to insert a piece at a given square
-     * @param x 
-     * @param y
-     */
-    protected boolean placePiece(int x, int y) {
-        if (this.gameOver) return false;
-
-        logger.info("Location {} {}", x, y);
-
-        //Blocks that can be added to the game board go here
-        //We have to wait for all squares to be checked
-        var buffer = new ArrayList<int[]>();
-
-        int[][] pieceBlocks = this.currentPiece.getBlocks();
-        var board = this.challengeScene.getBoard();
-
-        //Checks the availability of every tile
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 3; column++) {
-                //Checks if the position is going to be filled in
-                if (pieceBlocks[row][column] == 1) {
-                    //Checks if the position can be filled in
-                    if (board.canPlayPiece(x+column-1, y+row-1)) {
-                        buffer.add(new int[] {x+column-1, y+row-1});
-                    } else {
-                        //The whole shape must fit in to insert the block
-                        logger.error("Failed to add tile.");
-                        return false;
-                    }
-                }
-            }
-        }
-
-        this.fillTiles(buffer);
-        logger.error("Hello");
-        return true;
-    }
-
-    /**
-     * Called to fill a given set of tiles from the board
-     * @param buffer The tiles to be removed
-     */
-    protected void fillTiles(ArrayList<int[]> buffer) {
-        //Fills in the tile
-        buffer.forEach(pos -> {
-            this.challengeScene.getBoard().changeTile(this.currentPiece.getColour(), pos[1], pos[0]);
-        });
     }
 
     /**
@@ -337,6 +294,8 @@ public class Game {
             if (board.checkRow(i)) rowBuffer.add(i);
             if (board.checkColumn(i)) columnBuffer.add(i);
         }
+
+        if (rowBuffer.size() > 0 || columnBuffer.size() > 0) Media.playAudio("SFX/explode.wav");
 
         //Clears the rows and columns that are full
         rowBuffer.forEach(row -> {

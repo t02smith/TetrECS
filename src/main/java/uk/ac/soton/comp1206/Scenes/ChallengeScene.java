@@ -20,19 +20,19 @@ import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class ChallengeScene extends BaseScene {
-    private Grid grid;
-    private ProgressBar timer;
+    protected Grid grid;
+    protected ProgressBar timer;
 
-    private Label highScoreLbl;
-    private VBox localScores;
-    private Sidebar sidebar;
+    protected Label highScoreLbl;
+    protected VBox localScores;
+    protected Sidebar sidebar;
 
-    private HashMap<String,TileClickListener> listeners = new HashMap<>();
+    protected HashMap<String,TileClickListener> listeners = new HashMap<>();
 
-    private int width = 5;
-    private int height = 5;
+    protected int width = 5;
+    protected int height = 5;
 
-    private Pair<String, Integer> highScore;
+    protected Pair<String, Integer> highScore;
 
     public ChallengeScene(GameWindow window) {
         super(window);
@@ -43,6 +43,8 @@ public class ChallengeScene extends BaseScene {
         logger.info("Creating game scene");
         this.getStylesheets().add(Utility.getStyle("Game.css"));
         this.root.getStyleClass().add("game-shell");
+
+        this.window.setSize(880, 700);
 
         //Top of Screen//
 
@@ -156,6 +158,7 @@ public class ChallengeScene extends BaseScene {
     public void updateScore(int score) {
         this.sidebar.updateScore(score);
 
+        //If the user has a new high score
         if (score > this.highScore.getValue()) {
             this.highScoreLbl.setText(
                 String.format("High Score %s -> %d", "User", score)

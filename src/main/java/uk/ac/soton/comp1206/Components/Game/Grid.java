@@ -1,5 +1,7 @@
 package uk.ac.soton.comp1206.Components.Game;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,25 +10,26 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
+import uk.ac.soton.comp1206.game.GamePiece;
 
-final public class Grid extends GridPane {
-    private static final Logger logger = LogManager.getLogger(Grid.class);
+public class Grid extends GridPane {
+    protected static final Logger logger = LogManager.getLogger(Grid.class);
 
     //the game tiles
-    private final Tile[][] tiles;
-    private Tile selectedTile;
+    protected final Tile[][] tiles;
+    protected Tile selectedTile;
 
     //An overlay can be locked to a square or off entirely
-    private final SimpleBooleanProperty lockSelected = new SimpleBooleanProperty(false);
+    protected final SimpleBooleanProperty lockSelected = new SimpleBooleanProperty(false);
 
     //The dimensions of the board
-    private final int width;
-    private final int height;
+    protected final int width;
+    protected final int height;
 
-    private final GridSize tileLength;
+    protected final GridSize tileLength;
 
     //Called when a tile is clicked
-    private TileClickListener tcl;
+    protected TileClickListener tcl;
 
     /**
      * Different sizes of board
@@ -66,6 +69,10 @@ final public class Grid extends GridPane {
         this.build();
     }
 
+    public Grid(int width, int height, GridSize sideLength) {
+        this(width, height, sideLength, null);
+    }
+
     public void build() {
         this.getStyleClass().add("game-board");
         var overlayImg = Utility.getImage("ECS.png");
@@ -82,7 +89,7 @@ final public class Grid extends GridPane {
                     if (event.getButton() == MouseButton.SECONDARY) {
                         //right click
                     } else if (event.getButton() == MouseButton.PRIMARY) {
-                        this.tcl.onClick(tile.getXPos(), tile.getYPos());
+                        if (this.tcl != null) this.tcl.onClick(tile.getXPos(), tile.getYPos());
                         this.selectTile(tile.getXPos(), tile.getYPos());
                     }
                     
@@ -126,6 +133,46 @@ final public class Grid extends GridPane {
         return this.tiles[y][x].isEmpty();
     }
 
+    public boolean placePiece(GamePiece piece, int x, int y) {
+        //Blocks that can be added to the game board go here
+        //We have to wait for all squares to be checked
+        var buffer = new ArrayList<int[]>();
+
+        int[][] pieceBlocks = piece.getBlocks();
+
+        //Checks the availability of every tile in the 3x3 square
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 3; column++) {
+                //We are trying to place a tile at this square
+                if (pieceBlocks[row][column] == 1) {
+                    //Can we play a tile at this square
+                    if (this.canPlayPiece(x+column-1, y+row-1)) {
+                        buffer.add(new int[] {x+column-1, y+row-1});
+                    } else {
+                        //The whole shape must fit
+                        logger.error("Failed to add tile");
+                        return false;
+                    }
+                }
+            }
+        }
+
+        this.fillTiles(piece, buffer);
+        return true;
+    }
+
+    /**
+     * Fill in a given list of tiles a certain colour
+     * @param colour The colour they will be
+     * @param buffer The list of tiles to change
+     */
+    protected void fillTiles(GamePiece piece, ArrayList<int[]> buffer) {
+        //Fills in the tile
+        buffer.forEach(pos -> {
+            this.changeTile(piece.getColour(), pos[1], pos[0]);
+        });
+    }
+
     /**
      * Checks if a row has been filled
      * @param rowNo the row number
@@ -140,6 +187,10 @@ final public class Grid extends GridPane {
         return true;
     }
 
+    /**
+     * Removes all coloured tiles from a given row
+     * @param rowNo the number of the row
+     */
     public void clearRow(int rowNo) {
         logger.info("row {} cleared", rowNo);
         var row = this.tiles[rowNo];
@@ -161,6 +212,10 @@ final public class Grid extends GridPane {
         return true;
     }
 
+    /**
+     * Removes all coloured tiles from a given column
+     * @param columnNo The column number
+     */
     public void clearColumn(int columnNo) {
         logger.info("column {} cleared", columnNo);
         for (Tile[] row: this.tiles) {
@@ -169,11 +224,22 @@ final public class Grid extends GridPane {
     }
 
     /**
+     * Clears all coloured tiles from the entire board
+     */
+    public void clearAll() {
+        for (Tile[] row: this.tiles) {
+            for(Tile column: row) {
+                column.clearTile();
+            }
+        }
+    }
+
+    /**
      * Selects a tile to show the overlay
      * @param x x coordinate
      * @param y y coordinate
      */
-    private void selectTile(int x, int y) {
+    protected void selectTile(int x, int y) {
         if (this.lockSelected.get()) return;
 
         this.clearSelected();
@@ -203,7 +269,7 @@ final public class Grid extends GridPane {
     /**
      * Clears the currently selected tile's overlay
      */
-    private void clearSelected() {
+    protected void clearSelected() {
         if (this.selectedTile != null) this.selectedTile.hideOverlay();
     }
 

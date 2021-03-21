@@ -14,19 +14,19 @@ import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
  * Blank send/receive fields imply you wouldn't send/receive anything
  */
 public enum NetworkProtocol {
-    HISCORES    ("HISCORES (\\w+:\\d+\\s*)+"),                  //List of high scores
+    HISCORES    ("HISCORES (\\w+:\\d+\\s*)+"),                      //List of high scores
     LIST        ("CHANNELS ((\\w+\\s*)+\\n*)*"),                    //List of open channels
-    CREATE      (""),                                 //Create a channel
-    JOIN        ("JOIN (\\w+\\s*)+"),                   //Join a channel by name
+    CREATE      (""),                                               //Create a channel
+    JOIN        ("JOIN (\\w+\\s*)+"),                               //Join a channel by name
     QUIT        (""),                                               //Disconnect from server
-    MSG         ("MSG \\w+:((\\W+)*\\w+(\\W+)*\\s*)+"),  //Send/receive a message in a channel
-    NICK        ("NICK \\w+"),                                 //change of nickname -> yours or someones elses
+    MSG         ("MSG \\w+:((\\W+)*\\w+(\\W+)*\\s*)+"),             //Send/receive a message in a channel
+    NICK        ("NICK \\w+"),                                      //change of nickname -> yours or someones elses
     CHANGE_NICK ("NICK (\\w+):(\\w+)"),
-    START       ("START"),                                         //Request start or notification to say game is starting
-    PART        ("PARTED"),                                             //Disconnect from current channel
-    USERS       ("USERS (\\w+\\n?)+"),                             //Gets a list of users in channel
-    HOST        ("HOST"),                                               //Received if user is the channel's host
-    ERROR       ("ERROR (\\w+\\s*)+"),                                  //If any network errors occur
+    START       ("START"),                                          //Request start or notification to say game is starting
+    PART        ("PARTED"),                                         //Disconnect from current channel
+    USERS       ("USERS (\\w+\\n?)+"),                              //Gets a list of users in channel
+    HOST        ("HOST"),                                           //Received if user is the channel's host
+    ERROR       ("ERROR (\\w+\\s*)+"),                              //If any network errors occur
     SCORES      ("SCORES (\\w+:\\d+(:(\\d|DEAD)?)\\s*)+"),
     PIECE       ("PIECE \\d+");
 

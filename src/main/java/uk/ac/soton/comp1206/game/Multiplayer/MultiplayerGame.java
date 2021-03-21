@@ -10,6 +10,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
+import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
@@ -28,8 +29,7 @@ public class MultiplayerGame extends Game {
     private boolean host = false;
     private boolean inGame = false;
 
-    //Stores the history of the board to send off to the server
-    private ArrayList<int[][]> boardHistory = new ArrayList<>();
+    private ArrayList<int[][]> gridHistory;
 
     //Will always aim to contain 5 pieces
     private ArrayList<GamePiece> pieces = new ArrayList<>();
@@ -69,23 +69,25 @@ public class MultiplayerGame extends Game {
                 default:
                     break;
                 case ESCAPE:
-                if (this.lobby.getInChannel()) {
-                    this.lobby.buildInLobby();
-                    this.leaveChannel();
+                    if (this.lobby.getInChannel()) {
+                        this.lobby.buildInLobby();
+                        this.leaveChannel();
 
-                } else this.gameWindow.loadMenu();
+                    } else this.gameWindow.loadMenu();
             }
         });
 
         //Game setup//
 
         this.gameWindow.addGameStartListener(() -> {
+            this.gridHistory = ((MultiplayerGrid)this.challengeScene.getBoard()).getGridHistory();
+
             this.updateChannelList.stop();
             //empty board to start off with
-            this.boardHistory.add(new int[5][5]);
+            this.gridHistory.add(new int[5][5]);
 
-            this.communicator.send("PIECE");
-            this.communicator.send("PIECE");
+            for (int i = 0; i < 4; i++) 
+                this.communicator.send("PIECE");
 
             this.gameOver = false;
 
@@ -129,12 +131,10 @@ public class MultiplayerGame extends Game {
         //List of channels
         NetworkProtocol.LIST.addListener(message -> {
             this.fillServerList(message);
-            logger.error("yes");
         });
 
         //Join a channel
         NetworkProtocol.JOIN.addListener(message -> {
-            logger.error("Hello");
             var name = message.split("\\s+")[1];
             if (this.currentChannel == null) {
 
@@ -202,14 +202,13 @@ public class MultiplayerGame extends Game {
 
         //Get next piece
         NetworkProtocol.PIECE.addListener(message -> {
-            this.nextPiece();
             int value = Integer.parseInt(message.split("\\s+")[1]);
-            GamePiece reserve = GamePiece.getByValue(value);
+            
+            GamePiece next = GamePiece.getByValue(value);
+            this.pieces.add(next);
+            logger.info("Adding piece {}", next);
 
-            logger.info("Adding piece {}", reserve);
-
-            this.reservePiece = reserve;
-            this.challengeScene.setReservePiece(this.reservePiece);
+            if (this.currentPiece == null) this.nextPiece();
         });
 
 
@@ -257,32 +256,17 @@ public class MultiplayerGame extends Game {
 
     @Override
     public void insertPiece(int x, int y) {
-        if (this.placePiece(x, y)) {
+        var grid = this.challengeScene.getBoard();
+
+        if (!this.gameOver && grid.placePiece(this.currentPiece, x, y)) {
             this.afterPiece();
 
             //Requests next piece
             this.communicator.send("PIECE");
+            this.nextPiece();
 
             this.timeline.playFromStart();
         }
-    }
-
-    /**
-     * Fills the tiles on the board
-     * @override Adds the tiles to the board array to submit to the server
-     */
-    @Override
-    protected void fillTiles(ArrayList<int[]> buffer) {
-        super.fillTiles(buffer);
-
-        int playedPiece = this.currentPiece.getValue()+1;
-        int[][] next = this.boardHistory.get(this.boardHistory.size()-1).clone();
-
-        buffer.forEach(pos -> {
-            next[pos[1]][pos[0]] = playedPiece;
-        });
-
-        this.boardHistory.add(next);
     }
 
     /**
@@ -305,7 +289,7 @@ public class MultiplayerGame extends Game {
         }
 
         //Gets the current board for transmission
-        int[][] currentBoard = this.boardHistory.get(this.boardHistory.size()-1).clone();
+        int[][] currentBoard = this.gridHistory.get(this.gridHistory.size()-1).clone();
 
         //Clears the rows and columns that are full
         rowBuffer.forEach(row -> {
@@ -321,7 +305,7 @@ public class MultiplayerGame extends Game {
         });
 
         //Sets next board
-        this.boardHistory.set(this.boardHistory.size()-1, currentBoard);
+        this.gridHistory.set(this.gridHistory.size()-1, currentBoard);
 
         //Builds the BOARD command
         StringBuilder send = new StringBuilder("BOARD");
@@ -357,6 +341,10 @@ public class MultiplayerGame extends Game {
     protected void nextPiece() {
         this.currentPiece = this.reservePiece;
         this.challengeScene.setNextPiece(this.currentPiece);
+
+        this.reservePiece = this.pieces.get(0);
+        this.challengeScene.setReservePiece(this.reservePiece);
+        this.pieces.remove(0);
     }
 
     /**

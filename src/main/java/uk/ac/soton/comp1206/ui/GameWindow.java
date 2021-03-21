@@ -6,11 +6,17 @@ import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Event.GameStartListener;
 import uk.ac.soton.comp1206.Scenes.BaseScene;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
+import uk.ac.soton.comp1206.Scenes.InstructionScene;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.Menu;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Utility;
 
+/**
+ * This class will store the stage for each scene
+ * You would use this class to transition between different scenes
+ *  and change aspects like size
+ */
 public class GameWindow {
     private final Stage stage;
 
@@ -21,6 +27,7 @@ public class GameWindow {
     private ChallengeScene gameScene;
     private ScoresScene scoresScene;
     private LobbyScene lobbyScene;
+    private InstructionScene instructionScene;
 
     private GameStartListener gsl;
 
@@ -30,6 +37,7 @@ public class GameWindow {
         this.height = height;
 
         this.scoresScene = new ScoresScene(this);
+        this.instructionScene = new InstructionScene(this);
         this.menu = new Menu(this);
 
         this.setupStage();
@@ -39,6 +47,9 @@ public class GameWindow {
         this.loadMenu();
     }
 
+    /**
+     * Sets up the initial stage
+     */
     private void setupStage() {
         this.stage.setTitle("Tetrecs");
         this.stage.getIcons().add(Utility.getImage("icon.png"));
@@ -58,47 +69,82 @@ public class GameWindow {
         Font.loadFont(this.getClass().getResourceAsStream("/font/Tally Mark.ttf"), 16);
     }
 
+    /**
+     * Loads a given scene and builds it
+     * @param scene The scene to be shown
+     */
     public void loadScene(BaseScene scene) {
         scene.build();
         this.stage.setScene(scene);
     }
 
     /**
+     * Used to set the desired dimensions of a window
+     * @param width The min/desired width
+     * @param height The min/desired height
+     */
+    public void setSize(double width, double height) {
+        this.stage.setMinWidth(width);
+        this.stage.setWidth(width);
+
+        this.stage.setMinHeight(height);
+        this.stage.setHeight(height);
+    }
+
+    //Menu//
+
+    /**
      * Called to load the menu into the stage
      */
     public void loadMenu() {
-        //this.stage.setMaxWidth(700);
-        this.stage.setMinWidth(700);
-        //this.stage.setMaxHeight(500);
-        this.stage.setMinHeight(500);
         this.loadScene(this.menu);
-
     }
+
+    //Single player//
 
     /**
      * Called to load the game onto the stage
      */
     public void loadGame() {
         this.loadScene(this.gameScene);
-        //this.stage.setMaxWidth(881);
-        this.stage.setMinWidth(881);
-        //this.stage.setMaxHeight(700);
-        this.stage.setMinHeight(700);
 
         this.gsl.start();
     }
 
+
+    public void setGameScene(ChallengeScene scene) {
+        this.gameScene = scene;
+    }
+
+    public ChallengeScene getGameScene() {
+        return this.gameScene;
+    }
+
+
+    //Multiplayer
+
     public void loadMultiplayer() {
         this.loadScene(this.gameScene);
-        this.stage.setMinWidth(1150);
-        this.stage.setMinHeight(700);
 
         this.gsl.start();
+    }
+
+    public void setLobbyScene(LobbyScene scene) {
+        this.lobbyScene = scene;
     }
 
     public void loadLobby() {
         this.loadScene(this.lobbyScene);
     }
+
+
+    //Help screen//
+
+    public void loadInstruction() {
+        this.loadScene(this.instructionScene);
+    }
+
+    //Scores//
 
     /**
      * Loads the scoreboard once the game has finished
@@ -107,24 +153,12 @@ public class GameWindow {
         this.loadScene(this.scoresScene);
     }
 
-    public void addGameStartListener(GameStartListener gsl) {
-        this.gsl = gsl;
-    }
-
-    public ChallengeScene getGameScene() {
-        return this.gameScene;
-    }
-
-    public void setGameScene(ChallengeScene scene) {
-        this.gameScene = scene;
-    }
-
     public ScoresScene getScoresScene() {
         return this.scoresScene;
     }
 
-    public void setLobbyScene(LobbyScene scene) {
-        this.lobbyScene = scene;
+    public void addGameStartListener(GameStartListener gsl) {
+        this.gsl = gsl;
     }
 
     public int getWidth() {
@@ -134,4 +168,10 @@ public class GameWindow {
     public int getHeight() {
         return this.height;
     }
+
+
+
+
+
+
 }

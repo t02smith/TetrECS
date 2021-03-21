@@ -27,8 +27,6 @@ public class Tile extends StackPane {
     //Tile overlay -> i.e. to show that tile is selected
     private ImageView overlay = new ImageView();
 
-    
-
     public Tile(int x, int y, int sideLength) {
         this.x = x;
         this.y = y;
@@ -98,7 +96,7 @@ public class Tile extends StackPane {
      * Shows the tile's overlay
      */
     public void showOverlay() {
-        this.overlay.setOpacity(0.8);
+        //this.overlay.setOpacity(0.8);
     }
 
     /**

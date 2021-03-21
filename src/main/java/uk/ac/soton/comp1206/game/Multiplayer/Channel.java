@@ -11,8 +11,8 @@ public class Channel {
     //The channels name
     private String name;
 
-    //The message history by user <username, User>
-    private HashMap<String, ArrayList<String>> messages = new HashMap<>();
+    //The list of users
+    private HashMap<String, User> users = new HashMap<>();
 
     public Channel(String name) {
         this.name = name;
@@ -27,8 +27,8 @@ public class Channel {
         userArr.remove(0);
 
         userArr.forEach(user -> {
-            if (!this.messages.containsKey(user)) {
-                this.messages.put(user, new ArrayList<String>());
+            if (!this.users.containsKey(user)) {
+                this.users.put(user, new User(user));
             }
         });
     }
@@ -39,7 +39,8 @@ public class Channel {
      * @param message The content of the message
      */
     public void addMessage(String user, String message) {
-        this.messages.get(user).add(message);
+        this.users.get(user).addMessage(message);
+
     }
 
     /**
@@ -48,18 +49,32 @@ public class Channel {
      * @param newName
      */
     public void updateNickname(String oldName, String newName) {
-        if (!this.messages.containsKey(oldName)) return;
+        if (!this.users.containsKey(oldName)) return;
 
-        var msgs = this.messages.get(oldName);
-        this.messages.remove(oldName);
-        this.messages.put(newName, msgs);
+        var user = this.users.get(oldName);
+        user.setName(newName);
+
+        this.users.remove(oldName);
+        this.users.put(newName, user);
+    }
+
+    public void updateUserScore(String name, int score) {
+        var user = this.users.get(name);
+        user.setScore(score);
+    }
+
+    public void updateUserLives(String name, int lives) {
+        var user = this.users.get(name);
+        user.setLives(lives);
     }
 
     public String getName() {
         return this.name;
     }
 
-    public String[] getUsers() {
-        return this.messages.keySet().toArray(String[]::new);
+    public String[] getUsernames() {
+        return this.users.keySet().toArray(String[]::new);
     }
+
+
 }

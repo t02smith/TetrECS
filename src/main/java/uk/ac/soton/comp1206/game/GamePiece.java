@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import uk.ac.soton.comp1206.Components.Game.Colour;
+import uk.ac.soton.comp1206.Utility.Media;
 
 /**
  * This enum is used to store each possible gamepiece
@@ -78,6 +79,7 @@ public enum GamePiece {
      */
     public void rotateLeft() {
         logger.info("Rotating {} left", this);
+        Media.playAudio("SFX/rotate.wav");
         int[][] rotated = new int[this.blocks.length][this.blocks[0].length];
 
         for (int row = 0; row < rotated.length; row++) {
@@ -92,6 +94,7 @@ public enum GamePiece {
 
     public void rotateRight() {
         logger.info("Rotating {} right", this);
+        Media.playAudio("SFX/rotate.wav");
         int[][] rotated = new int[this.blocks.length][this.blocks[0].length];
 
         for (int row = 0; row < rotated.length; row++) {

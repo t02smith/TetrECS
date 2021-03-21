@@ -166,7 +166,7 @@ public class LobbyScene extends BaseScene {
     public void updateUserList(Channel channel) {
         this.users.getChildren().clear();
 
-        String[] userList = channel.getUsers();
+        String[] userList = channel.getUsernames();
 
         for (int i = 0 ; i < userList.length; i++) {
             var userLbl = new Label(userList[i]);

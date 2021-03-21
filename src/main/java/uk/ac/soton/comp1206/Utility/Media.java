@@ -37,6 +37,8 @@ public class Media {
                 new javafx.scene.media.Media(toPlay)
             );
     
+            
+
             audio.play();
         } else logger.info("Audio is disabled");
 
@@ -58,6 +60,7 @@ public class Media {
             );
             music.setCycleCount(Animation.INDEFINITE);
     
+            music.setVolume(0.5);
             music.play();
         } else logger.info("Audio is disabled");
     }

@@ -12,18 +12,18 @@ import javafx.scene.input.KeyCode;
  *  being binded to an event
  */
 public enum KeyBinding {
-    ROTATE_RIGHT    (new KeyCode[] {KeyCode.CLOSE_BRACKET}),
-    ROTATE_LEFT     (new KeyCode[] {KeyCode.OPEN_BRACKET}),
-    PLACE           (new KeyCode[] {KeyCode.ENTER, KeyCode.X}),
-    MOVE_UP         (new KeyCode[] {KeyCode.UP, KeyCode.W}),
-    MOVE_DOWN       (new KeyCode[] {KeyCode.DOWN, KeyCode.S}),
-    MOVE_LEFT       (new KeyCode[] {KeyCode.LEFT, KeyCode.A}),
-    MOVE_RIGHT      (new KeyCode[] {KeyCode.RIGHT, KeyCode.D}),
-    SWAP            (new KeyCode[] {KeyCode.SPACE, KeyCode.R}),
-    QUIT            (new KeyCode[] {KeyCode.ESCAPE}),
+    ROTATE_RIGHT    (new KeyCode[] {KeyCode.CLOSE_BRACKET},     "Rotate the next piece 90 degrees right"),
+    ROTATE_LEFT     (new KeyCode[] {KeyCode.OPEN_BRACKET},      "Rotate the next piece 90 degrees left"),
+    PLACE           (new KeyCode[] {KeyCode.ENTER, KeyCode.X},  "Place the next piece on the board at the pointer if possible"),
+    MOVE_UP         (new KeyCode[] {KeyCode.UP, KeyCode.W},     "Move the pointer up by one square"),
+    MOVE_DOWN       (new KeyCode[] {KeyCode.DOWN, KeyCode.S},   "Move the pointer down by one square"),
+    MOVE_LEFT       (new KeyCode[] {KeyCode.LEFT, KeyCode.A},   "Move the pointer left by one square"),
+    MOVE_RIGHT      (new KeyCode[] {KeyCode.RIGHT, KeyCode.D},  "Move the pointer right by one square"),
+    SWAP            (new KeyCode[] {KeyCode.SPACE, KeyCode.R},  "Swap between the next and reserve piece"),
+    QUIT            (new KeyCode[] {KeyCode.ESCAPE},            "Quit the game"),
 
     //Multiplayer
-    CHAT            (new KeyCode[] {KeyCode.C});      
+    CHAT            (new KeyCode[] {KeyCode.C},                 "Type in the chat");      
 
     //Hashmap of all the bindings
     private static HashMap<KeyCode, KeyBinding> bindings;
@@ -37,11 +37,14 @@ public enum KeyBinding {
     //The default set of keys for this event
     private final KeyCode[] defaultKeys;
 
+    private final String description;
+
     //The event for the key
     private KeyListener event;
 
-    private KeyBinding(KeyCode[] defaultKeys) {
+    private KeyBinding(KeyCode[] defaultKeys, String description) {
         this.defaultKeys = defaultKeys;
+        this.description = description;
 
         for (KeyCode key: defaultKeys) this.assignKey(key);
     }
@@ -115,8 +118,21 @@ public enum KeyBinding {
         
     }
 
+    /**
+     * Used to disable the use of key actions
+     *  e.g. when typing a message
+     * @param keysDisabled the new state for disableKeys
+     */
     public static void setKeysDisabled(boolean keysDisabled) {
         KeyBinding.disableKeys = keysDisabled;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public HashSet<KeyCode> getBindings() {
+        return this.keys;
     }
 
     /**

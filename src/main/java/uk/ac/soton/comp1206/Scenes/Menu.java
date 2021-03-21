@@ -27,6 +27,8 @@ public class Menu extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Menu.css"));
         this.root.getStyleClass().add("menu-shell");
 
+        this.window.setSize(700, 500);
+
         var menuComponents = new VBox(
             this.createTitle(), 
             this.createMenuItems()
@@ -48,7 +50,7 @@ public class Menu extends BaseScene {
      */
     private ImageView createTitle() {
         //Title//
-        var title = new ImageView(Utility.getImage("TetrECS.png"));
+        var title = new ImageView(Utility.getImage("menu/TetrECS.png"));
         title.setPreserveRatio(true);
         title.setFitHeight(this.getHeight()*0.2);
 
@@ -77,11 +79,14 @@ public class Menu extends BaseScene {
     private HBox createMenuItems() {
         //Smaller boxes//
         var vbox = new VBox(
-            new MenuItem("Scores", Utility.getImage("smallMe.jpg"), () -> {
+            new MenuItem("Scores", Utility.getImage("menu/smallMe.jpg"), () -> {
                 logger.info("Opening leaderboard");
                 this.window.loadScores();
             }),
-            new MenuItem("Help", Utility.getImage("help.png"), () -> {logger.info("Opening instructions");})
+            new MenuItem("Help", Utility.getImage("menu/help.png"), () -> {
+                logger.info("Opening instructions");
+                this.window.loadInstruction();
+            })
         );
 
         vbox.setSpacing(20);
@@ -90,11 +95,11 @@ public class Menu extends BaseScene {
         var options = new HBox();
 
         options.getChildren().addAll(
-            new MenuItem("Single\nPlayer", Utility.getImage("singleplayer.png"), () -> {
+            new MenuItem("Single\nPlayer", Utility.getImage("menu/singleplayer.png"), () -> {
                 logger.info("Opening singleplayer");
                 App.getInstance().openGame();
             }),
-            new MenuItem("Multi\nPlayer", Utility.getImage("multiplayer.png"), () -> {
+            new MenuItem("Multi\nPlayer", Utility.getImage("menu/multiplayer.png"), () -> {
                 logger.info("Opening multiplayer");
                 App.getInstance().openMultiplayer();
             }),

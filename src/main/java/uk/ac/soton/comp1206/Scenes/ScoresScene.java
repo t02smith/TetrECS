@@ -30,13 +30,17 @@ public class ScoresScene extends BaseScene {
     private SubmitScoreListener ssl;
 
     private static final Color[] scoreColors = {
-        Color.HOTPINK, Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.LIME, Color.GREEN, Color.DARKGREEN, Color.CYAN, Color.BLUE};
+        Color.HOTPINK, Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.LIME, Color.GREEN, Color.DARKGREEN, Color.CYAN, Color.BLUE
+    };
 
     public ScoresScene(GameWindow gw) {
         super(gw);
         this.localScores = this.createScoreList(Utility.readFromFile("/scores/localScores.txt"));
     }
 
+    /**
+     * Builds the score scene when loaded
+     */
     @Override
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Scores.css"));
@@ -65,6 +69,7 @@ public class ScoresScene extends BaseScene {
             name.setMaxWidth(250);
             name.setMinHeight(30);
     
+            //Click to submit a score online
             var submitScore = new Button();
             submitScore.setOnAction(e -> {
                 this.ssl.submit(name.getText(), this.userScore);
