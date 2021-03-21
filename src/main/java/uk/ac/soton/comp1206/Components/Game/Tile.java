@@ -96,7 +96,7 @@ public class Tile extends StackPane {
      * Shows the tile's overlay
      */
     public void showOverlay() {
-        //this.overlay.setOpacity(0.8);
+        this.overlay.setOpacity(0.8);
     }
 
     /**

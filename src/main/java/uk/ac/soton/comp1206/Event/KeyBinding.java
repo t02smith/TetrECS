@@ -46,19 +46,23 @@ public enum KeyBinding {
         this.defaultKeys = defaultKeys;
         this.description = description;
 
-        for (KeyCode key: defaultKeys) this.assignKey(key);
+        for (KeyCode key: defaultKeys) this.assignKey(null, key);
     }
 
     /**
      * Assigns a new key to an event
      * @param newKey the key being added
      */
-    public void assignKey(KeyCode newKey) {
-        this.keys.add(newKey);
-
+    public boolean assignKey(KeyCode oldKey, KeyCode newKey) {
         //Static fields are initialized after enum so this was the easiest fix
         if (KeyBinding.bindings == null) bindings = new HashMap<>();
+
+        if (KeyBinding.bindings.containsKey(newKey)) return false;
+
         KeyBinding.bindings.put(newKey, this);
+        if (oldKey != null) KeyBinding.bindings.remove(oldKey);
+        this.keys.add(newKey);
+        return true;
     }
 
     /**
@@ -78,7 +82,7 @@ public enum KeyBinding {
     public void resetKeys() {
         this.keys = new HashSet<>();
         KeyBinding.bindings = new HashMap<>();
-        for (KeyCode key: defaultKeys) this.assignKey(key);
+        for (KeyCode key: defaultKeys) this.assignKey(null, key);
     }
 
     /**
@@ -125,6 +129,10 @@ public enum KeyBinding {
      */
     public static void setKeysDisabled(boolean keysDisabled) {
         KeyBinding.disableKeys = keysDisabled;
+    }
+
+    public static KeyBinding getAction(KeyCode key) {
+        return KeyBinding.bindings.get(key);
     }
 
     public String getDescription() {

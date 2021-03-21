@@ -12,6 +12,8 @@ import uk.ac.soton.comp1206.Utility.Utility;
 public class KeyBindingDisplay extends ScrollPane {
     private final KeyBinding[] actions = KeyBinding.values();
 
+    private KeyIcon changing;
+
     public KeyBindingDisplay() {
         this.build();
     }
@@ -32,11 +34,24 @@ public class KeyBindingDisplay extends ScrollPane {
             keySet.setAlignment(Pos.CENTER);
             keySet.setPadding(new Insets(10, 10, 10, 10));
             action.getBindings().forEach(key -> {
+                var icon = new KeyIcon(key);
+                icon.setOnMouseClicked(event -> {
+                    this.changing = icon;
+                    icon.hideValue();                    
+                });
+
                 keySet.getChildren().add(
-                    new KeyIcon(key)
+                    icon
                 );
             });
 
+            this.setOnKeyReleased(event -> {
+                if (this.changing != null) {
+                    this.changing.setKey(event.getCode());
+                    this.changing = null;
+                }
+            });
+        
             actionGrid.add(keySet, 0, i);
 
             var name = new Label(action.toString().replace("_", " "));
@@ -50,6 +65,7 @@ public class KeyBindingDisplay extends ScrollPane {
             actionGrid.add(description, 2, i);
             
         }
+
 
         this.setContent(actionGrid);
     }

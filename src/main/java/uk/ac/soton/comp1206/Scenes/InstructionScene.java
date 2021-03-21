@@ -33,7 +33,6 @@ public class InstructionScene extends BaseScene {
         var pieces = new PieceDisplay();
         pieces.setPadding(new Insets(20, 20, 20, 20));
 
-
         this.root.setLeft(
             pieces
         );

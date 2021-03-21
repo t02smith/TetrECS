@@ -1,14 +1,20 @@
 package uk.ac.soton.comp1206.Components.instructions;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 public class KeyIcon extends StackPane {
     private Label value;
     private ImageView icon;
+
+    private KeyCode key;
 
     public KeyIcon(KeyCode key) {
         this.value = new Label(this.getSymbol(key));
@@ -18,7 +24,10 @@ public class KeyIcon extends StackPane {
         this.icon.setPreserveRatio(true);
         this.icon.setFitHeight(75);
 
+        this.key = key;
+
         this.getChildren().addAll(this.icon, this.value);
+
     } 
 
     /**
@@ -50,5 +59,38 @@ public class KeyIcon extends StackPane {
         } 
 
         return String.valueOf((char)key.getCode());
+    }
+
+    public interface ClickKeyListener {
+        public void click(KeyCode key);
+    }
+
+    public void flashRed() {
+        var red = new ImageView(Utility.getImage("red-key.png"));
+        red.setPreserveRatio(true);
+        red.setFitHeight(75);
+
+        var flash = new Timeline(
+            new KeyFrame(Duration.ZERO, event -> this.getChildren().set(0, red)),
+            new KeyFrame(Duration.millis(175), event -> this.getChildren().set(0, this.icon))
+        );
+
+        flash.play();
+    }
+
+    public void setKey(KeyCode newKey) {
+        var action = KeyBinding.getAction(this.key);
+
+        if (action.assignKey(this.key, newKey)) {
+            this.value.setText(this.getSymbol(newKey));
+        } else {
+            this.flashRed();
+        }
+
+        this.value.setOpacity(1);
+    }
+
+    public void hideValue() {
+        this.value.setOpacity(0);
     }
 }
