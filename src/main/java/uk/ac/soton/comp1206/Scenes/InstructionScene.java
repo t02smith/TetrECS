@@ -1,9 +1,10 @@
 package uk.ac.soton.comp1206.Scenes;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
+import uk.ac.soton.comp1206.Components.instructions.KeyBindingDisplay;
 import uk.ac.soton.comp1206.Components.instructions.PieceDisplay;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -27,18 +28,26 @@ public class InstructionScene extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Instructions.css"));
         this.root.getStyleClass().add("instruction-bg");
 
-        this.window.setSize(1000, 700);
+        this.window.setSize(1075, 700);
+
+        var pieces = new PieceDisplay();
+        pieces.setPadding(new Insets(20, 20, 20, 20));
+
 
         this.root.setLeft(
-            new PieceDisplay()
+            pieces
         );
 
         var instructions = new ImageView(Utility.getImage("instructions.png"));
         instructions.setPreserveRatio(true);
         instructions.setFitWidth(this.window.getWidth()*0.85);
 
-        var body = new VBox(instructions);
+        var keyBindings = new KeyBindingDisplay();
+
+        var body = new VBox(instructions, keyBindings);
+        body.setAlignment(Pos.CENTER);
         body.setPadding(new Insets(20, 20, 20, 20));
+        body.setSpacing(25);
 
         this.root.setCenter(body);
 

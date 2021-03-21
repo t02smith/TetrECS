@@ -41,6 +41,7 @@ public class PieceDisplay extends VBox {
         Grid grid;
         for (int i = lowerBound; i < upperBound; i++) {
             grid = new Grid(3, 3, GridSize.MEDIUM);
+
             grid.lockSelected();
             grid.placePiece(this.pieces[i], 1, 1);
 

@@ -1,24 +1,57 @@
 package uk.ac.soton.comp1206.Components.instructions;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Utility.Utility;
 
-public class KeyBindingDisplay extends StackPane {
+public class KeyBindingDisplay extends ScrollPane {
     private final KeyBinding[] actions = KeyBinding.values();
 
+    public KeyBindingDisplay() {
+        this.build();
+    }
+
     public void build() {
-        var scroll = new ScrollPane();
+        this.getStyleClass().add("key-binding-display");
 
         var actionGrid = new GridPane();
+        actionGrid.setHgap(10);
+        actionGrid.setVgap(10);
 
+        Utility.getImage("key.png");
         for (int i = 0; i < actions.length; i++) {
-            var action = actions[i];
+            KeyBinding action = actions[i];
 
+            var keySet = new HBox();
+            keySet.setSpacing(10);
+            keySet.setAlignment(Pos.CENTER);
+            keySet.setPadding(new Insets(10, 10, 10, 10));
+            action.getBindings().forEach(key -> {
+                keySet.getChildren().add(
+                    new KeyIcon(key)
+                );
+            });
+
+            actionGrid.add(keySet, 0, i);
+
+            var name = new Label(action.toString().replace("_", " "));
+            name.getStyleClass().add("action-name");
+            actionGrid.add(name, 1, i);
+
+            var description = new Label(action.getDescription());
+            description.setMaxWidth(200);
+            description.setWrapText(true);
+            description.getStyleClass().add("action-description");
+            actionGrid.add(description, 2, i);
             
         }
+
+        this.setContent(actionGrid);
     }
 
 
