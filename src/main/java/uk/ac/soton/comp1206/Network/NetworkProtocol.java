@@ -28,7 +28,8 @@ public enum NetworkProtocol {
     HOST        ("HOST"),                                           //Received if user is the channel's host
     ERROR       ("ERROR (\\w+\\s*)+"),                              //If any network errors occur
     SCORES      ("SCORES (\\w+:\\d+(:(\\d|DEAD)?)\\s*)+"),
-    PIECE       ("PIECE \\d+");
+    PIECE       ("PIECE \\d+"),
+    BOARD       ("BOARD \\w+:(\\d+\\s?){25}");
 
 
 

@@ -4,19 +4,33 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 
+/**
+ * Each individual message to be displayed
+ */
 public class Message extends HBox {
+    //Holds each message
     private VBox msgShell;
+
+    //Who sent the message
     private Label msgAuthor;
+
+    //The content inside the message
     private TextFlow msgContent;
+
+    //The time the message was received
     private Label msgTime;
 
+    //Whether the user sent the message
     private boolean isUser;
     private boolean styleEnd = false;
 
@@ -46,6 +60,8 @@ public class Message extends HBox {
             this.setAlignment(Pos.TOP_LEFT);
             this.getChildren().addAll(this.msgTime, this.msgShell);
         }
+
+        this.slideIn();
     }
 
     /**
@@ -193,5 +209,33 @@ public class Message extends HBox {
         time.getStyleClass().add("time");
 
         return time;
+    }
+
+    /**
+     * Animates the message as it comes in
+     */
+    public void slideIn() {
+        var duration = new Duration(350);
+
+        //Fades in
+        var fade = new FadeTransition(duration, this);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+
+        //Moves in from the side
+        var translate = new TranslateTransition(duration, this);
+
+        //Changes side depending on whether the user sent it
+        if (this.isUser) {
+            translate.setFromX(25);
+            translate.setByX(-25);
+        } else {
+            translate.setFromX(-25);
+            translate.setByX(25);
+        }
+
+        translate.play();
+
     }
 }

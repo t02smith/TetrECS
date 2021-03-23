@@ -23,6 +23,8 @@ public class ChallengeScene extends BaseScene {
     protected Grid grid;
     protected ProgressBar timer;
 
+    protected VBox centerComponents;
+
     protected Label highScoreLbl;
     protected VBox localScores;
     protected Sidebar sidebar;
@@ -65,6 +67,19 @@ public class ChallengeScene extends BaseScene {
         //Game grid//
         this.grid = new Grid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
 
+        this.buildTimer();
+        this.buildSidebar();
+
+        this.centerComponents = new VBox(this.grid, this.timer);
+        this.centerComponents.setAlignment(Pos.CENTER);
+        this.centerComponents.setSpacing(25);
+
+        this.root.setCenter(this.centerComponents);
+
+        this.root.setRight(this.sidebar);
+    }
+
+    private void buildTimer() {
         this.timer = new ProgressBar();
         this.timer.setMinWidth(GridSize.LARGE.getSideLength()*this.width);
         this.timer.setMinHeight(GridSize.LARGE.getSideLength()/4);
@@ -77,40 +92,15 @@ public class ChallengeScene extends BaseScene {
             else if (this.timer.getProgress() < 0.75) this.timer.setStyle("-fx-accent: yellow;");
             else this.timer.setStyle("-fx-accent: green;");
         });
+    }
 
-        var center = new VBox(this.grid, this.timer);
-        center.setAlignment(Pos.CENTER);
-        center.setSpacing(25);
-
-        this.root.setCenter(center);
-
-        //Sidebar//
+    private void buildSidebar() {
         this.sidebar = new Sidebar();
 
         //Listeners
         this.sidebar.addTileClickListener("next-piece", this.listeners.get("next-piece"));
         this.sidebar.addTileClickListener("reserve-piece", this.listeners.get("reserve-piece"));
         this.sidebar.build();
-
-        this.sidebar.getToggle().stateProperty().bindBidirectional(this.grid.lockSelectedProperty());
-
-        var sidePanel = new HBox(this.sidebar);
-
-        //When the window gets wider
-        /*
-        this.widthProperty().addListener(event -> {
-            if (this.getWidth() > 1000) {
-                if (sidePanel.getChildren().size() != 2) {
-                    sidePanel.getChildren().add(this.localScores);
-                }
-            } else {
-                if (sidePanel.getChildren().size() == 2) {
-                    sidePanel.getChildren().remove(1);
-                }
-            }
-        });*/
-
-        this.root.setRight(sidePanel);
     }
 
 

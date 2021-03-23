@@ -9,42 +9,61 @@ import javafx.scene.layout.HBox;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Utility.Utility;
 
+/**
+ * Displays all the key bindings with their associated actions
+ *  Allows key bindings to be changed at runtime
+ */
 public class KeyBindingDisplay extends ScrollPane {
+    //The set of actions that can be done by the user
     private final KeyBinding[] actions = KeyBinding.values();
 
+    //The key binding the user is currently changing -> null if not being changed
     private KeyIcon changing;
 
     public KeyBindingDisplay() {
         this.build();
     }
 
+    /**
+     * Builds the component
+     */
     public void build() {
         this.getStyleClass().add("key-binding-display");
 
+        //actionGrid is the grid that stores all the info neatly
         var actionGrid = new GridPane();
         actionGrid.setHgap(10);
         actionGrid.setVgap(10);
 
-        Utility.getImage("key.png");
+        Utility.getImage("key.png"); //Preload this image now
+
+        //Loops through every action
         for (int i = 0; i < actions.length; i++) {
             KeyBinding action = actions[i];
 
+            //Each action will have its own row
             var keySet = new HBox();
             keySet.setSpacing(10);
             keySet.setAlignment(Pos.CENTER);
             keySet.setPadding(new Insets(10, 10, 10, 10));
+
+            //Loops through the action's key bindings
             action.getBindings().forEach(key -> {
                 var icon = new KeyIcon(key);
+
+                //You can change a binding by clicking on it
                 icon.setOnMouseClicked(event -> {
                     this.changing = icon;
                     icon.hideValue();                    
                 });
 
+                //Add each icon to be displayed next to each other
                 keySet.getChildren().add(
                     icon
                 );
             });
 
+            //If the user is changing a binding listen for what key they press next
             this.setOnKeyReleased(event -> {
                 if (this.changing != null) {
                     this.changing.setKey(event.getCode());
@@ -52,12 +71,15 @@ public class KeyBindingDisplay extends ScrollPane {
                 }
             });
         
+            //Adds the bindings to the grid
             actionGrid.add(keySet, 0, i);
 
+            //Name of the action
             var name = new Label(action.toString().replace("_", " "));
             name.getStyleClass().add("action-name");
             actionGrid.add(name, 1, i);
 
+            //What the action does in game
             var description = new Label(action.getDescription());
             description.setMaxWidth(200);
             description.setWrapText(true);
@@ -65,7 +87,6 @@ public class KeyBindingDisplay extends ScrollPane {
             actionGrid.add(description, 2, i);
             
         }
-
 
         this.setContent(actionGrid);
     }

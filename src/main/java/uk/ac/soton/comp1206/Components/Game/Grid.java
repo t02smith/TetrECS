@@ -12,39 +12,50 @@ import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 
+/**
+ * Represents any of the grids shown on screen
+ */
 public class Grid extends GridPane {
     protected static final Logger logger = LogManager.getLogger(Grid.class);
 
     //the game tiles
     protected final Tile[][] tiles;
+
+    //The tile with the hover icon on it
     protected Tile selectedTile;
 
     //An overlay can be locked to a square or off entirely
     protected final SimpleBooleanProperty lockSelected = new SimpleBooleanProperty(false);
 
-    //The dimensions of the board
+    //The dimensions of the board (in number of squares)
     protected final int width;
     protected final int height;
 
+    //The actual size of the grid squares
     protected final GridSize tileLength;
 
     //Called when a tile is clicked
     protected TileClickListener tcl;
 
     /**
-     * Different sizes of board
+     * Different preset sizes of board
      */
     public enum GridSize {
-        LARGE(100),
-        MEDIUM(40),
-        SMALL(25);
+        LARGE(100),     //Meant for the main game board
+        MEDIUM(40),     //Meant to display a piece
+        SMALL(25);      //Meant for reserve grid and online user's boards
 
+        //The side length in pixels
         private int sideLength;
 
         private GridSize(int length) {
             this.sideLength = length;
         }
 
+        /**
+         * Gets the side length
+         * @return side length
+         */
         public int getSideLength() {
             return this.sideLength;
         }
@@ -69,10 +80,19 @@ public class Grid extends GridPane {
         this.build();
     }
 
+    /**
+     * Constructor if no tile click listener is needed
+     * @param width
+     * @param height
+     * @param sideLength
+     */
     public Grid(int width, int height, GridSize sideLength) {
         this(width, height, sideLength, null);
     }
 
+    /**
+     * Called to build the grid component
+     */
     public void build() {
         this.getStyleClass().add("game-board");
         var overlayImg = Utility.getImage("ECS.png");
@@ -95,6 +115,7 @@ public class Grid extends GridPane {
                     
                 }); 
 
+                //When a tile is hovered over it will be selected
                 tile.setOnMouseEntered(event -> {
                     this.selectTile(tile.getXPos(), tile.getYPos());
                 });
@@ -128,11 +149,20 @@ public class Grid extends GridPane {
      * @return whether it is empty
      */
     public boolean canPlayPiece(int x, int y) {
+        //If the square is not on the board return false instantly
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) return false;
 
+        //Otherwise check if it is available
         return this.tiles[y][x].isEmpty();
     }
 
+    /**
+     * Attempts to place a game piece onto the grid
+     * @param piece The piece to place
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return Whether the placement was successful
+     */
     public boolean placePiece(GamePiece piece, int x, int y) {
         //Blocks that can be added to the game board go here
         //We have to wait for all squares to be checked
@@ -156,6 +186,8 @@ public class Grid extends GridPane {
                 }
             }
         }
+
+        //If it completed the loop then it is a valid placement
 
         this.fillTiles(piece, buffer);
         return true;
@@ -229,7 +261,7 @@ public class Grid extends GridPane {
     public void clearAll() {
         for (Tile[] row: this.tiles) {
             for(Tile column: row) {
-                column.clearTile();
+                column.clearNoAnimation();
             }
         }
     }
@@ -254,12 +286,14 @@ public class Grid extends GridPane {
      */
     public void moveSelected(int byX, int byY) {
         logger.info("{} {}", byX, byY);
-        if (this.selectedTile != null) {
+        if (this.selectedTile != null) { 
+            //Moves as requested and wrap round the board if necessary
             this.selectTile(
                 (this.selectedTile.getXPos() + byX + this.width) % this.width,
                 (this.selectedTile.getYPos() + byY + this.height) % this.height
             );
-        } else {
+        } else { //If there is no selected grid (e.g. at start of game)
+            //Places grid in center by default and moves as requested
             this.selectTile((int)Math.ceil(this.width/2), (int)Math.ceil(this.height/2));
             this.moveSelected(byX, byY);
         }
@@ -290,6 +324,10 @@ public class Grid extends GridPane {
         this.lockSelected.set(false);
     }
 
+    /**
+     * THe property for locking the selected tile
+     * @return the lock selected property
+     */
     public SimpleBooleanProperty lockSelectedProperty() {
         return this.lockSelected;
     }
@@ -302,14 +340,26 @@ public class Grid extends GridPane {
         this.lockSelected.set(true);
     }
 
+    /**
+     * Gets the currently selected tile
+     * @return the {x, y} coordinates of the selected tile
+     */
     public int[] getSelectedPos() {
         return new int[] {this.selectedTile.getXPos(), this.selectedTile.getYPos()};
     }
 
+    /**
+     * Gets the width of the grid
+     * @return grid width (tiles)
+     */
     public int getGridWidth() {
         return this.width;
     }
 
+    /**
+     * Gets the grid height
+     * @return grid height (squares)
+     */
     public int getGridHeight() {
         return this.height;
     }

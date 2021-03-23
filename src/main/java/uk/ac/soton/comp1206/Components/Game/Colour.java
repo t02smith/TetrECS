@@ -9,7 +9,8 @@ import uk.ac.soton.comp1206.Utility.CircularQueue;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 /**
- * This class is used to get any of the different colour icons
+ * This is a custom class for the colours in my game
+ * Each colour is assigned a tile image that it will display
  */
 public enum Colour {
     CYAN("cyan.png"),
@@ -28,8 +29,10 @@ public enum Colour {
     LIGHT_RED("light-red.png"),
     TRANSPARENT("transparent.png");
 
+    //The image it will display
     private final Image icon;
 
+    //Ensures that all the colours are used and can be reused if we add more pieces
     private static final CircularQueue<Colour> colourCycle = new CircularQueue<>(Arrays.asList(Colour.values()));
 
     /**
@@ -38,6 +41,16 @@ public enum Colour {
     private Colour(String filename) {
         this.icon = Utility.getImage("tiles/" + filename);
     }
+
+    /**
+     * Gets the image of the colour
+     * @return
+     */
+    public Image getIcon() {
+        return this.icon;
+    }
+
+    //STATIC//
 
     /**
      * Cycles through the list of colours
@@ -51,19 +64,21 @@ public enum Colour {
         return colourCycle.dequeue();
     }
 
+    /**
+     * Gets a random colour from our set
+     * @return A random colour
+     */
     public static Colour randomColour() {
         var random = new Random();
         var colours = Colour.values();
         Colour colour;
 
-        do {
+        do { //Get the first colour that isn't transparent
             colour = colours[random.nextInt(colours.length)];
-        } while (colour.equals(TRANSPARENT));
+        } while (colour.equals(TRANSPARENT)); 
 
         return colour;
     }
 
-    public Image getIcon() {
-        return this.icon;
-    }
+
 }

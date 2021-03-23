@@ -22,20 +22,31 @@ import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class MultiplayerGame extends Game {
+    //List of all channels currently available
     private HashMap<String, Channel> channels = new HashMap<>();
+
+    //The channel the user is currently in
     private Channel currentChannel;
 
+    //The users name
     private String name;
+
+    //Whether the user is the host or not
     private boolean host = false;
+
+    //Whether the user is in a game
     private boolean inGame = false;
 
+    //The history of the user's grid
     private ArrayList<int[][]> gridHistory;
 
     //Will always aim to contain 5 pieces
     private ArrayList<GamePiece> pieces = new ArrayList<>();
 
+    //What to do when the channel list needs updating
     private Timeline updateChannelList;
 
+    //The lobby the user goes into to join/create channels
     private LobbyScene lobby;
 
     public MultiplayerGame(GameWindow gw, Communicator communicator) {
@@ -46,7 +57,11 @@ public class MultiplayerGame extends Game {
 
     @Override
     public void buildGame() {
-        this.challengeScene = new MultiplayerScene(this.gameWindow, message -> this.communicator.send("MSG " + message));
+        this.challengeScene = new MultiplayerScene(
+            this.gameWindow, 
+            message -> this.communicator.send("MSG " + message)
+        );
+
         this.gameWindow.setGameScene(this.challengeScene);
 
         this.challengeScene.setHighScore(this.gameWindow.getScoresScene().getHighScore());
@@ -64,16 +79,19 @@ public class MultiplayerGame extends Game {
             }
         });
 
+        //Basic lobby key commands
         this.lobby.setOnKeyReleased(event -> {
             switch(event.getCode()) {
                 default:
                     break;
                 case ESCAPE:
+                    this.updateChannelList.stop();
                     if (this.lobby.getInChannel()) {
                         this.lobby.buildInLobby();
                         this.leaveChannel();
 
                     } else this.gameWindow.loadMenu();
+                    break;
             }
         });
 
@@ -86,7 +104,7 @@ public class MultiplayerGame extends Game {
             //empty board to start off with
             this.gridHistory.add(new int[5][5]);
 
-            for (int i = 0; i < 4; i++) 
+            for (int i = 0; i < 5; i++) 
                 this.communicator.send("PIECE");
 
             this.gameOver = false;
@@ -224,6 +242,25 @@ public class MultiplayerGame extends Game {
 
         this.updateChannelList.setCycleCount(Animation.INDEFINITE);
         this.updateChannelList.play();
+
+        NetworkProtocol.BOARD.addListener(message -> {
+            message = message.substring(6); //Removes BOARD
+            String name = message.split(":")[0];
+            String[] tiles = message.split(":")[1].split("\\s+");
+
+            logger.info("Updating {}'s board ", name);
+
+            int[][] grid = new int[5][5];
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    var nextTile = tiles[i*5 + j];
+
+                    grid[i][j] = Integer.parseInt(nextTile);
+                }
+            }
+
+            this.currentChannel.updateUserGrid(name, grid);
+        });
     }
 
     /**
@@ -381,6 +418,8 @@ public class MultiplayerGame extends Game {
      */
     private void displayChannel() {
         this.updateChannelList.stop();
+        ((MultiplayerScene)this.challengeScene).setUserList(this.currentChannel.getUsers());
+        
         Platform.runLater(() -> {
             this.lobby.buildInChannel(this.currentChannel, message -> {
                 this.communicator.send("MSG " + message);

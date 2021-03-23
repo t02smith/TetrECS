@@ -14,19 +14,30 @@ import javafx.util.Duration;
  * Each tile can change colour to match some image icons I made
  */
 public class Tile extends StackPane {
+    //If the tile is empty or not
     private boolean isEmpty = true;
 
     //Coordinates of the tile
     private final int x;
     private final int y;
 
-    //Image on the tile
+    //Image on the tile//
+
+    //Background that never changes
     private final ImageView outline = new ImageView(Colour.TRANSPARENT.getIcon());
+
+    //Anything placed on the grid
     private ImageView tile = new ImageView();
 
     //Tile overlay -> i.e. to show that tile is selected
     private ImageView overlay = new ImageView();
 
+    /**
+     * Constructor for the tile
+     * @param x It's x coordinate
+     * @param y It's y coordinate
+     * @param sideLength It's sidelenth in pixels
+     */
     public Tile(int x, int y, int sideLength) {
         this.x = x;
         this.y = y;
@@ -45,10 +56,19 @@ public class Tile extends StackPane {
 
     } 
 
+    /**
+     * Constructor for a large grid tile
+     * @param x
+     * @param y
+     */
     public Tile(int x, int y) {
         this(x, y, 100);
     }
 
+    /**
+     * Interface for when a tile is clicked
+     *  Keeping it here for relevance
+     */
     public interface TileClickListener {
         public void onClick(int x, int y);
     }
@@ -67,8 +87,11 @@ public class Tile extends StackPane {
      * Clears a tile of a block 
      */
     public void clearTile() {
+        //A tile will fade out
         var fadeOut = new FadeTransition(Duration.millis(500), this.tile);
         fadeOut.setByValue(-1);
+
+        //Once it has faded remove the colouring and return its opacity to 1
         fadeOut.setOnFinished(e -> {
             this.tile.setImage(null);
             this.isEmpty = true;
@@ -79,7 +102,16 @@ public class Tile extends StackPane {
     }
 
     /**
+     * Clears a tile without any animation
+     */
+    public void clearNoAnimation() {
+        this.tile.setImage(null);
+        this.isEmpty = true;
+    }
+
+    /**
      * Animates the overlay when a block is clicked
+     * Not sure if this is actually implemented?
      */
     public void select() {
         var initial = this.overlay.getFitWidth();
@@ -114,14 +146,26 @@ public class Tile extends StackPane {
         this.overlay.setImage(img);
     }
 
+    /**
+     * Returns whether the tile is empty
+     * @return the tile's state
+     */
     public boolean isEmpty() {
         return this.isEmpty;
     }
 
+    /**
+     * Returns the tile's x coordinate
+     * @return Tile's X coordinate
+     */
     public int getXPos() {
         return this.x;
     }
 
+    /**
+     * Returns the tiles Y coordinate
+     * @return Tile's Y coordinate
+     */
     public int getYPos() {
         return this.y;
     }

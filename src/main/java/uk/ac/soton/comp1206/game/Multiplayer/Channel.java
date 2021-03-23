@@ -2,7 +2,10 @@ package uk.ac.soton.comp1206.game.Multiplayer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+
+import uk.ac.soton.comp1206.Components.multiplayer.User;
 
 /**
  * A multiplayer channel that the user can joing
@@ -34,16 +37,6 @@ public class Channel {
     }
 
     /**
-     * Adds a message to the list
-     * @param user Who sent the message
-     * @param message The content of the message
-     */
-    public void addMessage(String user, String message) {
-        this.users.get(user).addMessage(message);
-
-    }
-
-    /**
      * Updates an existing user's nickname
      * @param oldName 
      * @param newName
@@ -58,14 +51,35 @@ public class Channel {
         this.users.put(newName, user);
     }
 
+    /**
+     * Updates a user's score
+     * @param name the user's name
+     * @param score the user's new score
+     */
     public void updateUserScore(String name, int score) {
         var user = this.users.get(name);
         user.setScore(score);
     }
 
+    /**
+     * Updates the user's lives
+     * @param name The user's name
+     * @param lives The user's lives left
+     */
     public void updateUserLives(String name, int lives) {
         var user = this.users.get(name);
         user.setLives(lives);
+    }
+
+    /**
+     * Updates the user's grid
+     * @param username The user's name
+     * @param newGrid The user's new grid
+     */
+    public void updateUserGrid(String username, int[][] newGrid) {
+        var user = this.users.get(username);
+
+        user.applyGridChanges(newGrid);
     }
 
     public String getName() {
@@ -74,6 +88,10 @@ public class Channel {
 
     public String[] getUsernames() {
         return this.users.keySet().toArray(String[]::new);
+    }
+
+    public Collection<User> getUsers() {
+        return this.users.values();
     }
 
 

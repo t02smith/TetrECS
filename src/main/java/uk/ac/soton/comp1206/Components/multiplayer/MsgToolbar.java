@@ -10,6 +10,9 @@ import javafx.scene.layout.Priority;
 import uk.ac.soton.comp1206.Event.SendMessageListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 
+/**
+ * The toolbar to type and send messages in
+ */
 public class MsgToolbar extends HBox {
     private TextField msg;
     private Button send;
@@ -22,6 +25,7 @@ public class MsgToolbar extends HBox {
     }
 
     public void build() {
+        //Message input area
         this.msg = new TextField();
         this.msg.setPromptText("Enter message");
         this.msg.setMaxHeight(20);
@@ -29,15 +33,20 @@ public class MsgToolbar extends HBox {
         this.msg.setAlignment(Pos.CENTER_LEFT);
         this.msg.setFocusTraversable(false);
 
+        //Stretches to fit the space its in
         HBox.setHgrow(this.msg, Priority.ALWAYS);
 
+        //send icon
         ImageView icon = new ImageView(Utility.getImage("send.png"));
         icon.setPreserveRatio(true);
         icon.setFitHeight(20);
 
+        //Send button
         this.send = new Button();
         this.send.setGraphic(icon);
         this.send.getStyleClass().add("msg-send");
+
+        //Sending the message
         this.send.setOnAction(event -> {
             this.sml.sendMsg(this.msg.getText());
             this.msg.setText("");

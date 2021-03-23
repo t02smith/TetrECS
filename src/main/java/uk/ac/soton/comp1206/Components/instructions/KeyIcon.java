@@ -10,12 +10,24 @@ import javafx.util.Duration;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Utility.Utility;
 
+/**
+ * Each individual key icon
+ * TODO keys show up again after being replaced
+ */
 public class KeyIcon extends StackPane {
+    //The character displayed on the key
     private Label value;
+
+    //The background key icon
     private ImageView icon;
 
+    //The key code it corresponds to
     private KeyCode key;
 
+    /**
+     * Creates a new key icon
+     * @param key the key to create an icon of
+     */
     public KeyIcon(KeyCode key) {
         this.value = new Label(this.getSymbol(key));
         this.value.getStyleClass().add("key-icon");
@@ -38,7 +50,8 @@ public class KeyIcon extends StackPane {
      */
     private String getSymbol(KeyCode key) {
         if (key.isArrowKey() || key.isWhitespaceKey() || key.equals(KeyCode.ESCAPE)) {
-            switch(key) {
+            switch(key) { 
+                //Excpetions where i've used specific unicode characters that keycode didn't provide
                 case LEFT:
                     return "\u2190";
                 case RIGHT:
@@ -61,15 +74,23 @@ public class KeyIcon extends StackPane {
         return String.valueOf((char)key.getCode());
     }
 
+    /**
+     * Listener for when one of these icons is clicked
+     */
     public interface ClickKeyListener {
         public void click(KeyCode key);
     }
 
+    /**
+     * Will flash the the key icon red
+     * Used when a user tries to assign a key to another key that's already bound
+     */
     public void flashRed() {
         var red = new ImageView(Utility.getImage("red-key.png"));
         red.setPreserveRatio(true);
         red.setFitHeight(75);
 
+        //Changes the key to the red version briefly
         var flash = new Timeline(
             new KeyFrame(Duration.ZERO, event -> this.getChildren().set(0, red)),
             new KeyFrame(Duration.millis(175), event -> this.getChildren().set(0, this.icon))
@@ -78,11 +99,19 @@ public class KeyIcon extends StackPane {
         flash.play();
     }
 
+    /**
+     * Changes the key on display
+     * @param newKey The key to change it to
+     */
     public void setKey(KeyCode newKey) {
+        //Get the corresponding action
         var action = KeyBinding.getAction(this.key);
 
+        //Attempt to assign the key
         if (action.assignKey(this.key, newKey)) {
+            //If successful then change the symbol on the key
             this.value.setText(this.getSymbol(newKey));
+            this.key = newKey;
         } else {
             this.flashRed();
         }
@@ -90,6 +119,9 @@ public class KeyIcon extends StackPane {
         this.value.setOpacity(1);
     }
 
+    /**
+     * Hides the key's value
+     */
     public void hideValue() {
         this.value.setOpacity(0);
     }

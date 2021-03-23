@@ -11,6 +11,7 @@ import uk.ac.soton.comp1206.game.GamePiece;
  * Used to display all the different game pieces at once
  */
 public class PieceDisplay extends VBox {
+    //The set of all pieces
     private final GamePiece[] pieces;
 
     public PieceDisplay() {
@@ -18,7 +19,11 @@ public class PieceDisplay extends VBox {
         this.build();
     }
 
+    /**
+     * Builds the component
+     */
     public void build() {
+        //Creates rows of 3
         for (int i = 0; i < this.pieces.length; i += 3) {
             this.getChildren().add(
                 this.createRow(i, i+3)
@@ -39,6 +44,7 @@ public class PieceDisplay extends VBox {
         var row = this.newRow();
 
         Grid grid;
+        //Creates the row from a subarray
         for (int i = lowerBound; i < upperBound; i++) {
             grid = new Grid(3, 3, GridSize.MEDIUM);
 
@@ -51,6 +57,10 @@ public class PieceDisplay extends VBox {
         return row;
     }
 
+    /**
+     * Creates a new row with all the correct settings
+     * @return a new piece displayrow
+     */
     private HBox newRow() {
         var row = new HBox();
 

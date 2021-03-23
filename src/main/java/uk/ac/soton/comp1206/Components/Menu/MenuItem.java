@@ -15,11 +15,22 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Scenes.Menu.MenuItemListener;
 
+/**
+ * Used to display each menu item
+ */
 public class MenuItem extends StackPane {
+    //When a menu item is clicked
     private MenuItemListener mil;
 
+    //Isn't implemented properly
     private SimpleDoubleProperty scale = new SimpleDoubleProperty(1);
    
+    /**
+     * Constructor to create a new menu item
+     * @param text The text to display on it
+     * @param img The background image
+     * @param onClick What to do when it is clicked
+     */
     public MenuItem(String text, Image img, MenuItemListener onClick) {
         this.mil = onClick;
 
@@ -93,18 +104,34 @@ public class MenuItem extends StackPane {
         });
     }
 
+    /**
+     * Sets the menu item click listener
+     * @param mil
+     */
     public void setOnAction(MenuItemListener mil) {
         this.mil = mil;
     }
 
+    /**
+     * Sets the scale of menu components
+     * @param scale new scale
+     */
     public void setScale(double scale) {
         this.scale.set(scale);
     }
 
+    /**
+     * Returnst the current menu scale
+     * @return
+     */
     public double getScale() {
         return this.scale.get();
     }
 
+    /**
+     * Returns the scale property
+     * @return
+     */
     public SimpleDoubleProperty getScaleProperty() {
         return this.scale;
     }
