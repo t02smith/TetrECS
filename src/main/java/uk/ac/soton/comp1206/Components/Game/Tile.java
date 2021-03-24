@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -79,7 +80,7 @@ public class Tile extends StackPane {
      * @param colour The colour it is changing to
      */
     public void setTile(Colour colour) {
-        this.tile.setImage(colour.getIcon());
+        Platform.runLater(() -> this.tile.setImage(colour.getIcon()));
         this.isEmpty = false;
     }
 

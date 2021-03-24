@@ -14,7 +14,7 @@ import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
  * Blank send/receive fields imply you wouldn't send/receive anything
  */
 public enum NetworkProtocol {
-    HISCORES    ("HISCORES (\\w+:\\d+\\s*)+"),                      //List of high scores
+    HISCORES    ("HISCORES (\\w*:\\d+\\s*)+"),                      //List of high scores
     LIST        ("CHANNELS ((\\w+\\s*)+\\n*)*"),                    //List of open channels
     CREATE      (""),                                               //Create a channel
     JOIN        ("JOIN (\\w+\\s*)+"),                               //Join a channel by name

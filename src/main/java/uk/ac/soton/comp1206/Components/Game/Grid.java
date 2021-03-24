@@ -111,6 +111,7 @@ public class Grid extends GridPane {
                     } else if (event.getButton() == MouseButton.PRIMARY) {
                         if (this.tcl != null) this.tcl.onClick(tile.getXPos(), tile.getYPos());
                         this.selectTile(tile.getXPos(), tile.getYPos());
+                        tile.requestFocus();
                     }
                     
                 }); 

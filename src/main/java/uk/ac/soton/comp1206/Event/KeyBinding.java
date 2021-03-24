@@ -23,7 +23,7 @@ public enum KeyBinding {
     QUIT            (new KeyCode[] {KeyCode.ESCAPE},            "Quit the game"),
 
     //Multiplayer
-    CHAT            (new KeyCode[] {KeyCode.C},                 "Type in the chat");      
+    TOGGLE_PANEL     (new KeyCode[] {KeyCode.TAB, KeyCode.C},                 "Toggles the online side panel.");      
 
     //Hashmap of all the bindings
     private static HashMap<KeyCode, KeyBinding> bindings;

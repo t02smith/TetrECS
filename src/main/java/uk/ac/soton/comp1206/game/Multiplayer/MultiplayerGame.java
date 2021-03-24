@@ -31,9 +31,6 @@ public class MultiplayerGame extends Game {
     //The users name
     private String name;
 
-    //Whether the user is the host or not
-    private boolean host = false;
-
     //Whether the user is in a game
     private boolean inGame = false;
 
@@ -57,6 +54,7 @@ public class MultiplayerGame extends Game {
 
     @Override
     public void buildGame() {
+        logger.info("Building multiplayer game");
         this.challengeScene = new MultiplayerScene(
             this.gameWindow, 
             message -> this.communicator.send("MSG " + message)
@@ -127,8 +125,8 @@ public class MultiplayerGame extends Game {
     protected void setKeyBindings() {
         super.setKeyBindings();
 
-        KeyBinding.CHAT.setEvent(() -> {
-            KeyBinding.setKeysDisabled(true);
+        KeyBinding.TOGGLE_PANEL.setEvent(() -> {
+            ((MultiplayerScene)this.challengeScene).toggleOnlinePanel();
         });
 
         this.communicator.addListener(message -> {
@@ -146,91 +144,14 @@ public class MultiplayerGame extends Game {
     protected void setupCommunicator() {
         super.setupCommunicator();
 
+        //LOBBY//
+
         //List of channels
         NetworkProtocol.LIST.addListener(message -> {
             this.fillServerList(message);
         });
 
-        //Join a channel
-        NetworkProtocol.JOIN.addListener(message -> {
-            var name = message.split("\\s+")[1];
-            if (this.currentChannel == null) {
 
-                if (!this.channels.containsKey(name)) {
-                    var channel = new Channel(name);
-                    this.channels.put(name, channel);
-                }
-
-                this.currentChannel = this.channels.get(name);
-                logger.info("test");
-                this.displayChannel();
-
-            } else logger.error("You are already in a channel");
-        });
-
-        //Updates the list of users in the channel
-        NetworkProtocol.USERS.addListener(message -> {
-            this.currentChannel.updateUsers(message);
-            Platform.runLater(() -> this.lobby.updateUserList(this.currentChannel));
-        });
-
-        NetworkProtocol.MSG.addListener(message -> {  
-            String[] msg = message.substring(4).split(":");
-            var msgComponent = new Message(msg[0], msg[1], msg[0].equals(this.name));
-            if (this.inGame) ((MultiplayerScene)this.challengeScene).addMessage(msgComponent);
-            else this.lobby.addMessage(msgComponent);
-        });
-
-        //Sets nickname
-        NetworkProtocol.NICK.addListener(message -> {
-            this.name = message.split("\\s+")[1];
-            Platform.runLater(() -> this.lobby.setNickname(this.name));
-        });
-
-        this.lobby.setChangeNicknameListener(nickname -> {
-            this.communicator.send("NICK " + nickname);
-            this.communicator.send("MSG **" + this.name + "** has changed their name to **" + nickname + "**");
-        });
-
-        //Set a nickname
-        NetworkProtocol.CHANGE_NICK.addListener(message -> {
-            String[] msg = message.split("\\s+")[1].split(":");
-            this.currentChannel.updateNickname(msg[0], msg[1]);
-
-        });
-
-        NetworkProtocol.HOST.addListener(message -> {
-            logger.info("You are the host");
-            this.host = true;
-            Platform.runLater(() -> this.lobby.showHostComponents());
-        });
-
-        //Called when the host starts the game
-        this.lobby.setGameStartListener(() -> this.communicator.send("START"));
-
-        NetworkProtocol.START.addListener(message -> {
-            Platform.runLater(() -> this.gameWindow.loadMultiplayer());
-            this.inGame = true;
-        });
-
-        //Leave the current channel
-        NetworkProtocol.PART.addListener(message -> {
-            this.currentChannel = null;
-        });
-
-        //Get next piece
-        NetworkProtocol.PIECE.addListener(message -> {
-            int value = Integer.parseInt(message.split("\\s+")[1]);
-            
-            GamePiece next = GamePiece.getByValue(value);
-            this.pieces.add(next);
-            logger.info("Adding piece {}", next);
-
-            if (this.currentPiece == null) this.nextPiece();
-        });
-
-
-        this.communicator.send("LIST");
         //Updates the channel list at regular intervals
         this.updateChannelList = new Timeline(
             new KeyFrame(Duration.ZERO, e -> {
@@ -243,6 +164,98 @@ public class MultiplayerGame extends Game {
         this.updateChannelList.setCycleCount(Animation.INDEFINITE);
         this.updateChannelList.play();
 
+        //Join a channel
+        NetworkProtocol.JOIN.addListener(message -> {
+            var name = message.split("\\s+")[1];
+            if (this.currentChannel == null) { //if the user is not already in a channel
+
+                //If the new channel is in our list of available channels
+                if (!this.channels.containsKey(name)) {
+                    var channel = new Channel(name);
+                    this.channels.put(name, channel);
+                }
+
+                logger.info("Joining channel {}", name);
+
+                this.currentChannel = this.channels.get(name);
+                this.displayChannel();
+
+            } else logger.error("You are already in a channel");
+        });
+
+        //IN CHANNEL//
+
+        //Updates the list of users in the channel
+        NetworkProtocol.USERS.addListener(message -> {
+            this.currentChannel.updateUsers(message);
+            Platform.runLater(() -> this.lobby.updateUserList(this.currentChannel));
+        });
+
+        //If the user is the host
+        NetworkProtocol.HOST.addListener(message -> {
+            logger.info("You are the host");
+            Platform.runLater(() -> this.lobby.showHostComponents());
+        });
+
+        //Called when the host starts the game
+        this.lobby.setGameStartListener(() -> this.communicator.send("START"));
+        
+        //For when the game starts
+        NetworkProtocol.START.addListener(message -> {
+            Platform.runLater(() -> this.gameWindow.loadMultiplayer());
+            this.inGame = true;
+        });
+
+        //Leave the current channel
+        NetworkProtocol.PART.addListener(message -> {
+            this.leaveChannel();
+        });
+
+
+        //SOCIAL//
+
+        //When receiving a message
+        NetworkProtocol.MSG.addListener(message -> {  
+            String[] msg = message.substring(4).split(":");
+            var msgComponent = new Message(msg[0], msg[1], msg[0].equals(this.name));
+            if (this.inGame) ((MultiplayerScene)this.challengeScene).addMessage(msgComponent);
+            else this.lobby.addMessage(msgComponent);
+        });
+
+        //Sets initial nickname from server
+        NetworkProtocol.NICK.addListener(message -> {
+            this.name = message.split("\\s+")[1];
+            Platform.runLater(() -> this.lobby.setNickname(this.name));
+        });
+
+        //Change a nickname
+        NetworkProtocol.CHANGE_NICK.addListener(message -> {
+            String[] msg = message.split("\\s+")[1].split(":");
+            this.currentChannel.updateNickname(msg[0], msg[1]);
+
+        });
+
+        //When a nickname is changed
+        this.lobby.setChangeNicknameListener(nickname -> {
+            this.communicator.send("NICK " + nickname);
+            this.communicator.send("MSG **" + this.name + "** has changed their name to **" + nickname + "**");
+        });
+
+
+        //IN GAME//
+
+        //Get next piece
+        NetworkProtocol.PIECE.addListener(message -> {
+            int value = Integer.parseInt(message.split("\\s+")[1]);
+            
+            GamePiece next = GamePiece.getByValue(value);
+            this.pieces.add(next);
+            logger.info("Adding piece {}", next);
+
+            if (this.currentPiece == null) this.nextPiece();
+        });
+
+        //When receiving details about a user's game board
         NetworkProtocol.BOARD.addListener(message -> {
             message = message.substring(6); //Removes BOARD
             String name = message.split(":")[0];
@@ -261,6 +274,23 @@ public class MultiplayerGame extends Game {
 
             this.currentChannel.updateUserGrid(name, grid);
         });
+
+        //Updates a user's properties when received from server
+        NetworkProtocol.SCORES.addListener(message -> {
+            message = message.substring(7);
+            logger.info("Updating user properties");
+
+            String[] users = message.split("\\s+");
+            for (String user: users) {
+                String[] userProps= user.split(":");
+
+                this.currentChannel.updateUserProperties(
+                    userProps[0], 
+                    Integer.parseInt(userProps[1]), 
+                    Integer.parseInt(userProps[2])
+                );
+            }
+        });
     }
 
     /**
@@ -276,6 +306,11 @@ public class MultiplayerGame extends Game {
         this.lives.addListener(event -> {
             if (this.lives.get() == -1) this.communicator.send("DIE");
             else this.communicator.send("LIVES " + this.lives.get());  
+        });
+
+        this.score.addListener(event -> {
+            logger.info("Updating score");
+            this.communicator.send("SCORE " + this.score.get());
         });
     }
 
@@ -406,6 +441,7 @@ public class MultiplayerGame extends Game {
         Platform.runLater(
             () -> this.lobby.updateChannels(this.channels.values(), channelName -> {
                 this.communicator.send("JOIN " + channelName);
+                logger.info("Joining channel {}", channelName);
             })
         );
 
@@ -417,6 +453,7 @@ public class MultiplayerGame extends Game {
      * Displays the chat window and list of users
      */
     private void displayChannel() {
+        logger.info("Displaying channel: {}", this.currentChannel.getName());
         this.updateChannelList.stop();
         ((MultiplayerScene)this.challengeScene).setUserList(this.currentChannel.getUsers());
         
@@ -435,6 +472,8 @@ public class MultiplayerGame extends Game {
         this.communicator.send("PART");
         this.currentChannel = null;
         this.updateChannelList.playFromStart();
+
+        logger.info("Leaving channel");
 
         //some ui updates
     }

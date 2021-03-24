@@ -51,6 +51,11 @@ public class Channel {
         this.users.put(newName, user);
     }
 
+    public void updateUserProperties(String name, int score, int lives) {
+        this.updateUserScore(name, score);
+        this.updateUserLives(name, lives);
+    }
+
     /**
      * Updates a user's score
      * @param name the user's name

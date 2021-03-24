@@ -96,6 +96,7 @@ public class App extends Application {
         NetworkProtocol.ERROR.addListener(message -> logger.error(message));
         
         NetworkProtocol.HISCORES.addListener(message -> {
+            logger.info("Setting online scores");
             this.gameWindow.getScoresScene().setOnlineScores(message);
         });
 

@@ -18,12 +18,17 @@ import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * Singleplayer game class
+ * Handles the game logic
+ */
 public class Game {
     protected static final Logger logger = LogManager.getLogger(Game.class);
 
+    //Communicator to interact with server when needed
     protected final Communicator communicator;
 
-    //Game properties
+    //User game properties
     protected SimpleIntegerProperty score = new SimpleIntegerProperty(0);
     protected SimpleIntegerProperty level = new SimpleIntegerProperty(0);
     protected SimpleIntegerProperty lives = new SimpleIntegerProperty(3);
@@ -50,9 +55,11 @@ public class Game {
         logger.info("Starting game");
         this.gameWindow = gameWindow;
         this.communicator = communicator;
-
     }
 
+    /**
+     * Sets up the game logic and scene
+     */
     public void buildGame() {
         this.setupCommunicator();
 
@@ -65,7 +72,7 @@ public class Game {
         this.challengeScene.setLocalScores(this.scoresScene.getLocalScoreboard());
         this.challengeScene.setHighScore(this.scoresScene.getHighScore());
 
-        //Submits a score
+        //Submits a score once the game has ended
         this.scoresScene.addSubmitScoreListener((name, score) -> {
             logger.info("Submitting new score");
             this.communicator.send(
@@ -73,8 +80,7 @@ public class Game {
             );
         });
 
-
-        //When the game is started//
+        //Called when the game is started//
         this.gameWindow.addGameStartListener(() -> {
             this.nextPiece();
             this.nextPiece();
@@ -88,9 +94,16 @@ public class Game {
             this.gameLoop();
         });
 
+        //Assigns key bindings
         this.setKeyBindings();
+
+        //Assigns the listeners for the user's game properties
         this.setUserPropertyListeners();
+
+        //Sets the listeners for clicking on any of the grids
         this.setTileClickListeners();
+
+        //Builds the game scene
         this.challengeScene.build();
 
     }
@@ -123,7 +136,6 @@ public class Game {
         KeyBinding.MOVE_LEFT.setEvent(() -> this.moveSelected(-1, 0));
         KeyBinding.MOVE_RIGHT.setEvent(() -> this.moveSelected(1, 0));
         KeyBinding.MOVE_DOWN.setEvent(() -> this.moveSelected(0, 1));
-
 
         KeyBinding.QUIT.setEvent(() -> {
             logger.info("Returning to menu");
@@ -248,6 +260,10 @@ public class Game {
         this.gameWindow.loadScene(this.scoresScene);
     }
 
+    /**
+     * Resets the game
+     *  Puts properties back to default
+     */
     public void resetGame() {
         logger.info("Resetting game");
         this.timeline.stop();
@@ -388,6 +404,6 @@ public class Game {
      * Sets up the communicator for the game
      */
     protected void setupCommunicator() {
-
+        // :(
     }
 }
