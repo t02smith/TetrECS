@@ -1,29 +1,33 @@
 package uk.ac.soton.comp1206.Scenes;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import uk.ac.soton.comp1206.Components.Game.Scoreboard;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.multiplayer.ChatPane;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
+import uk.ac.soton.comp1206.Components.multiplayer.OnlinePanel;
 import uk.ac.soton.comp1206.Components.multiplayer.User;
 import uk.ac.soton.comp1206.Event.SendMessageListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * Multiplayer scene shown during a multiplayer match
+ *  Identical to challenge scene with some additions
+ */
 public class MultiplayerScene extends ChallengeScene {
     private ChatPane chatpane;
     private SendMessageListener sml;
 
-    private StackPane onlinePanel;
+    private OnlinePanel onlinePanel;
 
     private VBox users;
     private Collection<User> userList;
@@ -46,10 +50,8 @@ public class MultiplayerScene extends ChallengeScene {
         gridComponents.setAlignment(Pos.CENTER);
         gridComponents.setSpacing(25);
 
-
-                
         this.chatpane = new ChatPane(this.sml);
-        this.chatpane.setMaxWidth(this.getWidth()*0.25);
+        //this.chatpane.setMaxWidth(this.getWidth()*0.25);
         this.chatpane.setMinWidth(this.getWidth()*0.25);
         this.chatpane.setOpacity(0);
 
@@ -61,28 +63,14 @@ public class MultiplayerScene extends ChallengeScene {
 
         this.users.setAlignment(Pos.TOP_CENTER);
         this.users.setPadding(new Insets(12, 12, 12, 20));
-
-
         this.userList.forEach(user -> this.users.getChildren().add(user));
 
-        this.onlinePanel = new StackPane(this.chatpane, this.users);
+        var scoreboard = new Scoreboard("Local Scores", Utility.readFromFile("/scores/localScores.txt"));
 
-        var center = new HBox(this.onlinePanel, gridComponents);
-        this.root.setCenter(center);
+        this.onlinePanel = new OnlinePanel(this.chatpane, this.users, scoreboard);
 
-        /* If you want a 2xn grid of users
-        HBox userRow = null;
-        Iterator<User> userIterator = this.userList.iterator();
-
-        for (int i = 0; i < this.userList.size(); i++) {
-            if (i%3 == 0) {
-                userRow = new HBox(10);
-                this.users.getChildren().add(userRow);
-            }
-
-            userRow.getChildren().add(userIterator.next());
-
-        }*/
+        this.root.setCenter(gridComponents);
+        this.root.setLeft(this.onlinePanel);
 
     }
 
@@ -97,20 +85,8 @@ public class MultiplayerScene extends ChallengeScene {
     }
 
     public void toggleOnlinePanel() {
-        var top = this.onlinePanel.getChildren().get(
-            this.onlinePanel.getChildren().size()-1
-        );
-
-        top.setOpacity(0);
-
-        this.onlinePanel.getChildren().remove(top);
-        this.onlinePanel.getChildren().add(0, top);
-
-        var newTop = this.onlinePanel.getChildren().get(
-            this.onlinePanel.getChildren().size()-1
-        );
-
-        newTop.setOpacity(1);
-        newTop.requestFocus();
+        this.onlinePanel.toggleOnlinePanel();
     }
+
+
 }
