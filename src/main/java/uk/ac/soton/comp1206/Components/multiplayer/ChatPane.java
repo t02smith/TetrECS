@@ -49,7 +49,7 @@ public class ChatPane extends BorderPane {
 
     public void addMessage(Message msg) {
         this.msgList.getChildren().add(msg);
-        this.msgWindow.setVvalue(1.0);
+        this.msgWindow.setVvalue(0.0);
     }
 
 }

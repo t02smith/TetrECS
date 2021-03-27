@@ -117,11 +117,11 @@ public class ScoresScene extends BaseScene {
         var localHigh = this.localScores.getHighScore();
 
         //If there has been an error getting the online scores
-        if (this.onlineScores == null) return (localHigh);
+        if (this.onlineScores == null) return (localHigh.toPair());
 
         //If we have a copy of online highscores return the highest from both local and online
         var onlineHigh = this.onlineScores.getHighScore();
-        return (localHigh.getValue() > onlineHigh.getValue()) ? localHigh : onlineHigh;
+        return (localHigh.getValue() > onlineHigh.getValue()) ? localHigh.toPair() : onlineHigh.toPair();
     }
 
     /**

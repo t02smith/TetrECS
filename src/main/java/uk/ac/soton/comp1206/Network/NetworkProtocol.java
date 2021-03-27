@@ -21,15 +21,16 @@ public enum NetworkProtocol {
     QUIT        (""),                                               //Disconnect from server
     MSG         ("MSG \\w+:((\\W+)*\\w+(\\W+)*\\s*)+"),             //Send/receive a message in a channel
     NICK        ("NICK \\w+"),                                      //change of nickname -> yours or someones elses
-    CHANGE_NICK ("NICK (\\w+):(\\w+)"),
+    CHANGE_NICK ("NICK (\\w+):(\\w+)"),                             //Change another player's nickname
     START       ("START"),                                          //Request start or notification to say game is starting
     PART        ("PARTED"),                                         //Disconnect from current channel
     USERS       ("USERS (\\w+\\n?)+"),                              //Gets a list of users in channel
     HOST        ("HOST"),                                           //Received if user is the channel's host
     ERROR       ("ERROR (\\w+\\s*)+"),                              //If any network errors occur
-    SCORES      ("SCORES (\\w+:\\d+(:(\\d|DEAD)?)\\s*)+"),
-    PIECE       ("PIECE \\d+"),
-    BOARD       ("BOARD \\w+:(\\d+\\s?){25}");
+    SCORES      ("SCORES (\\w+:\\d+(:(\\d|DEAD)?)\\s*)+"),          //Update a user's properties
+    SCORE       ("SCORE \\w+:\\d+"),                                //Update a user's score
+    PIECE       ("PIECE \\d+"),                                     //Get the next piece to play
+    BOARD       ("BOARD \\w+:(\\d+\\s?){25}");                      //Get a user's game board
 
 
 

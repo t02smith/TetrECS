@@ -291,6 +291,15 @@ public class MultiplayerGame extends Game {
                 );
             }
         });
+
+        NetworkProtocol.SCORE.addListener(message -> {
+            var nameScore = message.substring(6).split(":");
+            logger.info("Updating {}'s score to {}", nameScore[0], nameScore[1]);
+
+            ((MultiplayerScene)this.challengeScene).updateUserScore(
+                nameScore[0], Integer.parseInt(nameScore[1])
+            );
+        });
     }
 
     /**

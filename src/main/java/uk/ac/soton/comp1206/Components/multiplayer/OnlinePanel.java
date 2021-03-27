@@ -3,6 +3,7 @@ package uk.ac.soton.comp1206.Components.multiplayer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.animation.FadeTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
 /**
  * Holds the online side panel
@@ -82,7 +84,9 @@ public class OnlinePanel extends BorderPane {
     public void toggleOnlinePanel() {
         if (this.top != null) {
             //Make the old panel invisible and add it to the back of the stackpane
-            this.top.setOpacity(0);
+            var fadeOut = new FadeTransition(Duration.millis(200), this.top);
+            fadeOut.setByValue(-1);
+            fadeOut.play();
 
             this.panelDisplay.getChildren().remove(top);
             this.panelDisplay.getChildren().add(0, top);
@@ -95,7 +99,10 @@ public class OnlinePanel extends BorderPane {
             this.panelDisplay.getChildren().size()-1
         );
 
-        newTop.setOpacity(1);
+        var fadeIn = new FadeTransition(Duration.millis(200), newTop);
+        fadeIn.setByValue(1);
+        fadeIn.play();
+
         newTop.requestFocus();
 
         this.navigation.getChildren().get(this.panelIndex).setStyle(

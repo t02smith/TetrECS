@@ -110,5 +110,9 @@ public class User extends BorderPane {
     public void setName(String name) {
         Platform.runLater(() -> this.name.setText(name));
     }
+
+    public String getName() {
+        return this.name.getText();
+    }
     
 }
