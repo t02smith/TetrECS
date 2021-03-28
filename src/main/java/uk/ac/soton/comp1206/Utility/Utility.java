@@ -51,6 +51,7 @@ public class Utility {
         if (images.containsKey(filename)) return images.get(filename);
         else {
             logger.info("Getting image '{}'", filename);
+
             var image =  new Image(Utility.class.getResource("/images/" + filename).toExternalForm());
             images.put(filename, image);
             return image;

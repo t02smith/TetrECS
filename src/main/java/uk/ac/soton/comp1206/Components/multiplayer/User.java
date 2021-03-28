@@ -30,15 +30,21 @@ public class User extends BorderPane {
     //Their current score
     private Label score;
 
+    //The current grid on display
     private int[][] currentGrid = new int[5][5];
 
     //Their lives will be shown as a red background that fades down
 
+    /**
+     * Creates a user grid to display pieces in real time
+     * @param name The user's name
+     */
     public User(String name) {
         this.getStyleClass().add("opponent-grid");
         this.setMaxWidth(GridSize.SMALL.getSideLength()*5.5);
         this.setStyle("-fx-background-color: rgba(255, 0, 0, 0.3);");
 
+        //Sets default components
         this.name = new Label(name);
         this.name.getStyleClass().add("opponent-name");
 
@@ -63,14 +69,13 @@ public class User extends BorderPane {
      * @param newGrid the new grid
      */
     public void applyGridChanges(int[][] newGrid) {
-        //Empties the grid of all tiles
-        //this.userGrid.clearAll();
-
+        //Counts how many changes are made to the grid
         int changes = 0;
 
         //Loops through each square and adds colour where necessary
         for (int y = 0; y < newGrid.length; y++) {
             for (int x = 0; x < newGrid[0].length; x++) {
+                //If the tile has changed since the last move
                 if (newGrid[y][x] != this.currentGrid[y][x]) {
                     var colour = newGrid[y][x] == 0 ? 
                         Colour.TRANSPARENT :
@@ -86,11 +91,20 @@ public class User extends BorderPane {
         this.currentGrid = newGrid;
     }
 
+    /**
+     * Sets the new score for the user
+     * @param score The user's score
+     */
     public void setScore(int score) {
         Platform.runLater(() -> this.score.setText(String.valueOf(score)));
     }
 
+    /**
+     * Changes the background colour based upon how many lives they have
+     * @param lives The user's lives left
+     */
     public void setLives(int lives) {
+        //Red background that acts as a healthbar
         switch(lives) {
             case 3:
                 this.setStyle("-fx-background-color:rgba(255, 0, 0, 0.3);");
@@ -107,10 +121,17 @@ public class User extends BorderPane {
         }
     }
 
+    /**
+     * Sets the user's name if they change it
+     * @param name The user's new name
+     */
     public void setName(String name) {
         Platform.runLater(() -> this.name.setText(name));
     }
 
+    /**
+     * @return The user's name
+     */
     public String getName() {
         return this.name.getText();
     }

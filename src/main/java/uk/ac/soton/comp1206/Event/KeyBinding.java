@@ -1,29 +1,30 @@
 package uk.ac.soton.comp1206.Event;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import javafx.scene.input.KeyCode;
 
 /**
- * Each event can be assigned a key
+ * Each event can be assigned at most 2 keys
  * This means we can reassign key bindings during runtime as
  *  each event has a set of key bindings rather than a key
  *  being binded to an event
  */
 public enum KeyBinding {
-    ROTATE_RIGHT    (new KeyCode[] {KeyCode.CLOSE_BRACKET},     "Rotate the next piece 90 degrees right"),
-    ROTATE_LEFT     (new KeyCode[] {KeyCode.OPEN_BRACKET},      "Rotate the next piece 90 degrees left"),
-    PLACE           (new KeyCode[] {KeyCode.ENTER, KeyCode.X},  "Place the next piece on the board at the pointer if possible"),
-    MOVE_UP         (new KeyCode[] {KeyCode.UP, KeyCode.W},     "Move the pointer up by one square"),
-    MOVE_DOWN       (new KeyCode[] {KeyCode.DOWN, KeyCode.S},   "Move the pointer down by one square"),
-    MOVE_LEFT       (new KeyCode[] {KeyCode.LEFT, KeyCode.A},   "Move the pointer left by one square"),
-    MOVE_RIGHT      (new KeyCode[] {KeyCode.RIGHT, KeyCode.D},  "Move the pointer right by one square"),
-    SWAP            (new KeyCode[] {KeyCode.SPACE, KeyCode.R},  "Swap between the next and reserve piece"),
-    QUIT            (new KeyCode[] {KeyCode.ESCAPE},            "Quit the game"),
+    ROTATE_RIGHT    ("Rotate the next piece 90 degrees right",                          KeyCode.CLOSE_BRACKET            ),
+    ROTATE_LEFT     ("Rotate the next piece 90 degrees left",                           KeyCode.OPEN_BRACKET             ),
+    PLACE           ("Place the next piece on the board at the pointer if possible",    KeyCode.ENTER,          KeyCode.X),
+    MOVE_UP         ("Move the pointer up by one square",                               KeyCode.UP,             KeyCode.W),
+    MOVE_DOWN       ("Move the pointer down by one square",                             KeyCode.DOWN,           KeyCode.S),
+    MOVE_LEFT       ("Move the pointer left by one square",                             KeyCode.LEFT,           KeyCode.A),
+    MOVE_RIGHT      ("Move the pointer right by one square",                            KeyCode.RIGHT,          KeyCode.D),
+    SWAP            ("Swap between the next and reserve piece",                         KeyCode.SPACE,          KeyCode.R),
+    QUIT            ("Quit the game",                                                   KeyCode.ESCAPE                   ),
 
     //Multiplayer
-    TOGGLE_PANEL     (new KeyCode[] {KeyCode.TAB, KeyCode.C},                 "Toggles the online side panel.");      
+    TOGGLE_PANEL     ("Toggles the online side panel.",                                 KeyCode.TAB,            KeyCode.C);      
 
     //Hashmap of all the bindings
     private static HashMap<KeyCode, KeyBinding> bindings;
@@ -42,7 +43,7 @@ public enum KeyBinding {
     //The event for the key
     private KeyListener event;
 
-    private KeyBinding(KeyCode[] defaultKeys, String description) {
+    private KeyBinding(String description, KeyCode... defaultKeys) {
         this.defaultKeys = defaultKeys;
         this.description = description;
 
@@ -57,12 +58,23 @@ public enum KeyBinding {
         //Static fields are initialized after enum so this was the easiest fix
         if (KeyBinding.bindings == null) bindings = new HashMap<>();
 
+        //If the key is already assigned
         if (KeyBinding.bindings.containsKey(newKey)) return false;
 
         KeyBinding.bindings.put(newKey, this);
-        if (oldKey != null) KeyBinding.bindings.remove(oldKey);
+
+        //Remove the old key from any bindings
+        if (oldKey != null) {
+            KeyBinding.bindings.remove(oldKey);
+            this.keys.remove(oldKey);
+        }
+
         this.keys.add(newKey);
         return true;
+    }
+
+    public boolean assignKey(KeyCode newKey) {
+        return this.assignKey(null, newKey);
     }
 
     /**
@@ -101,6 +113,57 @@ public enum KeyBinding {
     }
 
     /**
+     * Used to disable the use of key actions
+     *  e.g. when typing a message
+     * @param keysDisabled the new state for disableKeys
+     */
+    public static void setKeysDisabled(boolean keysDisabled) {
+        KeyBinding.disableKeys = keysDisabled;
+    }
+
+    //GETTERS//
+
+    /**
+     * Gets an action by the key that calls it
+     * @param key The key being pressed
+     * @return The corresponding action
+     */
+    public static KeyBinding getAction(KeyCode key) {
+        return KeyBinding.bindings.get(key);
+    }
+
+    /**
+     * @return The action's description
+     */
+    public String getDescription() {
+        return this.description;
+    }
+
+    /**
+     * Gets all bindings for this action
+     * @return bindings for actions
+     */
+    public ArrayList<KeyCode> getBindings() {
+        var bindings = new ArrayList<KeyCode>();
+        this.keys.forEach(key -> bindings.add(key));
+
+        //Each key can have two bindings
+        //Adding a null value will result in a blank tile being displayed
+        if (bindings.size() < 2) bindings.add(null);
+        
+        return bindings;
+    }
+
+    /**
+     * Listener for when a key is pressed
+     */
+    public interface KeyListener {
+        public void onPress();
+    }
+
+    //STATIC//
+
+    /**
      * Resets all keys back to their defaults
      */
     public static void setDefaultKeys() {
@@ -120,33 +183,5 @@ public enum KeyBinding {
             KeyBinding.bindings.get(pressed).execute();
         }
         
-    }
-
-    /**
-     * Used to disable the use of key actions
-     *  e.g. when typing a message
-     * @param keysDisabled the new state for disableKeys
-     */
-    public static void setKeysDisabled(boolean keysDisabled) {
-        KeyBinding.disableKeys = keysDisabled;
-    }
-
-    public static KeyBinding getAction(KeyCode key) {
-        return KeyBinding.bindings.get(key);
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public HashSet<KeyCode> getBindings() {
-        return this.keys;
-    }
-
-    /**
-     * Listener for when a key is pressed
-     */
-    public interface KeyListener {
-        public void onPress();
     }
 }

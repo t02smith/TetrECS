@@ -7,7 +7,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import uk.ac.soton.comp1206.Event.KeyBinding;
-import uk.ac.soton.comp1206.Utility.Utility;
 
 /**
  * Displays all the key bindings with their associated actions
@@ -35,8 +34,6 @@ public class KeyBindingDisplay extends ScrollPane {
         actionGrid.setHgap(10);
         actionGrid.setVgap(10);
 
-        Utility.getImage("key.png"); //Preload this image now
-
         //Loops through every action
         for (int i = 0; i < actions.length; i++) {
             KeyBinding action = actions[i];
@@ -49,7 +46,7 @@ public class KeyBindingDisplay extends ScrollPane {
 
             //Loops through the action's key bindings
             action.getBindings().forEach(key -> {
-                var icon = new KeyIcon(key);
+                var icon = new KeyIcon(key, action);
 
                 //You can change a binding by clicking on it
                 icon.setOnMouseClicked(event -> {
@@ -58,17 +55,7 @@ public class KeyBindingDisplay extends ScrollPane {
                 });
 
                 //Add each icon to be displayed next to each other
-                keySet.getChildren().add(
-                    icon
-                );
-            });
-
-            //If the user is changing a binding listen for what key they press next
-            this.setOnKeyReleased(event -> {
-                if (this.changing != null) {
-                    this.changing.setKey(event.getCode());
-                    this.changing = null;
-                }
+                keySet.getChildren().add(icon);
             });
         
             //Adds the bindings to the grid
@@ -87,6 +74,15 @@ public class KeyBindingDisplay extends ScrollPane {
             actionGrid.add(description, 2, i);
             
         }
+
+        //If the user is changing a binding listen for what key they press next
+        this.setOnKeyReleased(event -> {
+            if (this.changing != null) {
+                this.changing.setKey(event.getCode());
+                this.changing = null;
+            }
+        });
+
 
         this.setContent(actionGrid);
     }
