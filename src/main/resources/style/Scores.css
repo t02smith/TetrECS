@@ -30,3 +30,19 @@
     -fx-background-insets: 20;
     -fx-border-insets: 20;
 }
+
+.name-input {
+    -fx-padding: 12px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-background-color: white;
+}
+
+.name-input .msg-input {
+    
+}
+
+.name-input .msg-send {
+    -fx-background-color: transparent;
+}
+

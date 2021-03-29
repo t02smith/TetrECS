@@ -52,5 +52,4 @@ public class CircularQueue<T> {
         return this.elements.size();
     }
 
-
 }

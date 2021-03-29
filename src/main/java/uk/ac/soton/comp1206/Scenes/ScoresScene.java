@@ -3,14 +3,14 @@ package uk.ac.soton.comp1206.Scenes;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import uk.ac.soton.comp1206.Components.Game.Scoreboard;
+import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar;
 import uk.ac.soton.comp1206.Event.SubmitScoreListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -19,14 +19,16 @@ public class ScoresScene extends BaseScene {
     private Scoreboard localScores;
     private Scoreboard onlineScores;
 
-    private boolean userPlayed = false;
+    private VBox components;
+
+    private SimpleBooleanProperty userPlayed = new SimpleBooleanProperty(false);
     private int userScore;
 
     private SubmitScoreListener ssl;
 
     public ScoresScene(GameWindow gw) {
         super(gw);
-        this.localScores = new Scoreboard("Local Score", Utility.readFromFile("/scores/localScores.txt"));
+        this.localScores = new Scoreboard("Local Score", Utility.readFromFile("scores/localScores.txt"));
     }
 
     /**
@@ -38,44 +40,9 @@ public class ScoresScene extends BaseScene {
         this.root.getStyleClass().add("score-shell");
 
         //Holds all the main components on the scene
-        var components = new VBox();
-        components.setSpacing(25);
-        components.setAlignment(Pos.CENTER);
-
-        //Enter usernme//
-
-        HBox submit = null;
-        Label finalScore = null;
-
-        //If the user has completed a game then give them the option to submit a score
-        if (this.userPlayed) {
-            //Displays the user's score
-            finalScore = new Label("Final Score " + this.userScore);
-            finalScore.getStyleClass().add("final-score");
-
-            //name input and button to submit their name and score
-            var name = new TextField();
-            name.getStyleClass().add("name-input");
-            name.setPromptText("Enter your name :)");
-            name.setMaxWidth(250);
-            name.setMinHeight(30);
-    
-            //Click to submit a score online
-            var submitScore = new Button();
-            submitScore.setOnAction(e -> {
-                this.ssl.submit(name.getText(), this.userScore);
-                this.userPlayed = false;
-                this.window.loadScores();
-            });
-    
-            submit = new HBox(
-                name,
-                submitScore
-            );
-
-            submit.setAlignment(Pos.CENTER);
-        }
-
+        this.components = new VBox();
+        this.components.setSpacing(25);
+        this.components.setAlignment(Pos.CENTER);
 
         //SCORES//
         var scoreLists = new HBox();
@@ -87,12 +54,39 @@ public class ScoresScene extends BaseScene {
         scoreLists.setAlignment(Pos.TOP_CENTER);
         scoreLists.setSpacing(25);
 
-        //If the user hasn't played, exclude the submit score function
-        if (this.userPlayed) components.getChildren().addAll(finalScore, submit, scoreLists);
-        else components.getChildren().addAll(scoreLists);
+        if (this.userPlayed.get()) {
+            this.buildSendUsername();
+        }
         
+        this.components.getChildren().add(scoreLists);       
 
-        this.root.setCenter(components);
+        this.root.setCenter(this.components);
+    }
+
+    private void buildSendUsername() {
+        var finalScore = new Label("Final Score: " + this.userScore);
+        finalScore.getStyleClass().add("final-score");
+
+        var nameInput = new TextToolbar(name -> {
+            this.ssl.submit(name, this.userScore);
+            this.userPlayed.set(false);
+        });
+
+        //Removes the name input after the score has been submitted
+        this.userPlayed.addListener(event -> {
+            if (!this.userPlayed.get()) {
+                this.components.getChildren().remove(nameInput);
+            }
+        });
+
+        nameInput.getStyleClass().add("name-input");
+        nameInput.setPromptText("Enter your name :)");
+        nameInput.setMaxWidth(250);
+
+        nameInput.setAlignment(Pos.CENTER);
+
+        this.components.getChildren().add(0, nameInput);
+        this.components.getChildren().add(0, finalScore);
     }
 
 
@@ -142,6 +136,6 @@ public class ScoresScene extends BaseScene {
     }
 
     public void setHasPlayed(boolean hasPlayed) {
-        this.userPlayed = hasPlayed;
+        this.userPlayed.set(hasPlayed);
     }
 }

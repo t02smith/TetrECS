@@ -84,13 +84,6 @@ public class KeyIcon extends StackPane {
     }
 
     /**
-     * Listener for when one of these icons is clicked
-     */
-    public interface ClickKeyListener {
-        public void click(KeyCode key);
-    }
-
-    /**
      * Will flash the the key icon red
      * Used when a user tries to assign a key to another key that's already bound
      */

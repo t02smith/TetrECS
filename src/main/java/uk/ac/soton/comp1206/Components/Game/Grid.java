@@ -106,9 +106,7 @@ public class Grid extends GridPane {
 
                 //Calls the given function when clicked
                 tile.setOnMouseClicked(event -> {
-                    if (event.getButton() == MouseButton.SECONDARY) {
-                        //right click
-                    } else if (event.getButton() == MouseButton.PRIMARY) {
+                     if (event.getButton() == MouseButton.PRIMARY) {
                         if (this.tcl != null) this.tcl.onClick(tile.getXPos(), tile.getYPos());
                         this.selectTile(tile.getXPos(), tile.getYPos());
                         tile.requestFocus();

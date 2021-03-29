@@ -12,9 +12,9 @@ import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.misc.ExpandingTextField;
 import uk.ac.soton.comp1206.Components.multiplayer.ChatPane;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
+import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
 import uk.ac.soton.comp1206.Event.GameStartListener;
 import uk.ac.soton.comp1206.Event.OnClickListener;
-import uk.ac.soton.comp1206.Event.SendMessageListener;
 import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Multiplayer.Channel;
@@ -83,7 +83,7 @@ public class LobbyScene extends BaseScene {
     /**
      * Builds the UI for when a user is in a channel
      */
-    public void buildInChannel(Channel channel, SendMessageListener sml) {
+    public void buildInChannel(Channel channel, SubmitListener sml) {
         this.inChannel.set(true);
         this.chatpane = new ChatPane(sml);
         this.chatpane.setMaxWidth(this.getWidth()*0.4);

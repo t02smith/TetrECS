@@ -3,7 +3,7 @@ package uk.ac.soton.comp1206.Components.multiplayer;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp1206.Event.SendMessageListener;
+import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 /**
@@ -18,12 +18,12 @@ public class ChatPane extends BorderPane {
     private VBox msgList;
 
     //The toolbar with the text input and send btn
-    private MsgToolbar toolbar;
+    private TextToolbar toolbar;
 
     //What to do when sending a message
-    private SendMessageListener sendMsg;
+    private SubmitListener sendMsg;
 
-    public ChatPane(SendMessageListener sml) {
+    public ChatPane(SubmitListener sml) {
         this.sendMsg = sml;
         this.build();
     }
@@ -43,7 +43,7 @@ public class ChatPane extends BorderPane {
 
         this.setCenter(this.msgWindow);
 
-        this.toolbar = new MsgToolbar(this.sendMsg);
+        this.toolbar = new TextToolbar(this.sendMsg);
         this.setBottom(this.toolbar);
     }
 

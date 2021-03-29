@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
+import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.Multiplayer.MultiplayerGame;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -98,6 +99,11 @@ public class App extends Application {
         NetworkProtocol.HISCORES.addListener(message -> {
             logger.info("Setting online scores");
             this.gameWindow.getScoresScene().setOnlineScores(message);
+            Utility.writeToFile(
+                "scores/remoteScores.txt", 
+                message, 
+                false
+            );
         });
 
         this.communicator.send("HISCORES");

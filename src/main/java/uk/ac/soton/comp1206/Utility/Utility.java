@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -67,19 +66,21 @@ public class Utility {
     public static ArrayList<String> readFromFile(String filename) {
         try {
             BufferedReader br = new BufferedReader(
-                new FileReader(
-                    new File(Utility.class.getResource(filename).toURI())
-                )
+                new FileReader(new File(filename))
             );
 
             String line;
             var output = new ArrayList<String>();
 
             //Reads file line by line
-            while ((line = br.readLine()) != null) output.add(line);
+            while ((line = br.readLine()) != null) {
+                if (line.length() > 0) output.add(line);
+            };
+
+            br.close();
 
             return output;
-        } catch (FileNotFoundException | URISyntaxException e) {
+        } catch (FileNotFoundException e) {
             logger.error("File {} not found", filename);
         } catch (IOException e) {
             logger.error("Error reading file {}", filename);
@@ -93,19 +94,20 @@ public class Utility {
      * @param filename the file to write to
      * @param lines the string to write to the file
      */
-    public static void writeToFile(String filename, String lines) {
+    public static void writeToFile(String filename, String lines, boolean append) {
         try {
             var fw = new FileWriter(
-                new File(Utility.class.getResource(filename).toURI())
+                new File(filename), append
             );
             
             fw.write(lines);
             fw.close();
             logger.info("Writing {} to '{}'", lines, filename);
 
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             logger.error("Error writing to file {}", filename);
         }
 
     }
+
 }

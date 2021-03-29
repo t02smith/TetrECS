@@ -1,7 +1,6 @@
 package uk.ac.soton.comp1206.Components.Game;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -14,10 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+
 import uk.ac.soton.comp1206.Utility.MutablePair;
 
 /**
  * Scoreboard to display a list of scores
+ * @author tcs1g20
  */
 public class Scoreboard extends VBox {
     //Name of the scoreboard
@@ -26,8 +27,9 @@ public class Scoreboard extends VBox {
     //List of scores
     private SimpleListProperty<MutablePair<String, Integer>> scores;
 
-    //Assigns each user a different colour
-    private HashMap<String, Color> colours = new HashMap<>();
+    //Each user's unique colour
+    // Allows for multiple users with the same name
+    private HashMap<MutablePair<String, Integer>, Color> colours = new HashMap<>();
 
     //Different colours the scores can be
     private static final Color[] scoreColors = {
@@ -40,27 +42,46 @@ public class Scoreboard extends VBox {
      */
     public Scoreboard(String name, HashMap<String, Integer> scores) {
         this.name = name;
-        this.createScoreList(scores);
+
+        int counter = 0;
+        var scoreList = new ArrayList<MutablePair<String, Integer>>();
+        for (String username: scores.keySet()) {
+            var newUser = new MutablePair<String, Integer>(username, scores.get(username));
+            scoreList.add(newUser);
+
+            //Each user has a unique colour so that it is obvious when
+            // scoreboard changes occur
+            this.colours.put(newUser, scoreColors[counter]);
+            counter++;
+        }
+
+        this.createScoreList(scoreList);
         this.build();
     }
 
     /**
      * Creates a scoreboard from a list of scores as <name>:<score>
      *  This is how it is read from the file and received from online
+     * 
+     * Using this constructor implies that there could be duplicate names
+     *  i.e. from a leaderboard where someone can appear twice
      * @param name The name of the scoreboard
      * @param scores The list of unformatted scores
      */
-    public Scoreboard(String name, Collection<String> scores) {
+    public Scoreboard(String name, ArrayList<String> scores) {
         this.name = name;
 
-        //Changes the scores list to a hashmap
-        var scoreMap = new HashMap<String, Integer>();
-        scores.forEach(score -> {
-            var scoreSplit = score.split(":");
-            scoreMap.put(scoreSplit[0], Integer.parseInt(scoreSplit[1]));
-        });
+        var scoreList = new ArrayList<MutablePair<String, Integer>>();
+        for (int i = 0; i < scores.size(); i++) {
+            var score = scores.get(i).split(":");
+            
+            var newUser = new MutablePair<String, Integer>(score[0], Integer.parseInt(score[1]));
+            scoreList.add(newUser);
 
-        this.createScoreList(scoreMap);
+            this.colours.put(newUser, scoreColors[i%10]);
+        }
+
+        this.createScoreList(scoreList);
         this.build();
 
     }
@@ -81,30 +102,15 @@ public class Scoreboard extends VBox {
      * Creates the simplelistproperty from a given array
      * @param scores the list of scores
      */
-    private void createScoreList(HashMap<String, Integer> scores) {
-        //Collects names and scores from a given set of lines (i.e. from the server)       
-        var pairList = new ArrayList<MutablePair<String, Integer>>();
-
-        int counter = 0;
-        for (String name: scores.keySet()) {
-            pairList.add(
-                new MutablePair<String, Integer>(name, scores.get(name))
-            );
-
-            //Each user has a unique colour so that it is obvious when
-            // scoreboard changes occur
-            this.colours.put(name, scoreColors[counter]);
-            counter++;
-        }
+    private void createScoreList(ArrayList<MutablePair<String, Integer>> scores) {
         
-        ObservableList<MutablePair<String, Integer>> observableList = FXCollections.observableArrayList(pairList);
+        ObservableList<MutablePair<String, Integer>> observableList = FXCollections.observableArrayList(scores);
 
         //Sorts the scores highest to lowest
         Comparator<MutablePair<String, Integer>> comparator = Comparator.comparingInt(MutablePair::getValue);
         FXCollections.sort(observableList, comparator.reversed());
 
         this.scores = new SimpleListProperty<>(observableList);
-
     }
 
     /**
@@ -137,7 +143,7 @@ public class Scoreboard extends VBox {
         int max = this.scores.getSize() < 10 ? scores.getSize(): 10;
         for (int i = 0; i < max; i++) {
             var score = this.scores.get(i);
-            var colour = this.colours.get(score.getKey());
+            var colour = this.colours.get(score);
 
             //Adds the position, name and score on the scoreboard with a selected colour
             var pos = new Label(String.valueOf(i+1) + " ");

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -15,6 +16,7 @@ import uk.ac.soton.comp1206.Components.Game.Grid;
 import uk.ac.soton.comp1206.Components.Game.Sidebar;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -66,6 +68,13 @@ public class ChallengeScene extends BaseScene {
         //Center of screen//
         //Game grid//
         this.grid = new Grid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
+        this.grid.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                KeyBinding.ROTATE_RIGHT.execute();
+            } else if (event.getButton() == MouseButton.MIDDLE) {
+                KeyBinding.SWAP.execute();
+            }
+        });
 
         this.buildTimer();
         this.buildSidebar();

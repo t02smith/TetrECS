@@ -16,7 +16,7 @@ import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
 import uk.ac.soton.comp1206.Components.multiplayer.OnlinePanel;
 import uk.ac.soton.comp1206.Components.multiplayer.User;
-import uk.ac.soton.comp1206.Event.SendMessageListener;
+import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -27,7 +27,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 public class MultiplayerScene extends ChallengeScene {
     //Message list
     private ChatPane chatpane;
-    private SendMessageListener sml;
+    private SubmitListener sml;
 
     //List of users
     private VBox users;
@@ -39,7 +39,7 @@ public class MultiplayerScene extends ChallengeScene {
     //Side panel for online content
     private OnlinePanel onlinePanel;
 
-    public MultiplayerScene(GameWindow window, SendMessageListener sml) {
+    public MultiplayerScene(GameWindow window, SubmitListener sml) {
         super(window);
         this.sml = sml;
     }
@@ -70,7 +70,6 @@ public class MultiplayerScene extends ChallengeScene {
         this.users = new VBox(10);
         var userScroll = new ScrollPane(this.users);
         userScroll.setFitToWidth(true);
-        //userScroll.setMaxWidth(this.getWidth()*0.25);
         userScroll.setMinWidth(this.getWidth()*0.25);
 
         this.users.setAlignment(Pos.TOP_CENTER);

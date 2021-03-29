@@ -16,11 +16,14 @@ import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
 import uk.ac.soton.comp1206.Utility.Media;
+import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 /**
  * Singleplayer game class
  * Handles the game logic
+ * 
+ * @author tcs1g20
  */
 public class Game {
     protected static final Logger logger = LogManager.getLogger(Game.class);
@@ -77,6 +80,12 @@ public class Game {
             logger.info("Submitting new score");
             this.communicator.send(
                 String.format("HISCORE %s:%d", name, score)
+            );
+            
+            Utility.writeToFile(
+                "scores/localScores.txt", 
+                name + ":" + String.valueOf(score) + "\n",
+                true
             );
         });
 
@@ -382,6 +391,10 @@ public class Game {
         this.challengeScene.getBoard().moveSelected(byX, byY);
     }
     
+    /**
+     * Attempt to insert piece at the selected tile
+     *  (the one with the pointer on)
+     */
     protected void insertSelected() {
         int[] selected = this.challengeScene.getBoard().getSelectedPos();
         this.insertPiece(selected[0], selected[1]);
