@@ -30,14 +30,11 @@ public class ExpandingTextField extends HBox {
 
     private HBox shell;
 
-    private OnClickListener onClick;
-
     private SimpleBooleanProperty open = new SimpleBooleanProperty(false);
 
 
-    public ExpandingTextField(String title, OnClickListener onClick) {
+    public ExpandingTextField(String title) {
         this.title.set(title);
-        this.onClick = onClick;
         
         this.build();
 
@@ -73,16 +70,7 @@ public class ExpandingTextField extends HBox {
         this.setPadding(new Insets(0, 0, 50, 0));
         this.input.setAlignment(Pos.CENTER);
 
-        this.input.setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                if (this.input.getText().length() > 0) {
-                    this.onClick.onClick(this.input.getText());  
-                    this.input.setText("");
-                }
 
-                this.toggleTextField();
-            }    
-        });
 
         this.nameA.setOnMouseClicked(event -> this.toggleTextField());
         this.nameB.setOnMouseClicked(event -> this.toggleTextField());
@@ -127,6 +115,20 @@ public class ExpandingTextField extends HBox {
 
 
     }
+
+    public void setOnClickListener(OnClickListener listener) {
+        this.input.setOnKeyReleased(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                if (this.input.getText().length() > 0) {
+                    listener.onClick(this.input.getText());  
+                    this.input.setText("");
+                }
+
+                this.toggleTextField();
+            }    
+        });
+    }
+
 
     public void setPromptText(String text) {
         this.input.setPromptText(text);

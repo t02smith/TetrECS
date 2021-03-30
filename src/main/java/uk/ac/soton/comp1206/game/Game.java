@@ -95,6 +95,7 @@ public class Game {
             this.nextPiece();
 
             this.gameOver = false;
+            KeyBinding.setKeysDisabled(false);
 
             //Plays background music
             Media.playMusic("game.wav");
@@ -146,15 +147,13 @@ public class Game {
         KeyBinding.MOVE_RIGHT.setEvent(() -> this.moveSelected(1, 0));
         KeyBinding.MOVE_DOWN.setEvent(() -> this.moveSelected(0, 1));
 
-        KeyBinding.QUIT.setEvent(() -> {
+        
+        KeyBinding.ESCAPE.setEvent(() -> {
             logger.info("Returning to menu");
-            this.gameWindow.loadMenu();
+            this.gameWindow.revertScene();
             this.resetGame();
         });
 
-        this.challengeScene.setOnKeyReleased(event -> {
-            KeyBinding.executeEvent(event.getCode());
-        });
 
     }
 
@@ -266,7 +265,7 @@ public class Game {
 
         //Resets the game for the next round
         this.resetGame();
-        this.gameWindow.loadScene(this.scoresScene);
+        this.gameWindow.replaceScene(this.scoresScene);
     }
 
     /**
@@ -280,6 +279,8 @@ public class Game {
         this.lives.set(3);
         this.level.set(0);
         this.multiplier.set(1);
+
+        KeyBinding.setKeysDisabled(true);
     }
 
     /**

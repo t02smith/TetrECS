@@ -15,6 +15,11 @@ import uk.ac.soton.comp1206.Event.SubmitScoreListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * Scene to display the list of local and online scores
+ * After a game a user can submit their score
+ * @author tcs1g20
+ */
 public class ScoresScene extends BaseScene {
     private Scoreboard localScores;
     private Scoreboard onlineScores;
@@ -63,13 +68,19 @@ public class ScoresScene extends BaseScene {
         this.root.setCenter(this.components);
     }
 
+    /**
+     * Creates the component to send off the user's name and score
+     */
     private void buildSendUsername() {
         var finalScore = new Label("Final Score: " + this.userScore);
         finalScore.getStyleClass().add("final-score");
 
         var nameInput = new TextToolbar(name -> {
             this.ssl.submit(name, this.userScore);
+            this.localScores.addUser(name, this.userScore);
+            this.onlineScores.addUser(name, this.userScore);
             this.userPlayed.set(false);
+            
         });
 
         //Removes the name input after the score has been submitted
@@ -84,6 +95,7 @@ public class ScoresScene extends BaseScene {
         nameInput.setMaxWidth(250);
 
         nameInput.setAlignment(Pos.CENTER);
+        nameInput.setTextAlignment(Pos.CENTER);
 
         this.components.getChildren().add(0, nameInput);
         this.components.getChildren().add(0, finalScore);

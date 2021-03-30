@@ -32,14 +32,23 @@
 }
 
 .name-input {
-    -fx-padding: 12px;
+    -fx-font-size: 14px;
     -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-background-color: white;
+    -fx-background-color: rgba(255, 255, 255, 0.5);
 }
 
 .name-input .msg-input {
-    
+    -fx-border-color: transparent;
+    -fx-background-color: -fx-control-inner-background;
+    -fx-font-family: "Karmatic Arcade";
+    -fx-padding: 7px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.name-input .msg-input:focused {
+    -fx-border-color: transparent;
 }
 
 .name-input .msg-send {

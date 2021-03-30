@@ -16,8 +16,9 @@ import javafx.scene.image.Image;
 
 /**
  * Utility class to handle file IO
+ * @author tcs1g20
  */
-public class Utility {
+public abstract class Utility {
     protected static final Logger logger = LogManager.getLogger(Utility.class);
 
     //Stores all images to prevent them being loaded multiple times

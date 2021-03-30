@@ -15,6 +15,10 @@ import uk.ac.soton.comp1206.Utility.Media;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * Menu scene for the user to navigate to the different scenes
+ * @author tcs1g20
+ */
 public class Menu extends BaseScene {
 
     public Menu(GameWindow window) {

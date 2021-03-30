@@ -1,16 +1,23 @@
 package uk.ac.soton.comp1206.ui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Event.GameStartListener;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Scenes.BaseScene;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
+import uk.ac.soton.comp1206.Scenes.ChannelScene;
 import uk.ac.soton.comp1206.Scenes.InstructionScene;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.Menu;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
+import uk.ac.soton.comp1206.Utility.Stack;
 import uk.ac.soton.comp1206.Utility.Utility;
+import uk.ac.soton.comp1206.game.Multiplayer.Channel;
 
 /**
  * This class will store the stage for each scene
@@ -18,16 +25,26 @@ import uk.ac.soton.comp1206.Utility.Utility;
  *  and change aspects like size
  */
 public class GameWindow {
+    private static final Logger logger = LogManager.getLogger(GameWindow.class);
+
     private final Stage stage;
 
     private int width;
     private int height;
 
+    //Stores scenes as they are loaded so that they can be traversed back
+    private Stack<BaseScene> scenes = new Stack<>();
+
+    //SCENES
+
     private Menu menu;
+    private InstructionScene instructionScene;
+
     private ChallengeScene gameScene;
     private ScoresScene scoresScene;
+
     private LobbyScene lobbyScene;
-    private InstructionScene instructionScene;
+    private ChannelScene channel;
 
     private GameStartListener gsl;
 
@@ -51,6 +68,8 @@ public class GameWindow {
      * Sets up the initial stage
      */
     private void setupStage() {
+        logger.info("Setting up stage");
+
         this.stage.setTitle("Tetrecs");
         this.stage.getIcons().add(Utility.getImage("icon.png"));
         this.stage.setMinWidth(this.width);
@@ -74,6 +93,27 @@ public class GameWindow {
      * @param scene The scene to be shown
      */
     public void loadScene(BaseScene scene) {
+        logger.info("Loading scene {}", scene);
+
+        scene.build();
+        if (this.stage.getScene() != null) this.scenes.push((BaseScene)this.stage.getScene());
+        this.stage.setScene(scene);
+    }
+
+    /**
+     * Moves the scene back to what it was previously
+     */
+    public void revertScene() {
+        if (this.scenes.size() > 0) {
+            logger.info("Reverting scene");
+            var previous = this.scenes.pop();
+            previous.setKeyBindings();
+            this.stage.setScene(previous);
+        }
+    }
+
+    public void replaceScene(BaseScene scene) {
+        logger.info("Replacing current scene");
         scene.build();
         this.stage.setScene(scene);
     }
@@ -84,6 +124,7 @@ public class GameWindow {
      * @param height The min/desired height
      */
     public void setSize(double width, double height) {
+        logger.info("Setting window to {} x {}", width, height);
         this.stage.setMinWidth(width);
         this.stage.setWidth(width);
 
@@ -135,6 +176,15 @@ public class GameWindow {
 
     public void loadLobby() {
         this.loadScene(this.lobbyScene);
+    }
+
+    public void loadChannel(Channel channel) {
+        this.channel = new ChannelScene(this, channel);
+        this.loadScene(this.channel);
+    }
+
+    public ChannelScene getChannelScene() {
+        return this.channel;
     }
 
 

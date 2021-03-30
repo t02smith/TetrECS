@@ -23,9 +23,13 @@ public class ChatPane extends BorderPane {
     //What to do when sending a message
     private SubmitListener sendMsg;
 
-    public ChatPane(SubmitListener sml) {
-        this.sendMsg = sml;
+    public ChatPane() {
         this.build();
+    }
+
+    public ChatPane(SubmitListener sendMsg) {
+        this.build();
+        this.setSendMessageListener(sendMsg);
     }
 
     /**
@@ -50,6 +54,10 @@ public class ChatPane extends BorderPane {
     public void addMessage(Message msg) {
         this.msgList.getChildren().add(msg);
         this.msgWindow.setVvalue(0.0);
+    }
+
+    public void setSendMessageListener(SubmitListener listener) {
+        this.toolbar.setSubmitListener(listener);
     }
 
 }

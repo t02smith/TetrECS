@@ -13,6 +13,8 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  * The instruction scene will tell the users how to play
  *  the game. Including gamepieces they can play and the
  *  key bindings
+ * 
+ * @author tcs1g20
  */
 public class InstructionScene extends BaseScene {
     //Piece display
@@ -50,7 +52,6 @@ public class InstructionScene extends BaseScene {
 
         this.root.setCenter(body);
 
-        //Key bindings + game rules
     }
 
 

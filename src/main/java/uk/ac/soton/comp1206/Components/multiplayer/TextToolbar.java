@@ -100,6 +100,10 @@ public class TextToolbar extends HBox {
         this.content.setPromptText(promptText);
     }
 
+    public void setTextAlignment(Pos alignment) {
+        this.content.setAlignment(alignment);
+    }
+
     /**
      * A listener to be called when submitting any text
      */

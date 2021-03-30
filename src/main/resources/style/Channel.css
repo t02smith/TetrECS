@@ -1,21 +1,21 @@
-
-.lobby-shell {
+.channel-shell {
     -fx-background-image: url("../images/background.jpg");
     -fx-background-size: cover;
     -fx-background-color: transparent;
 }
 
-.channel-title {
-    -fx-text-fill: white;
-    -fx-font-family: "Karmatic Arcade";
-    -fx-font-size: 40;
+.user-list {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+    -fx-backround-insets: 25px;
+    -fx-border-insets: 25px;
 }
 
-
-.no-channels {
-    -fx-text-fill: red;
+.channel-user {
+    -fx-text-fill: white;
     -fx-font-family: "Karmatic Arcade";
-    -fx-font-size: 25;
+    -fx-font-size: 16px;
 }
 
 .expanding-tf-name {
@@ -43,6 +43,18 @@
     -fx-font-weight: bold;
 }
 
+.channel-name {
+    -fx-text-fill: white;
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 45;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
 
-/*list of users*/
+.start-multiplayer {
+    -fx-bacgkround-color: transparent;
+    -fx-border-color: transparent;
 
+    -fx-text-fill: rgb(11, 126, 11);
+    -fx-font-size: 32px;
+}

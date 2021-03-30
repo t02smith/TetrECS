@@ -14,6 +14,7 @@ import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
+import uk.ac.soton.comp1206.Scenes.ChannelScene;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.MultiplayerScene;
 import uk.ac.soton.comp1206.Utility.Media;
@@ -46,6 +47,8 @@ public class MultiplayerGame extends Game {
     //The lobby the user goes into to join/create channels
     private LobbyScene lobby;
 
+    private ChannelScene channelScene;
+
     public MultiplayerGame(GameWindow gw, Communicator communicator) {
         super(gw, communicator);
 
@@ -68,29 +71,6 @@ public class MultiplayerGame extends Game {
         this.lobby = new LobbyScene(this.gameWindow);
         this.lobby.setCreateChannelListener(channelName -> {
             this.communicator.send("CREATE " + channelName);
-        });
-
-        //When you leave a channel
-        this.lobby.inChannelProperty().addListener(event -> {
-            if (!this.lobby.getInChannel()) {
-                this.leaveChannel();
-            }
-        });
-
-        //Basic lobby key commands
-        this.lobby.setOnKeyReleased(event -> {
-            switch(event.getCode()) {
-                default:
-                    break;
-                case ESCAPE:
-                    this.updateChannelList.stop();
-                    if (this.lobby.getInChannel()) {
-                        this.lobby.buildInLobby();
-                        this.leaveChannel();
-
-                    } else this.gameWindow.loadMenu();
-                    break;
-            }
         });
 
         //Game setup//
@@ -188,17 +168,15 @@ public class MultiplayerGame extends Game {
         //Updates the list of users in the channel
         NetworkProtocol.USERS.addListener(message -> {
             this.currentChannel.updateUsers(message);
-            Platform.runLater(() -> this.lobby.updateUserList(this.currentChannel));
+            Platform.runLater(() -> this.channelScene.updateUserList(this.currentChannel));
         });
 
         //If the user is the host
         NetworkProtocol.HOST.addListener(message -> {
             logger.info("You are the host");
-            Platform.runLater(() -> this.lobby.showHostComponents());
+            Platform.runLater(() -> this.channelScene.showHostComponents());
         });
 
-        //Called when the host starts the game
-        this.lobby.setGameStartListener(() -> this.communicator.send("START"));
         
         //For when the game starts
         NetworkProtocol.START.addListener(message -> {
@@ -219,14 +197,10 @@ public class MultiplayerGame extends Game {
             String[] msg = message.substring(4).split(":");
             var msgComponent = new Message(msg[0], msg[1], msg[0].equals(this.name));
             if (this.inGame) ((MultiplayerScene)this.challengeScene).addMessage(msgComponent);
-            else this.lobby.addMessage(msgComponent);
+            else this.channelScene.addMessage(msgComponent);
         });
 
-        //Sets initial nickname from server
-        NetworkProtocol.NICK.addListener(message -> {
-            this.name = message.split("\\s+")[1];
-            Platform.runLater(() -> this.lobby.setNickname(this.name));
-        });
+
 
         //Change a nickname
         NetworkProtocol.CHANGE_NICK.addListener(message -> {
@@ -234,13 +208,6 @@ public class MultiplayerGame extends Game {
             this.currentChannel.updateNickname(msg[0], msg[1]);
 
         });
-
-        //When a nickname is changed
-        this.lobby.setChangeNicknameListener(nickname -> {
-            this.communicator.send("NICK " + nickname);
-            this.communicator.send("MSG **" + this.name + "** has changed their name to **" + nickname + "**");
-        });
-
 
         //IN GAME//
 
@@ -467,10 +434,30 @@ public class MultiplayerGame extends Game {
         ((MultiplayerScene)this.challengeScene).setUserList(this.currentChannel.getUsers());
         
         Platform.runLater(() -> {
-            this.lobby.buildInChannel(this.currentChannel, message -> {
+            this.gameWindow.loadChannel(this.currentChannel);
+
+            this.channelScene = this.gameWindow.getChannelScene();
+
+            this.channelScene.setSendMessageListener(message -> {
                 this.communicator.send("MSG " + message);
             });
+    
+            //Called when the host starts the game
+            this.channelScene.setGameStartListener(() -> this.communicator.send("START"));
+    
+            //When a nickname is changed
+            this.channelScene.setChangeNicknameListener(nickname -> {
+                this.communicator.send("NICK " + nickname);
+            });
+
+            //Sets initial nickname from server
+            NetworkProtocol.NICK.addListener(message -> {
+                this.name = message.split("\\s+")[1];
+                Platform.runLater(() -> this.channelScene.setNickname(this.name));
+            });
         });
+
+
 
     }
 

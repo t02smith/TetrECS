@@ -3,6 +3,7 @@ package uk.ac.soton.comp1206.Components.Game;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Random;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
@@ -33,7 +34,7 @@ public class Scoreboard extends VBox {
 
     //Different colours the scores can be
     private static final Color[] scoreColors = {
-        Color.HOTPINK, Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.LIME, Color.GREEN, Color.DARKGREEN, Color.CYAN, Color.BLUE
+        Color.HOTPINK, Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.LIME, Color.PURPLE, Color.DARKGREEN, Color.CYAN, Color.BLUE
     };
 
     /**
@@ -103,14 +104,11 @@ public class Scoreboard extends VBox {
      * @param scores the list of scores
      */
     private void createScoreList(ArrayList<MutablePair<String, Integer>> scores) {
-        
         ObservableList<MutablePair<String, Integer>> observableList = FXCollections.observableArrayList(scores);
-
-        //Sorts the scores highest to lowest
-        Comparator<MutablePair<String, Integer>> comparator = Comparator.comparingInt(MutablePair::getValue);
-        FXCollections.sort(observableList, comparator.reversed());
-
         this.scores = new SimpleListProperty<>(observableList);
+
+        //Sorts the users to make sure they are in order
+        this.sortUsers();
     }
 
     /**
@@ -129,13 +127,34 @@ public class Scoreboard extends VBox {
     }
 
     /**
+     * Adds a newuser onto the scoreboard
+     * @param name The user's name
+     * @param score The user's score
+     */
+    public void addUser(String name, int score) {
+        var newUser = new MutablePair<String, Integer>(name, score);
+
+        this.scores.add(newUser);
+        this.colours.put(newUser, scoreColors[new Random().nextInt(scoreColors.length)]);
+
+        this.sortUsers();
+    }
+
+    /**
+     * Sorts the scores attribute from highest to lowest
+     */
+    private void sortUsers() {
+        Comparator<MutablePair<String, Integer>> comparator = Comparator.comparingInt(MutablePair::getValue);
+        FXCollections.sort(this.scores, comparator.reversed());
+        Platform.runLater(() -> this.updateScoreboard());
+    }
+
+    /**
      * When a change is made to the scoreboard update it
      */
     private void updateScoreboard() {
         this.getChildren().clear();
 
-        Comparator<MutablePair<String, Integer>> comparator = Comparator.comparingInt(MutablePair::getValue);
-        FXCollections.sort(this.scores, comparator.reversed());
 
         var scoreBoard = new GridPane();
 

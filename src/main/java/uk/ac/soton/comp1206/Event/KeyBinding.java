@@ -21,7 +21,7 @@ public enum KeyBinding {
     MOVE_LEFT       ("Move the pointer left by one square",                             KeyCode.LEFT,           KeyCode.A),
     MOVE_RIGHT      ("Move the pointer right by one square",                            KeyCode.RIGHT,          KeyCode.D),
     SWAP            ("Swap between the next and reserve piece",                         KeyCode.SPACE,          KeyCode.R),
-    QUIT            ("Quit the game",                                                   KeyCode.ESCAPE                   ),
+    ESCAPE          ("Move back to the previous screen",                                KeyCode.ESCAPE                   ),
 
     //Multiplayer
     TOGGLE_PANEL     ("Toggles the online side panel.",                                 KeyCode.TAB,            KeyCode.C);      
@@ -30,7 +30,7 @@ public enum KeyBinding {
     private static HashMap<KeyCode, KeyBinding> bindings;
 
     //Disable all key commands e.g. when typing
-    private static boolean disableKeys = false;
+    private static boolean disableKeys = true;
 
     //The keys currently assigned to an event
     private HashSet<KeyCode> keys = new HashSet<>();
@@ -177,7 +177,7 @@ public enum KeyBinding {
      * @param pressed The key pressed
      */
     public static void executeEvent(KeyCode pressed) {
-        if (KeyBinding.disableKeys) return;
+        if (KeyBinding.disableKeys && pressed != KeyCode.ESCAPE) return;
 
         if (KeyBinding.bindings.containsKey(pressed)) {
             KeyBinding.bindings.get(pressed).execute();
