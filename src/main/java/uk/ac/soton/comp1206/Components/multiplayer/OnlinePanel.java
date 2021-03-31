@@ -20,6 +20,8 @@ import javafx.util.Duration;
  *  -> Other player's grids
  *  -> The game chat
  *  -> The current leaderboard
+ * 
+ * @author tcs1g20
  */
 public class OnlinePanel extends BorderPane {
     //The panel components being displayed
@@ -45,6 +47,9 @@ public class OnlinePanel extends BorderPane {
         this.build();
     }
 
+    /**
+     * Builds the component
+     */
     public void build() {
         //ON SCREEN NAVIGATION//
         this.navigation = new HBox(10);

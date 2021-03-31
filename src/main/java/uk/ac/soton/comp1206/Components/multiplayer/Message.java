@@ -16,6 +16,7 @@ import javafx.util.Duration;
 
 /**
  * Each individual message to be displayed
+ * @author tcs1g20
  */
 public class Message extends HBox {
     //Holds each message
@@ -36,6 +37,12 @@ public class Message extends HBox {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
     
+    /**
+     * Creates a new message that can be displayed
+     * @param author who send the message
+     * @param content what the message sent
+     * @param isUser did the user send the message
+     */
     public Message(String author, String content, boolean isUser) {
         this.isUser = isUser;
 

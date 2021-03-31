@@ -18,21 +18,27 @@ import uk.ac.soton.comp1206.Event.OnClickListener;
 
 /**
  * A button that when clicked expands out a textfield for the user to type in
- * 
+ * @author tcs1g20
  */
 public class ExpandingTextField extends HBox {
+    //The text on the outside of the box
     private SimpleStringProperty title = new SimpleStringProperty();
 
+    //Two halves of the title that are split apart
     private Label nameA = new Label();
     private Label nameB = new Label();
 
+    //The input field
     private TextField input;
 
     private HBox shell;
 
     private SimpleBooleanProperty open = new SimpleBooleanProperty(false);
 
-
+    /**
+     * Creates a button that expands into a textfield
+     * @param title The label to go on the front
+     */
     public ExpandingTextField(String title) {
         this.title.set(title);
         
@@ -40,6 +46,9 @@ public class ExpandingTextField extends HBox {
 
     }
 
+    /**
+     * Builds the component
+     */
     public void build() {
         this.setAlignment(Pos.CENTER);
 
@@ -70,8 +79,6 @@ public class ExpandingTextField extends HBox {
         this.setPadding(new Insets(0, 0, 50, 0));
         this.input.setAlignment(Pos.CENTER);
 
-
-
         this.nameA.setOnMouseClicked(event -> this.toggleTextField());
         this.nameB.setOnMouseClicked(event -> this.toggleTextField());
 
@@ -92,6 +99,9 @@ public class ExpandingTextField extends HBox {
 
     }
 
+    /**
+     * Opens/closes the component
+     */
     public void toggleTextField() {
         if (!this.open.get()) {
             this.input.setVisible(true);
@@ -116,6 +126,10 @@ public class ExpandingTextField extends HBox {
 
     }
 
+    /**
+     * Sets what happens when a user hits enter
+     * @param listener 
+     */
     public void setOnClickListener(OnClickListener listener) {
         this.input.setOnKeyReleased(event -> {
             if (event.getCode() == KeyCode.ENTER) {

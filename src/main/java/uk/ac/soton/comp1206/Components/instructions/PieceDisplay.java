@@ -9,6 +9,7 @@ import uk.ac.soton.comp1206.game.GamePiece;
 
 /**
  * Used to display all the different game pieces at once
+ * @author tcs1g20
  */
 public class PieceDisplay extends VBox {
     //The set of all pieces

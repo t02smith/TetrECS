@@ -11,6 +11,8 @@ import javafx.scene.input.KeyCode;
  * This means we can reassign key bindings during runtime as
  *  each event has a set of key bindings rather than a key
  *  being binded to an event
+ * 
+ * @author tcs1g20
  */
 public enum KeyBinding {
     ROTATE_RIGHT    ("Rotate the next piece 90 degrees right",                          KeyCode.CLOSE_BRACKET            ),
@@ -38,6 +40,7 @@ public enum KeyBinding {
     //The default set of keys for this event
     private final KeyCode[] defaultKeys;
 
+    //The description of the action
     private final String description;
 
     //The event for the key
@@ -73,6 +76,11 @@ public enum KeyBinding {
         return true;
     }
 
+    /**
+     * binds a key to an action without replacing an existing key
+     * @param newKey the key to be bound
+     * @return whether the key was successfully bound
+     */
     public boolean assignKey(KeyCode newKey) {
         return this.assignKey(null, newKey);
     }

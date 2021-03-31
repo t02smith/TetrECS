@@ -22,6 +22,10 @@ import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * The multiplayer version of the game
+ * @author tcs1g20
+ */
 public class MultiplayerGame extends Game {
     //List of all channels currently available
     private HashMap<String, Channel> channels = new HashMap<>();
@@ -47,8 +51,14 @@ public class MultiplayerGame extends Game {
     //The lobby the user goes into to join/create channels
     private LobbyScene lobby;
 
+    //The channel lobby before the game starts
     private ChannelScene channelScene;
 
+    /**
+     * Creates a new multiplayer game
+     * @param gw the window the game will be on
+     * @param communicator the communicator connected to a server
+     */
     public MultiplayerGame(GameWindow gw, Communicator communicator) {
         super(gw, communicator);
 

@@ -12,6 +12,7 @@ import uk.ac.soton.comp1206.Utility.Media;
  * This enum is used to store each possible gamepiece
  * Each piece can be rotated
  * This will also let you fetch one at random
+ * @author tcs1g20
  */
 public enum GamePiece {
     C           (new int[][] {{0, 0, 0}, {1, 1, 1}, {1, 0, 1}}, 1),
@@ -75,7 +76,7 @@ public enum GamePiece {
     }
 
     /**
-     * Rotates a piece 90deg clockwise
+     * Rotates a piece 90deg anti-clockwise
      */
     public void rotateLeft() {
         logger.info("Rotating {} left", this);
@@ -92,6 +93,9 @@ public enum GamePiece {
         this.blocks = rotated;
     }
 
+    /**
+     * Rotates a piece 90deg clockwise
+     */
     public void rotateRight() {
         logger.info("Rotating {} right", this);
         Media.playAudio("SFX/rotate.wav");
@@ -123,6 +127,9 @@ public enum GamePiece {
         return this.colour;
     }
 
+    /**
+     * @return the block's value 
+     */
     public int getValue() {
         return this.value;
     }

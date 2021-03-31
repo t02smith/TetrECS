@@ -17,6 +17,7 @@ import java.util.Stack;
 /**
  * This class will display the user's remaining lives
  * By default the user will have 3 lives
+ * @author tcs1g20
  */
 public class Lives extends HBox {
     //The starting number of lives

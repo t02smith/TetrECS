@@ -12,7 +12,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
-import uk.ac.soton.comp1206.Components.misc.ToggleSwitch;
 import uk.ac.soton.comp1206.game.GamePiece;
 
 /**
@@ -21,15 +20,14 @@ import uk.ac.soton.comp1206.game.GamePiece;
  *  -> score
  *  -> lives left
  *  -> multiplier
+ * 
+ * @author tcs1g20
  */
 public class Sidebar extends StackPane {
     private static final Logger logger = LogManager.getLogger(Sidebar.class);
 
     //Components inside the sidebar
     private VBox components = new VBox();
-
-    //deprecated -> used to toggle the selected tile from being on
-    private ToggleSwitch toggle;
 
     //PROPERTIES//
 
@@ -38,6 +36,9 @@ public class Sidebar extends StackPane {
 
     //Current score
     private Label score = new Label("Score 0");
+
+    //Current level
+    private Label level = new Label("Level 0");
 
     //Current multiplier
     private Label multiplier = new Label("x 1");
@@ -73,13 +74,18 @@ public class Sidebar extends StackPane {
 
         //Score//
         this.score.setTextAlignment(TextAlignment.CENTER);
-        this.score.getStyleClass().addAll("sidebar-text");
+        this.score.getStyleClass().add("sidebar-text");
+
+        //Level
+        this.level.getStyleClass().add("sidebar-text");
+        this.level.setStyle("-fx-font-size: 20");
         
         //multiplier//
-        this.multiplier.getStyleClass().addAll("sidebar-text");
+        this.multiplier.getStyleClass().add("sidebar-text");
+        this.multiplier.setStyle("-fx-font-size: 20");
 
         //Collects all the properties together
-        var props = new VBox(this.lives, this.score, this.multiplier);
+        var props = new VBox(this.lives, this.score, this.level, this.multiplier);
         props.getStyleClass().add("props");
         props.setAlignment(Pos.TOP_CENTER);
 
@@ -90,6 +96,7 @@ public class Sidebar extends StackPane {
         //Reserve piece
         this.reservePiece = new Grid(3, 3, GridSize.SMALL, this.listeners.get("reserve-piece"));
         this.reservePiece.lockSelected();
+
 
         this.components.getChildren().addAll(props, this.nextPiece, this.reservePiece);
         this.components.setSpacing(24);
@@ -147,6 +154,14 @@ public class Sidebar extends StackPane {
     }
 
     /**
+     * Sets the user's level
+     * @param level The new level
+     */
+    public void updateLevel(int level) {
+        this.level.setText("Level " + level);
+    }
+
+    /**
      * Updates the multipler displayed on screen
      * @param multiplier the new multiplier
      */
@@ -169,14 +184,5 @@ public class Sidebar extends StackPane {
      */
     public Lives getLives() {
         return this.lives;
-    }
-
-    /**
-     * Gets the toggle switch component
-     * @return the toggle switch component
-     */
-    @Deprecated
-    public ToggleSwitch getToggle() {
-        return this.toggle;
     }
 }

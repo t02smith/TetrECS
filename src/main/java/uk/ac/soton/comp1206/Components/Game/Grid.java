@@ -14,6 +14,7 @@ import uk.ac.soton.comp1206.game.GamePiece;
 
 /**
  * Represents any of the grids shown on screen
+ * @author tcs1g20
  */
 public class Grid extends GridPane {
     protected static final Logger logger = LogManager.getLogger(Grid.class);

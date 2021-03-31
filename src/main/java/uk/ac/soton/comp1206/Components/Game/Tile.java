@@ -13,6 +13,7 @@ import javafx.util.Duration;
 /**
  * This class represents each individual tile on the game board
  * Each tile can change colour to match some image icons I made
+ * @author tcs1g20
  */
 public class Tile extends StackPane {
     //If the tile is empty or not

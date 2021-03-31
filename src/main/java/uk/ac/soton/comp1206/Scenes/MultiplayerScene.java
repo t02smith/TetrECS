@@ -23,6 +23,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
 /**
  * Multiplayer scene shown during a multiplayer match
  *  Identical to challenge scene with some additions
+ * @author tcs1g20
  */
 public class MultiplayerScene extends ChallengeScene {
     //Message list

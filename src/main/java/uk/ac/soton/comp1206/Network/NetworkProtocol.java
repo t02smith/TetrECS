@@ -12,6 +12,7 @@ import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
  * the expected result.
  * 
  * Blank send/receive fields imply you wouldn't send/receive anything
+ * @author tcs1g20
  */
 public enum NetworkProtocol {
     HISCORES    ("HISCORES (\\w*:\\d+\\s*)+"),                      //List of high scores

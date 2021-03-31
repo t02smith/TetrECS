@@ -11,6 +11,7 @@ import uk.ac.soton.comp1206.Utility.Utility;
 /**
  * This is a custom class for the colours in my game
  * Each colour is assigned a tile image that it will display
+ * @author tcs1g20
  */
 public enum Colour {
     CYAN("cyan.png"),

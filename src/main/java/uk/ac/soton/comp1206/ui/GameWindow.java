@@ -7,7 +7,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Event.GameStartListener;
-import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Scenes.BaseScene;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
 import uk.ac.soton.comp1206.Scenes.ChannelScene;
@@ -23,12 +22,15 @@ import uk.ac.soton.comp1206.game.Multiplayer.Channel;
  * This class will store the stage for each scene
  * You would use this class to transition between different scenes
  *  and change aspects like size
+ * @author tcs1g20
  */
 public class GameWindow {
     private static final Logger logger = LogManager.getLogger(GameWindow.class);
 
+    //The stage the scenes will be shown on
     private final Stage stage;
 
+    //The stage's dimensions
     private int width;
     private int height;
 
@@ -112,6 +114,10 @@ public class GameWindow {
         }
     }
 
+    /**
+     * displays a scene without adding the previous one to the scene stack
+     * @param scene the new scene
+     */
     public void replaceScene(BaseScene scene) {
         logger.info("Replacing current scene");
         scene.build();

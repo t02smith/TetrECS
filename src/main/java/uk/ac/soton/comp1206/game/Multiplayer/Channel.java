@@ -9,6 +9,7 @@ import uk.ac.soton.comp1206.Components.multiplayer.User;
 
 /**
  * A multiplayer channel that the user can joing
+ * @author tcs1g20
  */
 public class Channel {
     //The channels name
@@ -17,6 +18,10 @@ public class Channel {
     //The list of users
     private HashMap<String, User> users = new HashMap<>();
 
+    /**
+     * Creates a new channel
+     * @param name the name of the channel
+     */
     public Channel(String name) {
         this.name = name;
     }
@@ -51,6 +56,12 @@ public class Channel {
         this.users.put(newName, user);
     }
 
+    /**
+     * Updates a user's properties
+     * @param name the user who is being updated
+     * @param score the user's new score
+     * @param lives the user's new live count
+     */
     public void updateUserProperties(String name, int score, int lives) {
         this.updateUserScore(name, score);
         this.updateUserLives(name, lives);
@@ -87,14 +98,23 @@ public class Channel {
         user.applyGridChanges(newGrid);
     }
 
+    /**
+     * @return the name of the channel
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * @return list of user's names in the channel
+     */
     public String[] getUsernames() {
         return this.users.keySet().toArray(String[]::new);
     }
 
+    /**
+     * @return list of the users
+     */
     public Collection<User> getUsers() {
         return this.users.values();
     }

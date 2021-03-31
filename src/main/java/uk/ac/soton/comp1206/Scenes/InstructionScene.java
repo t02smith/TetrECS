@@ -21,11 +21,16 @@ public class InstructionScene extends BaseScene {
 
     //Key bindings + changeable
     
+    /**
+     * Creates a new instruction scene
+     * @param gw the window it's displayed on
+     */
     public InstructionScene(GameWindow gw) {
         super(gw);
         this.build();
     }
 
+    @Override
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Instructions.css"));
         this.root.getStyleClass().add("instruction-bg");

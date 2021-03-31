@@ -21,23 +21,37 @@ import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * The scene in which the game is displayed
+ * @author tcs1g20
+ */
 public class ChallengeScene extends BaseScene {
+    //The game grid for user's to play on
     protected Grid grid;
+
+    //The timer
     protected ProgressBar timer;
 
-    protected VBox centerComponents;
-
+    //The label showing the high score
     protected Label highScoreLbl;
-    protected VBox localScores;
+
+    //The high score
+    protected Pair<String, Integer> highScore;
+
+    //The sidebar with all the game properties
     protected Sidebar sidebar;
 
+    //Any required listeners for the grids on display
     protected HashMap<String,TileClickListener> listeners = new HashMap<>();
 
+    //The grids dimension
     protected int width = 5;
     protected int height = 5;
 
-    protected Pair<String, Integer> highScore;
-
+    /**
+     * Creates a new challenge scene to play a game
+     * @param window the window it's on
+     */
     public ChallengeScene(GameWindow window) {
         super(window);
     }
@@ -57,12 +71,20 @@ public class ChallengeScene extends BaseScene {
         var empty = new Region();
         HBox.setHgrow(empty, Priority.ALWAYS);
 
-        this.highScoreLbl = new Label(
-            String.format("High Score %s -> %d", this.highScore.getKey(), this.highScore.getValue())
-        );
-        this.highScoreLbl.getStyleClass().add("banner");
+        
+        var highScoreWord = new Label("HIGH SCORE");
+        highScoreWord.getStyleClass().add("banner");
 
-        var banner = new HBox(title, empty, this.highScoreLbl);
+        this.highScoreLbl = new Label(
+            this.highScore.getKey() + "\n" + this.highScore.getValue()
+        );
+
+        highScoreLbl.getStyleClass().add("banner");
+        highScoreLbl.setStyle("-fx-font-size: 20;");
+
+        var highScore = new HBox(highScoreWord, highScoreLbl);
+
+        var banner = new HBox(title, empty, highScore);
         this.root.setTop(banner);
 
         //Center of screen//
@@ -79,15 +101,18 @@ public class ChallengeScene extends BaseScene {
         this.buildTimer();
         this.buildSidebar();
 
-        this.centerComponents = new VBox(this.grid, this.timer);
-        this.centerComponents.setAlignment(Pos.CENTER);
-        this.centerComponents.setSpacing(25);
+        var centerComponents = new VBox(this.grid, this.timer);
+        centerComponents.setAlignment(Pos.CENTER);
+        centerComponents.setSpacing(25);
 
-        this.root.setCenter(this.centerComponents);
+        this.root.setCenter(centerComponents);
 
         this.root.setRight(this.sidebar);
     }
 
+    /**
+     * Builds the game timer
+     */
     private void buildTimer() {
         this.timer = new ProgressBar();
         this.timer.setMinWidth(GridSize.LARGE.getSideLength()*this.width);
@@ -103,6 +128,9 @@ public class ChallengeScene extends BaseScene {
         });
     }
 
+    /**
+     * Builds the sidebar
+     */
     private void buildSidebar() {
         this.sidebar = new Sidebar();
 
@@ -137,15 +165,9 @@ public class ChallengeScene extends BaseScene {
     }
 
     /**
-     * Sets the list of local scores to be displayed
-     * @param localScores the scores
+     * Sets the high score from the scoreboards
+     * @param highScore The name and highscore
      */
-    public void setLocalScores(VBox localScores) {
-        this.localScores = localScores;
-        this.localScores.setAlignment(Pos.CENTER);
-        this.localScores.getStyleClass().add("scoreboard");
-    }
-
     public void setHighScore(Pair<String, Integer> highScore) {
         this.highScore = highScore;
     }
@@ -158,13 +180,22 @@ public class ChallengeScene extends BaseScene {
         this.sidebar.updateScore(score);
 
         //If the user has a new high score
+        
         if (score > this.highScore.getValue()) {
             this.highScoreLbl.setText(
-                String.format("High Score %s -> %d", "User", score)
+                "USER\n" + score 
             );
-
-            this.highScoreLbl.setTextFill(Color.GREEN);
+            
+            this.highScoreLbl.setTextFill(Color.ORANGE);
         }
+    }
+
+    /**
+     * Updates the user's level
+     * @param level the new level
+     */
+    public void updateLevel(int level) {
+        this.sidebar.updateLevel(level);
     }
 
     /**
@@ -185,18 +216,30 @@ public class ChallengeScene extends BaseScene {
 
     //Getters//
 
+    /**
+     * @return the timer
+     */
     public ProgressBar getTimer() {
         return this.timer;
     }
 
+    /**
+     * @return the game grid
+     */
     public Grid getBoard() {
         return this.grid;
     }
 
+    /**
+     * @return the width of the grid in squares
+     */
     public int getGridWidth() {
         return this.width;
     }
 
+    /**
+     * @return the height of the grid in squares
+     */
     public int getGridHeight() {
         return this.height;
     }

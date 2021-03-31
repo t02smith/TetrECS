@@ -71,9 +71,8 @@ public class Game {
 
         //Creates a score scene so we can collect the scores
         this.scoresScene = this.gameWindow.getScoresScene();
-        
-        this.challengeScene.setLocalScores(this.scoresScene.getLocalScoreboard());
         this.challengeScene.setHighScore(this.scoresScene.getHighScore());
+        
 
         //Submits a score once the game has ended
         this.scoresScene.addSubmitScoreListener((name, score) -> {
@@ -200,12 +199,16 @@ public class Game {
         //When the user levels up
         this.level.addListener(event -> {
             if (this.timeline == null) return;
+            logger.info("Level changed to {}", this.level.get());
+            this.challengeScene.updateLevel(this.level.get());
 
             Media.playAudio("SFX/level.wav");
             //Decrease the time given to place a piece
             this.timeline.stop();
             this.timeline.getKeyFrames().set(1, this.updateTime());
             logger.info("Time decreased to {}ms", this.getTimerDelay());
+
+
 
         });
 

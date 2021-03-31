@@ -11,6 +11,7 @@ import uk.ac.soton.comp1206.Event.KeyBinding;
 /**
  * Displays all the key bindings with their associated actions
  *  Allows key bindings to be changed at runtime
+ * @author tcs1g20
  */
 public class KeyBindingDisplay extends ScrollPane {
     //The set of actions that can be done by the user

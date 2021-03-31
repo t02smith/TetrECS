@@ -12,6 +12,7 @@ import uk.ac.soton.comp1206.Utility.Utility;
 
 /**
  * Each individual key icon
+ * @author tcs1g20
  */
 public class KeyIcon extends StackPane {
     //The character displayed on the key

@@ -9,6 +9,7 @@ import uk.ac.soton.comp1206.Utility.Utility;
 /**
  * Multiplayer component
  *  Used to send and receive messages
+ * @author tcs1g20
  */
 public class ChatPane extends BorderPane {
     //The window where messages are displayed
@@ -51,11 +52,19 @@ public class ChatPane extends BorderPane {
         this.setBottom(this.toolbar);
     }
 
+    /**
+     * Adds a message on screen
+     * @param msg The message to add
+     */
     public void addMessage(Message msg) {
         this.msgList.getChildren().add(msg);
         this.msgWindow.setVvalue(0.0);
     }
 
+    /**
+     * Set the action for when sending a message
+     * @param listener
+     */
     public void setSendMessageListener(SubmitListener listener) {
         this.toolbar.setSubmitListener(listener);
     }

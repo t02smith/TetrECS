@@ -8,3 +8,4 @@ Tom:5000
 Tom:4000
 Tom:2000
 Tom:1000
+tory:50

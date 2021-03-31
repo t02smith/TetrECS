@@ -17,6 +17,7 @@ import uk.ac.soton.comp1206.Scenes.Menu.MenuItemListener;
 
 /**
  * Used to display each menu item
+ * @author tcs1g20
  */
 public class MenuItem extends StackPane {
     //When a menu item is clicked

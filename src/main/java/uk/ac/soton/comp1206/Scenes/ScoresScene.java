@@ -139,14 +139,26 @@ public class ScoresScene extends BaseScene {
         return this.localScores;
     }
 
+    /**
+     * Adds a listener for when submitting a score
+     * @param ssl The submit score listener
+     */
     public void addSubmitScoreListener(SubmitScoreListener ssl) {
         this.ssl = ssl;
     }
 
+    /**
+     * Sets the user's score
+     * @param score Their new score
+     */
     public void setUserScore(int score) {
         this.userScore = score;
     }
 
+    /**
+     * Sets whether a user has completed a game
+     * @param hasPlayed if the user has played a game
+     */
     public void setHasPlayed(boolean hasPlayed) {
         this.userPlayed.set(hasPlayed);
     }

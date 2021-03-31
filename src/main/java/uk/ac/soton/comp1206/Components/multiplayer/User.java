@@ -17,6 +17,8 @@ import uk.ac.soton.comp1206.game.GamePiece;
  * Each user's grid will appear on the screen
  *  so that a user can see what other players are 
  *  doing in real time
+ * 
+ * @author tcs1g20
  */
 public class User extends BorderPane {
     private static final Logger logger = LogManager.getLogger(User.class);
