@@ -31,7 +31,8 @@ public enum NetworkProtocol {
     SCORES      ("SCORES (\\w+:\\d+(:(\\d|DEAD)?)\\s*)+"),          //Update a user's properties
     SCORE       ("SCORE \\w+:\\d+"),                                //Update a user's score
     PIECE       ("PIECE \\d+"),                                     //Get the next piece to play
-    BOARD       ("BOARD \\w+:(\\d+\\s?){25}");                      //Get a user's game board
+    BOARD       ("BOARD \\w+:(\\d+\\s?){25}"),                      //Get a user's game board
+    DIE         ("DIE \\w+");                                       //Received if a user dies
 
 
 

@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.App;
 import uk.ac.soton.comp1206.Components.Menu.MenuItem;
-import uk.ac.soton.comp1206.Utility.Media;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -31,7 +31,8 @@ public class Menu extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Menu.css"));
         this.root.getStyleClass().add("menu-shell");
 
-        this.window.setSize(700, 500);
+        this.windowWidth = 700;
+        this.windowHeight = 500;
 
         var menuComponents = new VBox(
             this.createTitle(), 
@@ -45,7 +46,7 @@ public class Menu extends BaseScene {
             menuComponents
         );
 
-        Media.playMusic("menu.mp3");
+        MultiMedia.playMusic("menu.mp3");
     }
 
     /**

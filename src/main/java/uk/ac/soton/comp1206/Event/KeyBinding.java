@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.scene.input.KeyCode;
 
 /**
@@ -46,6 +49,8 @@ public enum KeyBinding {
     //The event for the key
     private KeyListener event;
 
+    private static final Logger logger = LogManager.getLogger(KeyBinding.class);
+
     private KeyBinding(String description, KeyCode... defaultKeys) {
         this.defaultKeys = defaultKeys;
         this.description = description;
@@ -73,6 +78,9 @@ public enum KeyBinding {
         }
 
         this.keys.add(newKey);
+        try {logger.info(this + ":Binding for key {} changed to {}", oldKey, newKey);}
+        catch(NullPointerException e) {}
+
         return true;
     }
 
@@ -82,6 +90,7 @@ public enum KeyBinding {
      * @return whether the key was successfully bound
      */
     public boolean assignKey(KeyCode newKey) {
+        logger.info("{} assigned to {}", newKey, this);
         return this.assignKey(null, newKey);
     }
 
@@ -91,6 +100,7 @@ public enum KeyBinding {
      */
     public void removeKey(KeyCode key) {
         if (this.keys.contains(key)) {
+            logger.info("{}: keybinding {} removed", key);
             this.keys.remove(key);
             KeyBinding.bindings.remove(key);
         }
@@ -100,6 +110,7 @@ public enum KeyBinding {
      * Resets a key back to its default key bindings
      */
     public void resetKeys() {
+        logger.info("{}: keybindings reset to default", this);
         this.keys = new HashSet<>();
         KeyBinding.bindings = new HashMap<>();
         for (KeyCode key: defaultKeys) this.assignKey(null, key);
@@ -126,10 +137,15 @@ public enum KeyBinding {
      * @param keysDisabled the new state for disableKeys
      */
     public static void setKeysDisabled(boolean keysDisabled) {
+        logger.info("Key actions: {}", !keysDisabled);
         KeyBinding.disableKeys = keysDisabled;
     }
 
     //GETTERS//
+
+    public static boolean getKeysDisabled() {
+        return disableKeys;
+    }
 
     /**
      * Gets an action by the key that calls it

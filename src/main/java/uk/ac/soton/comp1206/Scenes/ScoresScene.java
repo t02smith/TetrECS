@@ -21,19 +21,31 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  * @author tcs1g20
  */
 public class ScoresScene extends BaseScene {
+    //Different scoreboards to be shown
     private Scoreboard localScores;
     private Scoreboard onlineScores;
 
     private VBox components;
 
+    //Whether the user has completed a game and their score
     private SimpleBooleanProperty userPlayed = new SimpleBooleanProperty(false);
     private int userScore;
 
     private SubmitScoreListener ssl;
 
+    /**
+     * Creates a new scores scene
+     * @param gw the window to display it
+     */
     public ScoresScene(GameWindow gw) {
         super(gw);
-        this.localScores = new Scoreboard("Local Score", Utility.readFromFile("scores/localScores.txt"));
+
+        try {this.localScores = new Scoreboard("Local Score", Utility.readFromFile("scores/localScores.txt"));}
+        catch (NullPointerException e) {
+            //Occurs when the default list of scores doesn't exist
+            this.createDefaultScores();
+            this.localScores = new Scoreboard("Local Score", Utility.readFromFile("scores/localScores.txt"));
+        }
     }
 
     /**
@@ -43,6 +55,9 @@ public class ScoresScene extends BaseScene {
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Scores.css"));
         this.root.getStyleClass().add("score-shell");
+
+        this.windowWidth = 700;
+        this.windowHeight = 500;
 
         //Holds all the main components on the scene
         this.components = new VBox();
@@ -66,6 +81,7 @@ public class ScoresScene extends BaseScene {
         this.components.getChildren().add(scoreLists);       
 
         this.root.setCenter(this.components);
+
     }
 
     /**
@@ -161,5 +177,19 @@ public class ScoresScene extends BaseScene {
      */
     public void setHasPlayed(boolean hasPlayed) {
         this.userPlayed.set(hasPlayed);
+    }
+
+    /**
+     * Generates and writes a default set of scores to a file
+     */
+    private void createDefaultScores() {
+        logger.info("Generating default scores");
+        var text = new StringBuilder();
+        for (int i = 1; i <= 10; i++) {
+            text.append("Tom:" + String.valueOf(i*1500) + "\n");
+        }
+
+        Utility.writeToFile("scores/localScores.txt", text.toString());
+
     }
 }

@@ -10,7 +10,7 @@ import javafx.scene.media.MediaPlayer;
 /**
  * To play any background music or sound effects
  */
-public class Media {
+public class MultiMedia {
     private static final Logger logger = LogManager.getLogger(Utility.class);
 
     //For sound effects
@@ -26,11 +26,11 @@ public class Media {
      * Plays a given audio file from a given file
      * @param filename The name of the audio file
      */
-    public static void playAudio(String filename) {
+    public static void playSFX(String filename) {
         if (audioEnabled.get()) {
             if (audio != null) audio.stop();
 
-            var toPlay = Media.class.getResource("/music/" + filename).toExternalForm();
+            var toPlay = MultiMedia.class.getResource("/music/" + filename).toExternalForm();
             logger.info("Playing audio {}", toPlay);
     
             audio = new MediaPlayer(
@@ -40,7 +40,7 @@ public class Media {
             
 
             audio.play();
-        } else logger.info("Audio is disabled");
+        }
 
     }
 
@@ -52,7 +52,7 @@ public class Media {
         if (audioEnabled.get()) {
             if (music != null) music.stop();
 
-            var toPlay = Media.class.getResource("/music/" + filename).toExternalForm();
+            var toPlay = MultiMedia.class.getResource("/music/" + filename).toExternalForm();
             logger.info("Playing music {}", toPlay);
     
             music = new MediaPlayer(
@@ -62,6 +62,6 @@ public class Media {
     
             music.setVolume(0.5);
             music.play();
-        } else logger.info("Audio is disabled");
+        }
     }
 }

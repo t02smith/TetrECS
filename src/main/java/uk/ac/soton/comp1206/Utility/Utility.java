@@ -111,4 +111,13 @@ public abstract class Utility {
 
     }
 
+    /**
+     * Write to a file where you want a new file
+     * @param filename the file to write to
+     * @param lines the lines to write to the file
+     */
+    public static void writeToFile(String filename, String lines) {
+        writeToFile(filename, lines, false);
+    }
+
 }

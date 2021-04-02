@@ -35,7 +35,8 @@ public class InstructionScene extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Instructions.css"));
         this.root.getStyleClass().add("instruction-bg");
 
-        this.window.setSize(1075, 700);
+        this.windowWidth = 1075;
+        this.windowHeight = 700;
 
         var pieces = new PieceDisplay();
         pieces.setPadding(new Insets(20, 20, 20, 20));
@@ -56,6 +57,7 @@ public class InstructionScene extends BaseScene {
         body.setSpacing(25);
 
         this.root.setCenter(body);
+
 
     }
 

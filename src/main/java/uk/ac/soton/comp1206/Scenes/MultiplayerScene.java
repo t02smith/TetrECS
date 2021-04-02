@@ -50,7 +50,8 @@ public class MultiplayerScene extends ChallengeScene {
         super.build();
         this.getStylesheets().add(Utility.getStyle("Multiplayer.css"));
 
-        this.window.setSize(1100, 700);
+        this.windowWidth = 1100;
+        this.windowHeight = 700;
 
         //Uses the multiplayer grid which compiles a message to send after every placement
         this.grid = new MultiplayerGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));
@@ -63,7 +64,7 @@ public class MultiplayerScene extends ChallengeScene {
 
         //Chat window
         this.chatpane = new ChatPane(this.sml);
-        //this.chatpane.setMaxWidth(this.getWidth()*0.25);
+        this.chatpane.setMaxWidth(this.getWidth()*0.25);
         this.chatpane.setMinWidth(this.getWidth()*0.25);
         this.chatpane.setOpacity(0);
 
@@ -85,10 +86,10 @@ public class MultiplayerScene extends ChallengeScene {
         });
 
         this.scoreboard = new Scoreboard("Leaderboard", initialUsers);
-        this.scoreboard.setMinWidth(this.getWidth()*0.35);
+        this.scoreboard.setMinWidth(this.getWidth()*0.25);
 
         this.onlinePanel = new OnlinePanel(this.chatpane, scoreboard, userScroll);
-        this.onlinePanel.setMaxWidth(this.getWidth()*0.35);
+        this.onlinePanel.setMaxWidth(this.getWidth()*0.25);
 
         this.root.setCenter(gridComponents);
         this.root.setLeft(this.onlinePanel);

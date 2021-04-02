@@ -15,7 +15,7 @@ import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
-import uk.ac.soton.comp1206.Utility.Media;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -90,6 +90,7 @@ public class Game {
 
         //Called when the game is started//
         this.gameWindow.addGameStartListener(() -> {
+            this.resetGame();
             this.nextPiece();
             this.nextPiece();
 
@@ -97,7 +98,7 @@ public class Game {
             KeyBinding.setKeysDisabled(false);
 
             //Plays background music
-            Media.playMusic("game.wav");
+            MultiMedia.playMusic("game.wav");
 
             //start timer
             this.gameLoop();
@@ -149,8 +150,9 @@ public class Game {
         
         KeyBinding.ESCAPE.setEvent(() -> {
             logger.info("Returning to menu");
+            this.stopGame();
             this.gameWindow.revertScene();
-            this.resetGame();
+            KeyBinding.setKeysDisabled(true);
         });
 
 
@@ -202,7 +204,7 @@ public class Game {
             logger.info("Level changed to {}", this.level.get());
             this.challengeScene.updateLevel(this.level.get());
 
-            Media.playAudio("SFX/level.wav");
+            MultiMedia.playSFX("SFX/level.wav");
             //Decrease the time given to place a piece
             this.timeline.stop();
             this.timeline.getKeyFrames().set(1, this.updateTime());
@@ -215,7 +217,7 @@ public class Game {
         //When a life is lost
         this.lives.addListener(event -> {
             this.challengeScene.loseLife();
-            Media.playAudio("SFX/lifelose.wav");
+            MultiMedia.playSFX("SFX/lifelose.wav");
         });
 
         //When the multiplier changes
@@ -266,8 +268,6 @@ public class Game {
         this.scoresScene.setUserScore(this.score.get());
         this.scoresScene.setHasPlayed(true);
 
-        //Resets the game for the next round
-        this.resetGame();
         this.gameWindow.replaceScene(this.scoresScene);
     }
 
@@ -277,7 +277,6 @@ public class Game {
      */
     public void resetGame() {
         logger.info("Resetting game");
-        this.timeline.stop();
         this.score.set(0);
         this.lives.set(3);
         this.level.set(0);
@@ -295,7 +294,7 @@ public class Game {
         var grid = this.challengeScene.getBoard();
 
         if (!this.gameOver && grid.placePiece(this.currentPiece, x, y)) {
-            Media.playAudio("SFX/place.wav");
+            MultiMedia.playSFX("SFX/place.wav");
             this.afterPiece();
 
             //Grabs the next piece
@@ -304,7 +303,7 @@ public class Game {
             //Resets the timer
             this.timeline.playFromStart();
         } else {
-            Media.playAudio("SFX/fail.wav");
+            MultiMedia.playSFX("SFX/fail.wav");
         }
     }
 
@@ -324,7 +323,7 @@ public class Game {
             if (board.checkColumn(i)) columnBuffer.add(i);
         }
 
-        if (rowBuffer.size() > 0 || columnBuffer.size() > 0) Media.playAudio("SFX/explode.wav");
+        if (rowBuffer.size() > 0 || columnBuffer.size() > 0) MultiMedia.playSFX("SFX/explode.wav");
 
         //Clears the rows and columns that are full
         rowBuffer.forEach(row -> {

@@ -62,7 +62,8 @@ public class ChallengeScene extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Game.css"));
         this.root.getStyleClass().add("game-shell");
 
-        this.window.setSize(880, 700);
+        this.windowWidth = 880;
+        this.windowHeight = 700;
 
         //Top of Screen//
 

@@ -31,6 +31,9 @@ public class LobbyScene extends BaseScene {
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Lobby.css"));
 
+        this.windowWidth = 700;
+        this.windowHeight = 500;
+
         //Initially the user will be in the lobby
         this.buildInLobby();
 

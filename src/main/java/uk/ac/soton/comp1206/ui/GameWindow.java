@@ -98,6 +98,7 @@ public class GameWindow {
         logger.info("Loading scene {}", scene);
 
         scene.build();
+        scene.setDimension();
         if (this.stage.getScene() != null) this.scenes.push((BaseScene)this.stage.getScene());
         this.stage.setScene(scene);
     }
@@ -111,6 +112,7 @@ public class GameWindow {
             var previous = this.scenes.pop();
             previous.setKeyBindings();
             this.stage.setScene(previous);
+            previous.setDimension();
         }
     }
 
@@ -121,6 +123,7 @@ public class GameWindow {
     public void replaceScene(BaseScene scene) {
         logger.info("Replacing current scene");
         scene.build();
+        scene.setDimension();
         this.stage.setScene(scene);
     }
 
@@ -171,7 +174,7 @@ public class GameWindow {
     //Multiplayer
 
     public void loadMultiplayer() {
-        this.loadScene(this.gameScene);
+        this.replaceScene(this.gameScene);
 
         this.gsl.start();
     }

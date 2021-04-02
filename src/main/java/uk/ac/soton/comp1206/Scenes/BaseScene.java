@@ -22,6 +22,9 @@ public abstract class BaseScene extends Scene {
     //The root component
     protected BorderPane root;
 
+    protected double windowWidth;
+    protected double windowHeight;
+
     /**
      * Creates a basescene
      *  creates root node, and assigns default key bindings
@@ -46,10 +49,15 @@ public abstract class BaseScene extends Scene {
         KeyBinding.ESCAPE.setEvent(() -> {
             this.window.revertScene();
         });
+
     }
 
     /**
      * Builds the components in the current scene
      */
     public abstract void build();
+
+    public void setDimension() {
+        this.window.setSize(this.windowWidth, this.windowHeight);
+    }
 }

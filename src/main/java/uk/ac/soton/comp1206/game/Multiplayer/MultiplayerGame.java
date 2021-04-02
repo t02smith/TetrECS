@@ -17,7 +17,7 @@ import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Scenes.ChannelScene;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.MultiplayerScene;
-import uk.ac.soton.comp1206.Utility.Media;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -86,6 +86,9 @@ public class MultiplayerGame extends Game {
         //Game setup//
 
         this.gameWindow.addGameStartListener(() -> {
+            logger.info("Multiplayer game starting");
+            this.setKeyBindings();
+            this.resetGame();
             this.gridHistory = ((MultiplayerGrid)this.challengeScene.getBoard()).getGridHistory();
 
             this.updateChannelList.stop();
@@ -97,13 +100,14 @@ public class MultiplayerGame extends Game {
 
             this.gameOver = false;
 
-            Media.playMusic("game.wav");
+            MultiMedia.playMusic("game.wav");
+            KeyBinding.setKeysDisabled(false);
 
             this.gameLoop();
         });
 
 
-        this.setKeyBindings();
+
         this.setTileClickListeners();
         this.setUserPropertyListeners();
         this.gameWindow.setLobbyScene(this.lobby);
@@ -119,11 +123,15 @@ public class MultiplayerGame extends Game {
             ((MultiplayerScene)this.challengeScene).toggleOnlinePanel();
         });
 
-        this.communicator.addListener(message -> {
-            if (message.startsWith("MSG " + this.name)) {
-                KeyBinding.setKeysDisabled(false);
-            }
+        
+        KeyBinding.ESCAPE.setEvent(() -> {
+            logger.info("Leaving game");
+            this.leaveChannel();
+            this.stopGame();
+            this.gameWindow.revertScene();
+            KeyBinding.setKeysDisabled(true);
         });
+
     }
 
     /**
@@ -196,7 +204,7 @@ public class MultiplayerGame extends Game {
 
         //Leave the current channel
         NetworkProtocol.PART.addListener(message -> {
-            this.leaveChannel();
+            //this.leaveChannel();
         });
 
 
@@ -210,12 +218,18 @@ public class MultiplayerGame extends Game {
             else this.channelScene.addMessage(msgComponent);
         });
 
-
+        //Sets initial nickname from server
+        NetworkProtocol.NICK.addListener(message -> {
+            this.name = message.split("\\s+")[1];
+        });
 
         //Change a nickname
         NetworkProtocol.CHANGE_NICK.addListener(message -> {
             String[] msg = message.split("\\s+")[1].split(":");
-            this.currentChannel.updateNickname(msg[0], msg[1]);
+            try {this.currentChannel.updateNickname(msg[0], msg[1]);}
+            catch (NullPointerException e) {
+                //If the game hasn't started this will throw an error :(
+            }
 
         });
 
@@ -264,7 +278,7 @@ public class MultiplayerGame extends Game {
                 this.currentChannel.updateUserProperties(
                     userProps[0], 
                     Integer.parseInt(userProps[1]), 
-                    Integer.parseInt(userProps[2])
+                    userProps[2].equals("DEAD") ? 0: Integer.parseInt(userProps[2])
                 );
             }
         });
@@ -277,6 +291,12 @@ public class MultiplayerGame extends Game {
                 nameScore[0], Integer.parseInt(nameScore[1])
             );
         });
+
+        NetworkProtocol.DIE.addListener(message -> {
+            var name = message.split("\\s+")[1];
+            this.currentChannel.killUser(name);
+        });
+
     }
 
     /**
@@ -290,8 +310,9 @@ public class MultiplayerGame extends Game {
 
         //Sends a die message when the user runs out of lives
         this.lives.addListener(event -> {
-            if (this.lives.get() == -1) this.communicator.send("DIE");
-            else this.communicator.send("LIVES " + this.lives.get());  
+            if (this.lives.get() == -1) {
+                this.communicator.send("DIE");
+            } else this.communicator.send("LIVES " + this.lives.get());  
         });
 
         this.score.addListener(event -> {
@@ -300,16 +321,12 @@ public class MultiplayerGame extends Game {
         });
     }
 
-    /**
-     * Resets the game
-     * @override Leaves the channel once reset
-     */
     @Override
-    public void resetGame() {
-        super.resetGame();
-
-        //Leaves channel when game is reset
-        this.leaveChannel();
+    public void stopGame() {
+        logger.info("GAME OVER");
+        this.timeline.stop();
+        this.gameOver = true;
+        
     }
 
     @Override
@@ -460,11 +477,8 @@ public class MultiplayerGame extends Game {
                 this.communicator.send("NICK " + nickname);
             });
 
-            //Sets initial nickname from server
-            NetworkProtocol.NICK.addListener(message -> {
-                this.name = message.split("\\s+")[1];
-                Platform.runLater(() -> this.channelScene.setNickname(this.name));
-            });
+            this.channelScene.setNickname(this.name);
+
         });
 
 
@@ -481,7 +495,7 @@ public class MultiplayerGame extends Game {
 
         logger.info("Leaving channel");
 
-        //some ui updates
+        
     }
 
 }

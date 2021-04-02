@@ -92,6 +92,18 @@ public class User extends BorderPane {
         logger.info("{} changes made to {}'s grid", changes, this.name.getText());
         this.currentGrid = newGrid;
     }
+    
+    public void displayDead() {
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
+                if (x == y || x+y == 4) {
+                    this.userGrid.changeTile(Colour.RED, x, y);
+                } else {
+                    this.userGrid.changeTile(Colour.TRANSPARENT, x, y);
+                }
+            }
+        }
+    }
 
     /**
      * Sets the new score for the user

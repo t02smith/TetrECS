@@ -98,6 +98,11 @@ public class Channel {
         user.applyGridChanges(newGrid);
     }
 
+    public void killUser(String name) {
+        var user = this.users.get(name);
+        user.displayDead();
+    }
+
     /**
      * @return the name of the channel
      */

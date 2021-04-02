@@ -155,8 +155,8 @@ public class Scoreboard extends VBox {
     private void updateScoreboard() {
         this.getChildren().clear();
 
-
         var scoreBoard = new GridPane();
+        scoreBoard.getStyleClass().add("scoreboard-shell");
 
         //Finds the top 10 or less if there aren't 10
         int max = this.scores.getSize() < 10 ? scores.getSize(): 10;
