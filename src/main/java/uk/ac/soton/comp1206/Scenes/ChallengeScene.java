@@ -90,14 +90,7 @@ public class ChallengeScene extends BaseScene {
 
         //Center of screen//
         //Game grid//
-        this.grid = new Grid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
-        this.grid.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                KeyBinding.ROTATE_RIGHT.execute();
-            } else if (event.getButton() == MouseButton.MIDDLE) {
-                KeyBinding.SWAP.execute();
-            }
-        });
+        this.buildGrid();
 
         this.buildTimer();
         this.buildSidebar();
@@ -109,6 +102,20 @@ public class ChallengeScene extends BaseScene {
         this.root.setCenter(centerComponents);
 
         this.root.setRight(this.sidebar);
+    }
+
+    /**
+     * Builds the grid to show to the user
+     */
+    protected void buildGrid() {
+        this.grid = new Grid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
+        this.grid.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                KeyBinding.ROTATE_RIGHT.execute();
+            } else if (event.getButton() == MouseButton.MIDDLE) {
+                KeyBinding.SWAP.execute();
+            }
+        });
     }
 
     /**
@@ -163,6 +170,10 @@ public class ChallengeScene extends BaseScene {
      */
     public void loseLife() {
         this.sidebar.getLives().loseLife();
+    }
+
+    public void addLife() {
+        this.sidebar.getLives().addLife();
     }
 
     /**

@@ -11,6 +11,7 @@ import uk.ac.soton.comp1206.Components.multiplayer.ChatPane;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
 import uk.ac.soton.comp1206.Event.GameStartListener;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Event.OnClickListener;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Multiplayer.Channel;
@@ -87,6 +88,13 @@ public class ChannelScene extends BaseScene {
         channelInfo.getChildren().addAll(channelName, nickname, this.users);
 
         this.root.setCenter(channelInfo);
+    }
+
+    @Override
+    public void setKeyBindings() {
+        this.setOnKeyReleased(event -> {
+            KeyBinding.executeEvent(event.getCode());
+        });
     }
 
     /**

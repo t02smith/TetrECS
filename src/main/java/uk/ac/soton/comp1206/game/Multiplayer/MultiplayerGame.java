@@ -85,9 +85,32 @@ public class MultiplayerGame extends Game {
 
         //Game setup//
 
+
+        this.setGameStartListener();
+
+        this.setKeyBindings();
+        this.setTileClickListeners();
+        this.setUserPropertyListeners();
+        this.gameWindow.setLobbyScene(this.lobby);
+        this.setupCommunicator();
+
+    }
+
+    @Override
+    protected void setKeyBindings() {
+        super.setKeyBindings();
+
+        KeyBinding.TOGGLE_PANEL.setEvent(() -> {
+            ((MultiplayerScene)this.challengeScene).toggleOnlinePanel();
+        });
+
+    }
+
+    @Override
+    protected void setGameStartListener() {
         this.gameWindow.addGameStartListener(() -> {
             logger.info("Multiplayer game starting");
-            this.setKeyBindings();
+
             this.resetGame();
             this.gridHistory = ((MultiplayerGrid)this.challengeScene.getBoard()).getGridHistory();
 
@@ -105,33 +128,6 @@ public class MultiplayerGame extends Game {
 
             this.gameLoop();
         });
-
-
-
-        this.setTileClickListeners();
-        this.setUserPropertyListeners();
-        this.gameWindow.setLobbyScene(this.lobby);
-        this.setupCommunicator();
-
-    }
-
-    @Override
-    protected void setKeyBindings() {
-        super.setKeyBindings();
-
-        KeyBinding.TOGGLE_PANEL.setEvent(() -> {
-            ((MultiplayerScene)this.challengeScene).toggleOnlinePanel();
-        });
-
-        
-        KeyBinding.ESCAPE.setEvent(() -> {
-            logger.info("Leaving game");
-            this.leaveChannel();
-            this.stopGame();
-            this.gameWindow.revertScene();
-            KeyBinding.setKeysDisabled(true);
-        });
-
     }
 
     /**
@@ -156,7 +152,7 @@ public class MultiplayerGame extends Game {
                 logger.info("Updating channel list");
                 this.communicator.send("LIST");
             }),
-            new KeyFrame(Duration.millis(5000))
+            new KeyFrame(Duration.millis(3000))
         );
 
         this.updateChannelList.setCycleCount(Animation.INDEFINITE);
@@ -177,6 +173,16 @@ public class MultiplayerGame extends Game {
 
                 this.currentChannel = this.channels.get(name);
                 this.displayChannel();
+
+                //Change this keybinding to leave the channel
+                KeyBinding.ESCAPE.setEvent(() -> {
+                    logger.info("Leaving channel");
+                    this.leaveChannel();
+                    if (this.inGame) this.stopGame();
+        
+                    this.gameWindow.revertScene();
+                    KeyBinding.setKeysDisabled(true);
+                });
 
             } else logger.error("You are already in a channel");
         });
@@ -204,7 +210,7 @@ public class MultiplayerGame extends Game {
 
         //Leave the current channel
         NetworkProtocol.PART.addListener(message -> {
-            //this.leaveChannel();
+            this.leaveChannel();
         });
 
 
@@ -312,6 +318,7 @@ public class MultiplayerGame extends Game {
         this.lives.addListener(event -> {
             if (this.lives.get() == -1) {
                 this.communicator.send("DIE");
+                this.communicator.send("PART");
             } else this.communicator.send("LIVES " + this.lives.get());  
         });
 
@@ -427,17 +434,18 @@ public class MultiplayerGame extends Game {
      * @param servers the server list received from the communicator
      */
     private void fillServerList(String servers) {
-        var channels = new ArrayList<String>(Arrays.asList(servers.split("\\s+")));
+        var channelNames = new ArrayList<String>(Arrays.asList(servers.split("\\s+")));
+        
+        //Removes all existing channels incase they don't exist anymore
+        this.channels.clear();
 
         //Removes 'CHANNELS'
-        channels.remove(0);
+        channelNames.remove(0);
 
         //Adds any new channels to the list
-        channels.forEach(channel -> {
-            if (!this.channels.containsKey(channel)) {
-                var newChannel = new Channel(channel);
-                this.channels.put(channel, newChannel);
-            }
+        channelNames.forEach(channel -> {
+            var newChannel = new Channel(channel);
+            this.channels.put(channel, newChannel);
         });
 
         //Updates the visible list of servers

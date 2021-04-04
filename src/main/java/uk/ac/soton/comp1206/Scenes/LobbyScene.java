@@ -2,6 +2,7 @@ package uk.ac.soton.comp1206.Scenes;
 
 import java.util.Collection;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -48,7 +49,8 @@ public class LobbyScene extends BaseScene {
         //Channel List
 
         //Holds the title and the list of available channels
-        var channelShell = new VBox();
+        var channelShell = new VBox(12);
+        channelShell.setPadding(new Insets(12));
 
         //The list of channels that can change
         this.channelList = new VBox();
@@ -74,8 +76,6 @@ public class LobbyScene extends BaseScene {
      * @param joinChannel Join a selected channel
      */
     public void updateChannels(Collection<Channel> channels, NetworkListener joinChannel) {
-        //this.channelList = new VBox();
-
         this.channelList.getChildren().clear();
 
         if (channels.size() == 0) { //If there are no open channels

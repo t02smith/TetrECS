@@ -9,22 +9,20 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Utility.Utility;
-
-import java.util.Stack;
 
 /**
  * This class will display the user's remaining lives
  * By default the user will have 3 lives
  * @author tcs1g20
  */
-public class Lives extends HBox {
+public class Lives extends VBox {
     //The starting number of lives
-    private final int lives;
-
-    //Lives left
-    private Stack<ImageView> remaining = new Stack<>();
+    private int lives;
 
     public Lives(int lives) {
         this.lives = lives;
@@ -36,10 +34,24 @@ public class Lives extends HBox {
      */
     public void build() {
         this.getStyleClass().add("lives");
-
-        Image lifeImg = Utility.getImage("heart.png");
         this.setAlignment(Pos.CENTER);
 
+        this.buildLives();
+    
+    }
+
+    public void buildLives() {
+        this.getChildren().clear();
+
+        if (this.lives <= 0) {
+            this.warningLabel();
+            return;
+        }
+
+
+        Image lifeImg = Utility.getImage("heart.png");
+
+        HBox row = null;
         //For every life the user has
         for (int i = 0; i < this.lives; i++) {
             var life = new ImageView(
@@ -47,30 +59,45 @@ public class Lives extends HBox {
             );
 
             life.setPreserveRatio(true);
-            life.setFitHeight(65);
+            life.setFitHeight(this.lives > 6 ? 42: 65);
 
-            this.remaining.push(life);
-            this.getChildren().add(life);
+            if ((i%3 == 0 && this.lives <= 6) || (i%6 == 0 && this.lives > 6)) {
+                if (row != null) {
+                    var emptyR = new Region();
+                    HBox.setHgrow(emptyR, Priority.ALWAYS);
+                    row.getChildren().add(emptyR);
+
+                    this.getChildren().add(row);
+                }
+
+                var emptyL = new Region();
+                HBox.setHgrow(emptyL, Priority.ALWAYS);
+                row = new HBox(emptyL);
+            }
+
+            row.getChildren().add(life);
         }
-    
+
+        if (row != null) {
+            var emptyR = new Region();
+            HBox.setHgrow(emptyR, Priority.ALWAYS);
+            row.getChildren().add(emptyR);
+
+            this.getChildren().add(row);
+        }
+    }
+
+    public void addLife() {
+        this.lives++;
+        this.buildLives();
     }
 
     /**
      * Called when the user loses a life in game
      */
     public void loseLife() {
-        //If they have no lives left the game will end
-        if (this.remaining.size() == 0) return;
-
-        //Remove the rightmost heart from display
-        var life = this.remaining.pop();
-        life.setImage(null);
-
-        //If the user now has no lives remove the background
-        if (this.remaining.size() == 0) {
-            //this.setStyle("-fx-background-color: transparent;");
-            this.warningLabel();
-        }
+        this.lives--;
+        this.buildLives();
     }
 
     /**

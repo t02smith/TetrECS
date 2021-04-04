@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 
 import uk.ac.soton.comp1206.Components.Game.Scoreboard;
@@ -17,6 +18,7 @@ import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
 import uk.ac.soton.comp1206.Components.multiplayer.OnlinePanel;
 import uk.ac.soton.comp1206.Components.multiplayer.User;
 import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
+import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -54,7 +56,6 @@ public class MultiplayerScene extends ChallengeScene {
         this.windowHeight = 700;
 
         //Uses the multiplayer grid which compiles a message to send after every placement
-        this.grid = new MultiplayerGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));
 
         var gridComponents = new VBox(this.grid, this.timer);
         gridComponents.setAlignment(Pos.CENTER);
@@ -64,15 +65,15 @@ public class MultiplayerScene extends ChallengeScene {
 
         //Chat window
         this.chatpane = new ChatPane(this.sml);
-        this.chatpane.setMaxWidth(this.getWidth()*0.25);
-        this.chatpane.setMinWidth(this.getWidth()*0.25);
+        this.chatpane.setMaxWidth(this.getWidth()*0.33);
+        this.chatpane.setMinWidth(this.getWidth()*0.33);
         this.chatpane.setOpacity(0);
 
         //Other user's grid
         this.users = new VBox(10);
         var userScroll = new ScrollPane(this.users);
         userScroll.setFitToWidth(true);
-        userScroll.setMinWidth(this.getWidth()*0.25);
+        userScroll.setMinWidth(this.getWidth()*0.3);
 
         this.users.setAlignment(Pos.TOP_CENTER);
         this.users.setPadding(new Insets(12, 12, 12, 20));
@@ -86,14 +87,26 @@ public class MultiplayerScene extends ChallengeScene {
         });
 
         this.scoreboard = new Scoreboard("Leaderboard", initialUsers);
-        this.scoreboard.setMinWidth(this.getWidth()*0.25);
+        this.scoreboard.setMinWidth(this.getWidth()*0.33);
 
         this.onlinePanel = new OnlinePanel(this.chatpane, scoreboard, userScroll);
-        this.onlinePanel.setMaxWidth(this.getWidth()*0.25);
+        this.onlinePanel.setMaxWidth(this.getWidth()*0.33);
 
         this.root.setCenter(gridComponents);
         this.root.setLeft(this.onlinePanel);
 
+    }
+
+    @Override
+    protected void buildGrid() {
+        this.grid = new MultiplayerGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));
+        this.grid.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                KeyBinding.ROTATE_RIGHT.execute();
+            } else if (event.getButton() == MouseButton.MIDDLE) {
+                KeyBinding.SWAP.execute();
+            }
+        });
     }
 
     /**

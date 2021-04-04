@@ -30,6 +30,7 @@ public class Tile extends StackPane {
 
     //Anything placed on the grid
     private ImageView tile = new ImageView();
+    private Colour currentColour = Colour.TRANSPARENT;
 
     //Tile overlay -> i.e. to show that tile is selected
     private ImageView overlay = new ImageView();
@@ -82,6 +83,7 @@ public class Tile extends StackPane {
      */
     public void setTile(Colour colour) {
         Platform.runLater(() -> this.tile.setImage(colour.getIcon()));
+        this.currentColour = colour;
         this.isEmpty = false;
     }
 
@@ -100,7 +102,8 @@ public class Tile extends StackPane {
             this.tile.setOpacity(1);
         });
 
-        fadeOut.play();        
+        fadeOut.play();  
+        this.currentColour = Colour.TRANSPARENT;      
     }
 
     /**
@@ -109,6 +112,7 @@ public class Tile extends StackPane {
     public void clearNoAnimation() {
         this.tile.setImage(null);
         this.isEmpty = true;
+        this.currentColour = Colour.TRANSPARENT;
     }
 
     /**
@@ -170,5 +174,9 @@ public class Tile extends StackPane {
      */
     public int getYPos() {
         return this.y;
+    }
+
+    public Colour getColour() {
+        return this.currentColour;
     }
 }

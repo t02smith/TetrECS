@@ -170,6 +170,9 @@ public class GameWindow {
         return this.gameScene;
     }
 
+    //Power up game//
+
+
 
     //Multiplayer
 

@@ -10,6 +10,7 @@ import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Game;
 import uk.ac.soton.comp1206.game.Multiplayer.MultiplayerGame;
+import uk.ac.soton.comp1206.game.Powerup.PowerUpGame;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 public class App extends Application {
@@ -53,6 +54,13 @@ public class App extends Application {
     public void openGame() {
         logger.info("Opening game window");
         this.game = new Game(this.gameWindow, this.communicator);
+        this.game.buildGame();
+        this.gameWindow.loadGame();
+    }
+
+    public void openPowerUpGame() {
+        logger.info("Opening power up game");
+        this.game = new PowerUpGame(this.gameWindow, this.communicator);
         this.game.buildGame();
         this.gameWindow.loadGame();
     }

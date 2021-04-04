@@ -88,21 +88,7 @@ public class Game {
             );
         });
 
-        //Called when the game is started//
-        this.gameWindow.addGameStartListener(() -> {
-            this.resetGame();
-            this.nextPiece();
-            this.nextPiece();
-
-            this.gameOver = false;
-            KeyBinding.setKeysDisabled(false);
-
-            //Plays background music
-            MultiMedia.playMusic("game.wav");
-
-            //start timer
-            this.gameLoop();
-        });
+        this.setGameStartListener();
 
         //Assigns key bindings
         this.setKeyBindings();
@@ -210,14 +196,6 @@ public class Game {
             this.timeline.getKeyFrames().set(1, this.updateTime());
             logger.info("Time decreased to {}ms", this.getTimerDelay());
 
-
-
-        });
-
-        //When a life is lost
-        this.lives.addListener(event -> {
-            this.challengeScene.loseLife();
-            MultiMedia.playSFX("SFX/lifelose.wav");
         });
 
         //When the multiplier changes
@@ -226,6 +204,26 @@ public class Game {
         });
     }
 
+    /**
+     * Sets the action called when the game starts
+     */
+    protected void setGameStartListener() {
+        //Called when the game is started//
+        this.gameWindow.addGameStartListener(() -> {
+            this.resetGame();
+            this.nextPiece();
+            this.nextPiece();
+
+            this.gameOver = false;
+            KeyBinding.setKeysDisabled(false);
+
+            //Plays background music
+            MultiMedia.playMusic("game.wav");
+
+            //start timer
+            this.gameLoop();
+        });
+    }
 
     /**
      * Game loop to keep track of the time
@@ -248,8 +246,7 @@ public class Game {
      */
     protected KeyFrame updateTime() {
         return new KeyFrame(Duration.millis(this.getTimerDelay()), e -> {
-            this.lives.set(this.lives.get() -1);
-            logger.info("Life lost! {} remaining", this.lives.get());
+            this.loseLife();
 
             if (this.lives.get() < 0) this.stopGame();
             else {
@@ -259,6 +256,9 @@ public class Game {
         }, new KeyValue(this.challengeScene.getTimer().progressProperty(), 0));
     }
 
+    /**
+     * Stops the current game
+     */
     public void stopGame() {
         logger.info("GAME OVER");
         this.timeline.stop();
@@ -401,6 +401,17 @@ public class Game {
     protected void insertSelected() {
         int[] selected = this.challengeScene.getBoard().getSelectedPos();
         this.insertPiece(selected[0], selected[1]);
+    }
+
+    public void loseLife() {
+        this.challengeScene.loseLife();
+        this.lives.set(this.lives.get()-1);
+        MultiMedia.playSFX("SFX/lifelose.wav");
+    }
+
+    public void addLife() {
+        this.challengeScene.addLife();
+        this.lives.set(this.lives.get()+1);
     }
 
     //Timer//

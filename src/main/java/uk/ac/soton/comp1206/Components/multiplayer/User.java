@@ -93,7 +93,11 @@ public class User extends BorderPane {
         this.currentGrid = newGrid;
     }
     
+    /**
+     * Displays to the user that a player has died
+     */
     public void displayDead() {
+        //Paints a red X on the board
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
                 if (x == y || x+y == 4) {

@@ -85,8 +85,10 @@ public class Menu extends BaseScene {
         //Smaller boxes//
         var vbox = new VBox(
             new MenuItem("Scores", Utility.getImage("menu/smallMe.jpg"), () -> {
+                /*
                 logger.info("Opening leaderboard");
-                this.window.loadScores();
+                this.window.loadScores();*/
+                App.getInstance().openPowerUpGame();
             }),
             new MenuItem("Help", Utility.getImage("menu/help.png"), () -> {
                 logger.info("Opening instructions");
