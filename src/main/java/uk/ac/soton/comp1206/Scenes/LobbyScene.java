@@ -32,9 +32,6 @@ public class LobbyScene extends BaseScene {
     public void build() {
         this.getStylesheets().add(Utility.getStyle("Lobby.css"));
 
-        this.windowWidth = 700;
-        this.windowHeight = 500;
-
         //Initially the user will be in the lobby
         this.buildInLobby();
 
@@ -87,7 +84,7 @@ public class LobbyScene extends BaseScene {
             //Create a button for each channel
             channels.forEach(channel -> {
                 var name = new Button(channel.getName());
-                name.getStyleClass().addAll("channel-name");
+                name.getStyleClass().addAll("channel-title");
 
                 name.setOnAction(event -> {
                     joinChannel.receive(channel.getName());

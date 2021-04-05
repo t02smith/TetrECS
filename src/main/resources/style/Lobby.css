@@ -8,7 +8,9 @@
 .channel-title {
     -fx-text-fill: white;
     -fx-font-family: "Karmatic Arcade";
-    -fx-font-size: 40;
+    -fx-font-size: 30;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
 

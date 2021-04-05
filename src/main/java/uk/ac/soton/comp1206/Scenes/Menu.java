@@ -31,8 +31,8 @@ public class Menu extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Menu.css"));
         this.root.getStyleClass().add("menu-shell");
 
-        this.windowWidth = 700;
-        this.windowHeight = 500;
+        this.windowWidth = 800;
+        this.windowHeight = 700;
 
         var menuComponents = new VBox(
             this.createTitle(), 
@@ -81,14 +81,12 @@ public class Menu extends BaseScene {
      * Creates all the options for the main menu
      * @return The menu options
      */
-    private HBox createMenuItems() {
+    private VBox createMenuItems() {
         //Smaller boxes//
-        var vbox = new VBox(
-            new MenuItem("Scores", Utility.getImage("menu/smallMe.jpg"), () -> {
-                /*
+        var smallIcons = new HBox (
+            new MenuItem("Scores", Utility.getImage("menu/score.png"), () -> {
                 logger.info("Opening leaderboard");
-                this.window.loadScores();*/
-                App.getInstance().openPowerUpGame();
+                this.window.loadScores();
             }),
             new MenuItem("Help", Utility.getImage("menu/help.png"), () -> {
                 logger.info("Opening instructions");
@@ -96,12 +94,14 @@ public class Menu extends BaseScene {
             })
         );
 
-        vbox.setSpacing(20);
+        smallIcons.setSpacing(20);
+        smallIcons.setAlignment(Pos.BASELINE_CENTER);
+        smallIcons.setPadding(new Insets(20, 12, 30, 12));
 
         //All options//
-        var options = new HBox();
+        var bigIcons = new HBox();
 
-        options.getChildren().addAll(
+        bigIcons.getChildren().addAll(
             new MenuItem("Single\nPlayer", Utility.getImage("menu/singleplayer.png"), () -> {
                 logger.info("Opening singleplayer");
                 App.getInstance().openGame();
@@ -110,14 +110,20 @@ public class Menu extends BaseScene {
                 logger.info("Opening multiplayer");
                 App.getInstance().openMultiplayer();
             }),
-            vbox
+            new MenuItem("Power\nup", Utility.getImage("menu/powerup.png"), () -> {
+                logger.info("Openign power up mode");
+                App.getInstance().openPowerUpGame();
+            })
         );
 
-        options.setAlignment(Pos.BOTTOM_CENTER);
-        options.setSpacing(20);
-        options.setPadding(new Insets(20, 12, 30, 12));
+        bigIcons.setAlignment(Pos.BOTTOM_CENTER);
+        bigIcons.setSpacing(20);
+        bigIcons.setPadding(new Insets(20, 12, 5, 12));
 
-        return options;
+        var icons = new VBox(bigIcons, smallIcons);
+        icons.setAlignment(Pos.CENTER);
+
+        return icons;
     }
 
     /**

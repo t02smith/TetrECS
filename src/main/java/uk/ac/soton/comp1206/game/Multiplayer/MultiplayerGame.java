@@ -331,7 +331,7 @@ public class MultiplayerGame extends Game {
     @Override
     public void stopGame() {
         logger.info("GAME OVER");
-        this.timeline.stop();
+        if (this.timeline != null) this.timeline.stop();
         this.gameOver = true;
         
     }

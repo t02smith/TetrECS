@@ -36,6 +36,9 @@ public abstract class BaseScene extends Scene {
         this.root = (BorderPane)this.getRoot();
 
         this.setKeyBindings();
+
+        this.windowWidth = 700;
+        this.windowHeight = 500;
     }
 
     /**

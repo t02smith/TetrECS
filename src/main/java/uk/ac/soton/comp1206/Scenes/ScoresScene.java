@@ -56,9 +56,6 @@ public class ScoresScene extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Scores.css"));
         this.root.getStyleClass().add("score-shell");
 
-        this.windowWidth = 700;
-        this.windowHeight = 500;
-
         //Holds all the main components on the scene
         this.components = new VBox();
         this.components.setSpacing(25);
@@ -75,6 +72,7 @@ public class ScoresScene extends BaseScene {
         scoreLists.setSpacing(25);
 
         if (this.userPlayed.get()) {
+            this.windowHeight = 650;
             this.buildSendUsername();
         }
         

@@ -17,7 +17,7 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  */
 public class PowerUpGame extends Game {
     //How many points the user has to spend on powerups
-    private SimpleIntegerProperty spendingPoints = new SimpleIntegerProperty(10000);
+    private SimpleIntegerProperty spendingPoints = new SimpleIntegerProperty(0);
 
     public PowerUpGame(GameWindow gameWindow, Communicator communicator) {
         super(gameWindow, communicator);
@@ -27,7 +27,7 @@ public class PowerUpGame extends Game {
     public void buildGame() {
         logger.info("Building power-up game");
 
-        this.challengeScene = new PowerUpScene(this.gameWindow, this::usePowerUp);
+        this.challengeScene = new PowerUpScene(this.gameWindow, power -> usePowerUp(power));
         this.gameWindow.setGameScene(this.challengeScene);
 
         this.challengeScene.setHighScore(this.gameWindow.getScoresScene().getHighScore());
@@ -42,6 +42,16 @@ public class PowerUpGame extends Game {
         this.setTileClickListeners();
 
 
+    }
+
+
+    @Override
+    protected void setUserPropertyListeners() {
+        super.setUserPropertyListeners();
+
+        this.spendingPoints.addListener(event -> {
+            ((PowerUpScene)this.challengeScene).setPoints(this.spendingPoints.get());
+        });
     }
 
     @Override
@@ -79,9 +89,10 @@ public class PowerUpGame extends Game {
             ((PowerUpGrid)this.challengeScene.getBoard()).push(Direction.DOWN)
         );
 
-        PowerUp.NUKE.setAction(() -> 
-            ((PowerUpGrid)this.challengeScene.getBoard()).clearAll()
-        );
+        PowerUp.NUKE.setAction(() -> {
+            ((PowerUpGrid)this.challengeScene.getBoard()).clearAll();
+            MultiMedia.playSFX("SFX/explode.wav");
+        });
 
         PowerUp.NEW_PIECE.setAction(() -> this.nextPiece());
 
@@ -95,20 +106,35 @@ public class PowerUpGame extends Game {
      * Uses a power up if the user has enough points
      * @param pu The power up to be used
      */
-    public void usePowerUp(PowerUp pu) {
+    public boolean usePowerUp(PowerUp pu) {
         if (pu.getPrice() > this.spendingPoints.get()) {
             logger.info("Not enough points");
             MultiMedia.playSFX("SFX/fail.wav");
+            return false;
         } else {
             logger.info("Power up {} executed", pu);
-            pu.execute();
             this.spendingPoints.set(this.spendingPoints.get() - pu.getPrice());
+            pu.execute();
             this.timeline.playFromStart();
             if (pu != PowerUp.DOUBLE_POINTS) this.afterPiece();
+
+            return true;
         }
     }
 
+    @Override
+    public void stopGame() {
+        logger.info("GAME OVER");
+        this.timeline.stop();
+        this.gameOver = true;
+
+        this.gameWindow.revertScene();
+    }
+
+    /**
+     * Listener called when the user uses a powerup in game
+     */
     public interface UsePowerUpListener {
-        public void usePower(PowerUp pu);
+        public boolean usePower(PowerUp pu);
     }
 }

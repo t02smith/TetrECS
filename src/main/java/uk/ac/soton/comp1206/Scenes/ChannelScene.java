@@ -49,9 +49,6 @@ public class ChannelScene extends BaseScene {
         this.getStylesheets().add(Utility.getStyle("Channel.css"));
         this.root.getStyleClass().add("channel-shell");
 
-        this.windowWidth = 700;
-        this.windowHeight = 500;
-
         //CHATPANE//
 
         this.chatPane = new ChatPane();

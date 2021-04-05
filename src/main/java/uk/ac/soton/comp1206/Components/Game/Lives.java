@@ -40,6 +40,9 @@ public class Lives extends VBox {
     
     }
 
+    /**
+     * Builds the component that shows the user's current lives
+     */
     public void buildLives() {
         this.getChildren().clear();
 
@@ -47,7 +50,6 @@ public class Lives extends VBox {
             this.warningLabel();
             return;
         }
-
 
         Image lifeImg = Utility.getImage("heart.png");
 
@@ -61,6 +63,7 @@ public class Lives extends VBox {
             life.setPreserveRatio(true);
             life.setFitHeight(this.lives > 6 ? 42: 65);
 
+            //The hearts will be smaller if there are lots of them
             if ((i%3 == 0 && this.lives <= 6) || (i%6 == 0 && this.lives > 6)) {
                 if (row != null) {
                     var emptyR = new Region();
@@ -87,6 +90,9 @@ public class Lives extends VBox {
         }
     }
 
+    /**
+     * Called when a user gains a life
+     */
     public void addLife() {
         this.lives++;
         this.buildLives();

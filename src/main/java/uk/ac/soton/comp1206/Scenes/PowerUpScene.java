@@ -1,7 +1,10 @@
 package uk.ac.soton.comp1206.Scenes;
 
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Powerups.PowerUpGrid;
@@ -18,6 +21,8 @@ public class PowerUpScene extends ChallengeScene {
     //Called when a powerup is used
     private UsePowerUpListener powerUpListener;
 
+    private Label points;
+
     public PowerUpScene(GameWindow window, UsePowerUpListener listener) {
         super(window);
         this.powerUpListener = listener;
@@ -30,16 +35,47 @@ public class PowerUpScene extends ChallengeScene {
         this.windowWidth = 1000;
 
         //Power up options on the left
-        var options = new VBox(12);
+        var powerUpMenu = new VBox(12);
+        powerUpMenu.setAlignment(Pos.TOP_CENTER);
+        powerUpMenu.setMinWidth(this.getWidth()*0.25);
+        powerUpMenu.setMaxWidth(this.getWidth()*0.25);
 
+        this.points = new Label("Points: 0");
+        this.points.getStyleClass().add("sidebar-text");
+        this.points.setStyle("-fx-font-size: 16");
+
+
+        var powerUpGrid = new GridPane();
+        powerUpGrid.setAlignment(Pos.CENTER);
+        powerUpGrid.setVgap(10);
+        
         var powerUps = PowerUp.values();
-        for (PowerUp power: powerUps) {
-            var button = new Button(power.toString());
-            button.setOnAction(event -> this.powerUpListener.usePower(power));
-            options.getChildren().add(button);
+        for (int i = 0; i < powerUps.length; i++) {
+            var power = powerUps[i];
+
+            var icon = new ImageView(power.getIcon());
+            icon.setPreserveRatio(true);
+            icon.setFitHeight(75);
+
+            var price = new Label(String.valueOf(power.getPrice()));
+            price.getStyleClass().add("sidebar-text");
+            price.setStyle("-fx-font-size: 12");
+
+            icon.setOnMouseClicked(event -> {
+                if (this.powerUpListener.usePower(power)) {
+                    price.setText(String.valueOf(power.getPrice()));
+                }
+                
+            });
+
+            var powerUpShell = new VBox(icon, price);
+            powerUpShell.setAlignment(Pos.CENTER);
+
+            powerUpGrid.add(powerUpShell, i%2, i/2);
         }
 
-        this.root.setLeft(options);
+        powerUpMenu.getChildren().addAll(this.points, powerUpGrid);
+        this.root.setLeft(powerUpMenu);
     }
 
     @Override
@@ -60,5 +96,9 @@ public class PowerUpScene extends ChallengeScene {
      */
     public void setUsePowerUpListener(UsePowerUpListener listener) {
         this.powerUpListener = listener;
+    }
+
+    public void setPoints(int points) {
+        this.points.setText("Points: " + points);
     }
 }
