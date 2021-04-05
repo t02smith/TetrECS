@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import uk.ac.soton.comp1206.Components.multiplayer.User;
 
 /**
@@ -12,6 +15,8 @@ import uk.ac.soton.comp1206.Components.multiplayer.User;
  * @author tcs1g20
  */
 public class Channel {
+    private static final Logger logger = LogManager.getLogger(Channel.class);
+
     //The channels name
     private String name;
 
@@ -23,6 +28,7 @@ public class Channel {
      * @param name the name of the channel
      */
     public Channel(String name) {
+        logger.info("Channel {} created", name);
         this.name = name;
     }
 
@@ -31,6 +37,7 @@ public class Channel {
      * @param users new list of users
      */
     public void updateUsers(String users) {
+        logger.info("Updating users in {}", this.name);
         var userArr = new ArrayList<>(Arrays.asList(users.split("\\s+")));
         userArr.remove(0);
 
@@ -39,6 +46,8 @@ public class Channel {
                 this.users.put(user, new User(user));
             }
         });
+
+        this.users.keySet().removeIf(user -> !userArr.contains(user));
     }
 
     /**
@@ -54,6 +63,8 @@ public class Channel {
 
         this.users.remove(oldName);
         this.users.put(newName, user);
+
+        logger.info("Updating {} to {}", oldName, newName);
     }
 
     /**
@@ -103,6 +114,7 @@ public class Channel {
      * @param name The user who died
      */
     public void killUser(String name) {
+        logger.info("Killing {} :/", name);
         var user = this.users.get(name);
         user.displayDead();
     }

@@ -1,4 +1,5 @@
 HISCORES Nyalex:19580
+Mous:18110
 Nyalex:18060
 W:17970
 Nyalex:17440
@@ -7,4 +8,3 @@ unlucky:17180
 L:17130
 Player1:17130
 Nyalex:17120
-Nyalex:16460

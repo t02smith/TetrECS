@@ -54,6 +54,9 @@ public class Sidebar extends StackPane {
     //Any listeners that are needed in this class for the grids
     private HashMap<String,TileClickListener> listeners = new HashMap<>();
 
+    /**
+     * Build the sidebar component
+     */
     public void build() {
         logger.info("Building sidebar");
         this.components.setAlignment(Pos.CENTER);

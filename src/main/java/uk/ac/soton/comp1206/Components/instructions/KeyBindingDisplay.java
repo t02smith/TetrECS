@@ -84,9 +84,7 @@ public class KeyBindingDisplay extends ScrollPane {
             }
         });
 
-
         this.setContent(actionGrid);
     }
-
 
 }

@@ -67,7 +67,7 @@ public enum KeyBinding {
         if (KeyBinding.bindings == null) bindings = new HashMap<>();
 
         //If the key is already assigned
-        if (KeyBinding.bindings.containsKey(newKey)) return false;
+        if (KeyBinding.bindings.containsKey(newKey) && newKey != null) return false;
 
         KeyBinding.bindings.put(newKey, this);
 
@@ -78,7 +78,7 @@ public enum KeyBinding {
         }
 
         this.keys.add(newKey);
-        try {logger.info(this + ":Binding for key {} changed to {}", oldKey, newKey);}
+        try {logger.info(this + ": Binding for key {} changed to {}", oldKey, newKey);}
         catch(NullPointerException e) {}
 
         return true;
@@ -100,9 +100,9 @@ public enum KeyBinding {
      */
     public void removeKey(KeyCode key) {
         if (this.keys.contains(key)) {
-            logger.info("{}: keybinding {} removed", key);
-            this.keys.remove(key);
+            logger.info("{}: keybinding {} removed", this, key);
             KeyBinding.bindings.remove(key);
+            this.keys.remove(key);
         }
     }
 

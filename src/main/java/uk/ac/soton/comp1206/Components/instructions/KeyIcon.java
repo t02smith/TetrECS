@@ -2,10 +2,13 @@ package uk.ac.soton.comp1206.Components.instructions;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Utility.Utility;
@@ -41,6 +44,8 @@ public class KeyIcon extends StackPane {
             new ImageView(Utility.getImage("keys/key.png"));
         this.icon.setPreserveRatio(true);
         this.icon.setFitHeight(75);
+
+        this.setRemoveKey();
 
         this.key = key;
         this.action = action;
@@ -109,7 +114,12 @@ public class KeyIcon extends StackPane {
     public void setKey(KeyCode newKey) {
         //Attempt to assign the key
         if (this.action.assignKey(this.key, newKey)) {
-            if (this.key == null) this.icon.setImage(Utility.getImage("keys/key.png"));
+            if (newKey == null) {
+                this.icon.setImage(Utility.getImage("keys/no-binding.png"));
+            } else if (this.key == null) {
+                this.icon.setImage(Utility.getImage("keys/key.png"));
+                this.setRemoveKey();
+            }
 
             //If successful then change the symbol on the key
             this.value.setText(this.getSymbol(newKey));
@@ -121,10 +131,36 @@ public class KeyIcon extends StackPane {
         this.value.setOpacity(1);
     }
 
+    public void setRemoveKey() {
+        var remove = new Label("X");
+        remove.getStyleClass().add("remove-key");
+        remove.setOpacity(0);
+
+        this.setOnMouseEntered(event -> {if (this.key != null) remove.setOpacity(1);});
+        this.setOnMouseExited(event -> remove.setOpacity(0));
+
+        remove.setOnMouseClicked(event -> {
+            this.removeKey();
+        });
+
+        var vbox = new VBox(remove);
+        vbox.setAlignment(Pos.TOP_RIGHT);
+
+        Platform.runLater(() -> this.getChildren().add(vbox));
+    }
+
     /**
      * Hides the key's value
      */
     public void hideValue() {
         this.value.setOpacity(0);
+    }
+
+    /**
+     * Removes a key binding for the currently stored key
+     */
+    public void removeKey() {
+        this.action.removeKey(this.key);
+        this.setKey(null);
     }
 }

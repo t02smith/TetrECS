@@ -80,7 +80,7 @@ public class LobbyScene extends BaseScene {
             noChannels.getStyleClass().add("no-channels");
 
             this.channelList.getChildren().add(noChannels);
-        } else {    //If there is at least one open channel
+        } else {//If there is at least one open channel
             //Create a button for each channel
             channels.forEach(channel -> {
                 var name = new Button(channel.getName());

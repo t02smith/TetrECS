@@ -108,7 +108,7 @@ public class PowerUpGame extends Game {
      */
     public boolean usePowerUp(PowerUp pu) {
         if (pu.getPrice() > this.spendingPoints.get()) {
-            logger.info("Not enough points");
+            logger.info("Not enough points to execute {}", pu);
             MultiMedia.playSFX("SFX/fail.wav");
             return false;
         } else {

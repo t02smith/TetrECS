@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Random;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -36,6 +39,9 @@ public class Scoreboard extends VBox {
     private static final Color[] scoreColors = {
         Color.HOTPINK, Color.RED, Color.ORANGE, Color.YELLOW, Color.YELLOWGREEN, Color.LIME, Color.PURPLE, Color.DARKGREEN, Color.CYAN, Color.BLUE
     };
+
+    private static final Logger logger = LogManager.getLogger(Scoreboard.class);
+
 
     /**
      * Constructor to create scoreboard from scores
@@ -117,6 +123,7 @@ public class Scoreboard extends VBox {
      * @param score The user's new score
      */
     public void updateScore(String name, int score) {
+        logger.info("Updating {}'s score to {}", name, score);
         for (MutablePair<String, Integer> user: this.scores) {
             if (user.getKey().equals(name)) {
                 user.setValue(score);
@@ -153,6 +160,7 @@ public class Scoreboard extends VBox {
      * When a change is made to the scoreboard update it
      */
     private void updateScoreboard() {
+        logger.info("Updating scoreboard {}", this.name);
         this.getChildren().clear();
 
         var scoreBoard = new GridPane();

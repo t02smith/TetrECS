@@ -1,6 +1,6 @@
 
 .instruction-bg {
-    -fx-background-image: url("../images/2.jpg");
+    -fx-background-image: url("../images/3.jpg");
     -fx-background-size: cover;
     -fx-background-color: transparent;
 }
@@ -28,4 +28,10 @@
 .action-description {
     -fx-text-fill: white;
     -fx-font-size: 18px;
+}
+
+.remove-key {
+    -fx-font-family: "Karmatic Arcade";
+    -fx-font-size: 20;
+    -fx-text-fill: red;
 }
