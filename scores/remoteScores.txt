@@ -5,6 +5,6 @@ W:17970
 Nyalex:17440
 tory:17260
 unlucky:17180
+Pan1k:17140
 L:17130
 Player1:17130
-Nyalex:17120

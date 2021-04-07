@@ -7,6 +7,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.App;
@@ -46,7 +49,29 @@ public class Menu extends BaseScene {
             menuComponents
         );
 
-        MultiMedia.playMusic("menu.mp3");
+        //TOP//
+        
+        var empty = new Region();
+        HBox.setHgrow(empty, Priority.ALWAYS);
+
+        var audioIcon = new ImageView(Utility.getImage("menu/audio.png"));
+        audioIcon.setPreserveRatio(true);
+        audioIcon.setFitHeight(50);
+
+        var cross = new ImageView(Utility.getImage("menu/cross.png"));
+        cross.setPreserveRatio(true);
+        cross.setFitHeight(50);
+        cross.setOpacity(0);
+
+        var audio = new StackPane(audioIcon, cross);
+        audio.setOnMouseClicked(event -> {
+            MultiMedia.toggleAudioEnabled();
+            cross.setOpacity(cross.getOpacity() == 0 ? 1: 0);
+        });
+
+
+        var topBar = new HBox(empty, audio);
+        this.root.setTop(topBar);
     }
 
     /**
@@ -124,6 +149,11 @@ public class Menu extends BaseScene {
         icons.setAlignment(Pos.CENTER);
 
         return icons;
+    }
+
+    @Override
+    public void playBackgroundMusic() {
+        MultiMedia.playMusic("menu.mp3");
     }
 
     /**

@@ -173,7 +173,6 @@ public class Grid extends GridPane {
         //Checks the availability of every tile in the 3x3 square
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
-                //We are trying to place a tile at this square
                 if (pieceBlocks[row][column] == 1) {
                     //Can we play a tile at this square
                     if (this.canPlayPiece(x+column-1, y+row-1)) {

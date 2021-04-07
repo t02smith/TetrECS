@@ -73,7 +73,6 @@ public class Game {
         this.scoresScene = this.gameWindow.getScoresScene();
         this.challengeScene.setHighScore(this.scoresScene.getHighScore());
         
-
         //Submits a score once the game has ended
         this.scoresScene.addSubmitScoreListener((name, score) -> {
             logger.info("Submitting new score");
@@ -88,6 +87,7 @@ public class Game {
             );
         });
 
+        //Sets what to do when the game starts
         this.setGameStartListener();
 
         //Assigns key bindings
@@ -177,7 +177,10 @@ public class Game {
     protected void setUserPropertyListeners() {
         //When the score updates
         this.score.addListener(event -> {
+            //updates UI
             this.challengeScene.updateScore(score.get());
+
+            //updates level
             if (this.score.get()/1000 != this.level.get()) {
                 this.level.set(this.score.get()/1000);
                 logger.info("level increased to {}", this.level.get());
@@ -187,10 +190,12 @@ public class Game {
         //When the user levels up
         this.level.addListener(event -> {
             if (this.timeline == null) return;
+
             logger.info("Level changed to {}", this.level.get());
             this.challengeScene.updateLevel(this.level.get());
 
             MultiMedia.playSFX("SFX/level.wav");
+
             //Decrease the time given to place a piece
             this.timeline.stop();
             this.timeline.getKeyFrames().set(1, this.updateTime());
@@ -215,10 +220,7 @@ public class Game {
             this.nextPiece();
 
             this.gameOver = false;
-            KeyBinding.setKeysDisabled(false);
-
-            //Plays background music
-            MultiMedia.playMusic("game.wav");
+            KeyBinding.setKeysDisabled(false);           
 
             //start timer
             this.gameLoop();
@@ -269,6 +271,8 @@ public class Game {
         this.scoresScene.setHasPlayed(true);
 
         this.gameWindow.replaceScene(this.scoresScene);
+
+
     }
 
     /**

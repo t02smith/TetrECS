@@ -14,6 +14,7 @@ import uk.ac.soton.comp1206.Scenes.InstructionScene;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.Menu;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Stack;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Multiplayer.Channel;
@@ -87,7 +88,6 @@ public class GameWindow {
      */
     private void getResources() {
         Font.loadFont(this.getClass().getResourceAsStream("/font/ka1.ttf"), 16);
-        Font.loadFont(this.getClass().getResourceAsStream("/font/Tally Mark.ttf"), 16);
     }
 
     /**
@@ -97,6 +97,8 @@ public class GameWindow {
     public void loadScene(BaseScene scene) {
         logger.info("Loading scene {}", scene);
 
+        MultiMedia.stopMusic();
+        scene.playBackgroundMusic();
         scene.build();
         scene.setDimension();
         if (this.stage.getScene() != null) this.scenes.push((BaseScene)this.stage.getScene());
@@ -113,6 +115,9 @@ public class GameWindow {
             previous.setKeyBindings();
             this.stage.setScene(previous);
             previous.setDimension();
+
+            MultiMedia.stopMusic();
+            previous.playBackgroundMusic();
         }
     }
 
@@ -123,6 +128,8 @@ public class GameWindow {
     public void replaceScene(BaseScene scene) {
         logger.info("Replacing current scene");
         scene.build();
+        MultiMedia.stopMusic();
+        scene.playBackgroundMusic();
         scene.setDimension();
         this.stage.setScene(scene);
     }
@@ -169,10 +176,6 @@ public class GameWindow {
     public ChallengeScene getGameScene() {
         return this.gameScene;
     }
-
-    //Power up game//
-
-
 
     //Multiplayer
 

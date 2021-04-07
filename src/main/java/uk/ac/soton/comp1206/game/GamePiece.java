@@ -86,7 +86,7 @@ public enum GamePiece {
         for (int row = 0; row < rotated.length; row++) {
             for (int column = 0; column < rotated[0].length; column++) {
                 //Uses a matrix transformation in an adjusted 3x3 grid
-                rotated [2-column][row] = this.blocks[row][column];
+                rotated[2-column][row] = this.blocks[row][column];
             }
         }
 
@@ -104,7 +104,7 @@ public enum GamePiece {
         for (int row = 0; row < rotated.length; row++) {
             for (int column = 0; column < rotated[0].length; column++) {
                 //Uses a matrix transformation in an adjusted 3x3 grid
-                rotated [column][2-row] = this.blocks[row][column];
+                rotated[column][2-row] = this.blocks[row][column];
             }
         }
 

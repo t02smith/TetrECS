@@ -12,6 +12,7 @@ import javafx.util.Pair;
 import uk.ac.soton.comp1206.Components.Game.Scoreboard;
 import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar;
 import uk.ac.soton.comp1206.Event.SubmitScoreListener;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -189,5 +190,10 @@ public class ScoresScene extends BaseScene {
 
         Utility.writeToFile("scores/localScores.txt", text.toString());
 
+    }
+
+    @Override
+    public void playBackgroundMusic() {
+        MultiMedia.playMusic("game.wav");
     }
 }

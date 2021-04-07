@@ -39,10 +39,10 @@ public class MultiplayerGame extends Game {
     //Whether the user is in a game
     private boolean inGame = false;
 
-    //The history of the user's grid
+    //The history of the user's grid -> time travel
     private ArrayList<int[][]> gridHistory;
 
-    //Will always aim to contain 5 pieces
+    //queue of pieces - Will always aim to contain 5 pieces
     private ArrayList<GamePiece> pieces = new ArrayList<>();
 
     //What to do when the channel list needs updating
@@ -84,7 +84,6 @@ public class MultiplayerGame extends Game {
         });
 
         //Game setup//
-
 
         this.setGameStartListener();
 
@@ -289,6 +288,7 @@ public class MultiplayerGame extends Game {
             }
         });
 
+        //Update a user's score
         NetworkProtocol.SCORE.addListener(message -> {
             var nameScore = message.substring(6).split(":");
             logger.info("Updating {}'s score to {}", nameScore[0], nameScore[1]);
@@ -298,6 +298,7 @@ public class MultiplayerGame extends Game {
             );
         });
 
+        //Kill a user
         NetworkProtocol.DIE.addListener(message -> {
             var name = message.split("\\s+")[1];
             this.currentChannel.killUser(name);
@@ -318,7 +319,6 @@ public class MultiplayerGame extends Game {
         this.lives.addListener(event -> {
             if (this.lives.get() == -1) {
                 this.communicator.send("DIE");
-                this.communicator.send("PART");
             } else this.communicator.send("LIVES " + this.lives.get());  
         });
 
@@ -488,8 +488,6 @@ public class MultiplayerGame extends Game {
             this.channelScene.setNickname(this.name);
 
         });
-
-
 
     }
 

@@ -13,6 +13,7 @@ import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
 import uk.ac.soton.comp1206.Event.GameStartListener;
 import uk.ac.soton.comp1206.Event.KeyBinding;
 import uk.ac.soton.comp1206.Event.OnClickListener;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Multiplayer.Channel;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -162,5 +163,10 @@ public class ChannelScene extends BaseScene {
      */
     public void setGameStartListener(GameStartListener listener) {
         this.startListener = listener;
+    }
+
+    @Override
+    public void playBackgroundMusic() {
+        MultiMedia.playMusic("menu.mp3");
     }
 }

@@ -60,7 +60,14 @@ public abstract class BaseScene extends Scene {
      */
     public abstract void build();
 
+    /**
+     * Plays background music
+     */
+    public abstract void playBackgroundMusic();
+
     public void setDimension() {
         this.window.setSize(this.windowWidth, this.windowHeight);
     }
+
+
 }

@@ -42,7 +42,6 @@ public class Scoreboard extends VBox {
 
     private static final Logger logger = LogManager.getLogger(Scoreboard.class);
 
-
     /**
      * Constructor to create scoreboard from scores
      * @param scores List of scores expect <name>:<score>\n

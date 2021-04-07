@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.instructions.KeyBindingDisplay;
 import uk.ac.soton.comp1206.Components.instructions.PieceDisplay;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -57,8 +58,11 @@ public class InstructionScene extends BaseScene {
         body.setSpacing(25);
 
         this.root.setCenter(body);
+    }
 
-
+    @Override
+    public void playBackgroundMusic() {
+        MultiMedia.playMusic("menu.mp3");
     }
 
 

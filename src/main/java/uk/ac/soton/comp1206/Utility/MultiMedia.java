@@ -20,7 +20,7 @@ public class MultiMedia {
     private static MediaPlayer music;
 
     //Mute the audio
-    private static SimpleBooleanProperty audioEnabled = new SimpleBooleanProperty(false);
+    private static SimpleBooleanProperty audioEnabled = new SimpleBooleanProperty(true);
 
     /**
      * Plays a given audio file from a given file
@@ -63,5 +63,25 @@ public class MultiMedia {
             music.setVolume(0.5);
             music.play();
         }
+    }
+
+    /**
+     * Stops currently playing song
+     */
+    public static void stopMusic() {
+        if (music != null) {
+            logger.info("Stopping background music");
+            music.stop();
+        }
+    }
+
+    /**
+     * Toggles whether the audio is enabled or not
+     */
+    public static void toggleAudioEnabled() {
+        logger.info("audio enabled: {}", !audioEnabled.get());
+        audioEnabled.set(!audioEnabled.get());
+
+        if (!audioEnabled.get()) stopMusic();
     }
 }

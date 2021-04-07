@@ -17,6 +17,7 @@ import uk.ac.soton.comp1206.Components.Game.Sidebar;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -224,6 +225,11 @@ public class ChallengeScene extends BaseScene {
      */
     public void addTileClickListener(String name, TileClickListener tcl) {
         this.listeners.put(name, tcl);
+    }
+
+    @Override
+    public void playBackgroundMusic() {
+        MultiMedia.playMusic("game.wav");
     }
 
     //Getters//

@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.misc.ExpandingTextField;
 import uk.ac.soton.comp1206.Event.OnClickListener;
 import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
+import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Multiplayer.Channel;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -101,6 +102,11 @@ public class LobbyScene extends BaseScene {
      */
     public void setCreateChannelListener(OnClickListener listener) {
         this.createChannel = listener;
+    }
+
+    @Override
+    public void playBackgroundMusic() {
+        MultiMedia.playMusic("menu.mp3");
     }
 
 }

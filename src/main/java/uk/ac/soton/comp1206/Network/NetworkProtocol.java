@@ -34,8 +34,7 @@ public enum NetworkProtocol {
     BOARD       ("BOARD \\w+:(\\d+\\s?){25}"),                      //Get a user's game board
     DIE         ("DIE \\w+");                                       //Received if a user dies
 
-
-
+    
     //Regex to match the expected message from the server
     private final String receive;
 

@@ -40,15 +40,13 @@ public class PowerUpGame extends Game {
         this.setUserPropertyListeners();
 
         this.setTileClickListeners();
-
-
     }
-
 
     @Override
     protected void setUserPropertyListeners() {
         super.setUserPropertyListeners();
 
+        //Updates the user's spending points
         this.spendingPoints.addListener(event -> {
             ((PowerUpScene)this.challengeScene).setPoints(this.spendingPoints.get());
         });
