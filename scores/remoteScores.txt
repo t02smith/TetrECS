@@ -1,4 +1,4 @@
-HISCORES Name:25000
+Name:25000
 jjjjjj:19999
 test111:19999
 test2:19999

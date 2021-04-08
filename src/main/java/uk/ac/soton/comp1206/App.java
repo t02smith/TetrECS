@@ -116,6 +116,9 @@ public class App extends Application {
         //We set this up here so we can retrieve the scores when we load the program
         NetworkProtocol.HISCORES.addListener(message -> {
             logger.info("Setting online scores");
+            message = message.substring(9);
+            System.out.println(message);
+
             this.gameWindow.getScoresScene().setOnlineScores(message);
             Utility.writeToFile(
                 "scores/remoteScores.txt", 
