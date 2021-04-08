@@ -28,6 +28,7 @@ public enum Colour {
     LIME("lime.png"),
     RAINBOW("rainbow.png"),
     LIGHT_RED("light-red.png"),
+    WHITE("white.png"),
     TRANSPARENT("transparent.png");
 
     //The image it will display

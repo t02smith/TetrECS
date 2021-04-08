@@ -39,7 +39,11 @@ public class ChannelScene extends BaseScene {
     //Called when the host clicks the start button
     private GameStartListener startListener;
 
-
+    /**
+     * Creates a new Channel scene when in a channel
+     * @param gw The window the scene is on
+     * @param channel The channel that we have joined
+     */
     public ChannelScene(GameWindow gw, Channel channel) {
         super(gw);
         this.channel = channel;

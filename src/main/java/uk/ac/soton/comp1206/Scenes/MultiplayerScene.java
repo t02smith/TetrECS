@@ -97,6 +97,11 @@ public class MultiplayerScene extends ChallengeScene {
 
     }
 
+    /**
+     * Creates the new multiplayer grid
+     *  It keeps track of a numerical representation of the grid
+     *  to send off to the server
+     */
     @Override
     protected void buildGrid() {
         this.grid = new MultiplayerGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));

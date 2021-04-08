@@ -2,8 +2,15 @@ package uk.ac.soton.comp1206.Utility;
 
 import java.util.ArrayList;
 
+/**
+ * Basic stack class
+ * @author tcs1g20
+ */
 public class Stack<T> {
+    //List of elements
     private ArrayList<T> stack = new ArrayList<>();
+
+    //Points to the next location
     private int pointer = 0;
 
     /**

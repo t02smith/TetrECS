@@ -73,7 +73,7 @@ public class ChallengeScene extends BaseScene {
         var empty = new Region();
         HBox.setHgrow(empty, Priority.ALWAYS);
 
-        
+        //High score label
         var highScoreWord = new Label("HIGH SCORE");
         highScoreWord.getStyleClass().add("banner");
 
@@ -173,6 +173,9 @@ public class ChallengeScene extends BaseScene {
         this.sidebar.getLives().loseLife();
     }
 
+    /**
+     * Adds a life to a user
+     */
     public void addLife() {
         this.sidebar.getLives().addLife();
     }

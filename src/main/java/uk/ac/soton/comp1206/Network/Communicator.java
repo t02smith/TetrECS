@@ -13,13 +13,23 @@ import org.apache.logging.log4j.Logger;
 
 import javafx.scene.control.Alert;
 
+/**
+ * Communicator class
+ * 
+ */
 public class Communicator {
     private static final Logger logger = LogManager.getLogger(Communicator.class);
 
+    //Listeners called when receiving a message
     private final ArrayList<NetworkListener> listeners = new ArrayList<>();
 
+    //The websocket we connect to
     private WebSocket ws;
 
+    /**
+     * Creates a new Communicator
+     * @param server The server we are trying to connect to
+     */
     public Communicator(String server) {
         try {
             var socketFactory = new WebSocketFactory();
@@ -101,6 +111,10 @@ public class Communicator {
         this.listeners.clear();
     }
 
+    /**
+     * Network listener
+     * Standard interface to handle a received message
+     */
     public interface NetworkListener {
         public void receive(String message); 
     }

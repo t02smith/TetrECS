@@ -203,7 +203,7 @@ public class MultiplayerGame extends Game {
         
         //For when the game starts
         NetworkProtocol.START.addListener(message -> {
-            Platform.runLater(() -> this.gameWindow.loadMultiplayer());
+            Platform.runLater(() -> this.gameWindow.loadGame());
             this.inGame = true;
         });
 
@@ -343,12 +343,14 @@ public class MultiplayerGame extends Game {
         if (!this.gameOver && grid.placePiece(this.currentPiece, x, y)) {
             this.afterPiece();
 
+            MultiMedia.playSFX("SFX/place.wav");
+
             //Requests next piece
             this.communicator.send("PIECE");
             this.nextPiece();
 
             this.timeline.playFromStart();
-        }
+        } else MultiMedia.playSFX("SFX/fail.wav");
     }
 
     /**
@@ -385,6 +387,8 @@ public class MultiplayerGame extends Game {
                 currentBoard[i][column] = 0;
             }
         });
+
+        if (rowBuffer.size() > 0 || columnBuffer.size() > 0) MultiMedia.playSFX("SFX/explode.wav");
 
         //Sets next board
         this.gridHistory.set(this.gridHistory.size()-1, currentBoard);
@@ -500,8 +504,6 @@ public class MultiplayerGame extends Game {
         this.updateChannelList.playFromStart();
 
         logger.info("Leaving channel");
-
-        
     }
 
 }

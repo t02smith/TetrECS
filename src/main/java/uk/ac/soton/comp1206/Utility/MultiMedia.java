@@ -9,6 +9,7 @@ import javafx.scene.media.MediaPlayer;
 
 /**
  * To play any background music or sound effects
+ * @author tcs1g20
  */
 public class MultiMedia {
     private static final Logger logger = LogManager.getLogger(Utility.class);

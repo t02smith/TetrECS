@@ -57,6 +57,9 @@ public enum PowerUp {
         return this.price;
     }
 
+    /**
+     * @return Gets the powerups icon
+     */
     public Image getIcon() {
         return this.icon;
     }

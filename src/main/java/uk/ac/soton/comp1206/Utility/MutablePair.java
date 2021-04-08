@@ -8,6 +8,8 @@ import javafx.util.Pair;
  * 
  * In our case we will store scores that will change
  *  throughout runtime so we need to be able to change it
+ * 
+ * @author tcs1g20
  */
 public class MutablePair<K, V> {
     //Unique key to represent a value

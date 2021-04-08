@@ -13,10 +13,16 @@ import uk.ac.soton.comp1206.game.Multiplayer.MultiplayerGame;
 import uk.ac.soton.comp1206.game.Powerup.PowerUpGame;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
+/**
+ * App class to run the javafx program
+ * @author tcs1g20
+ */
 public class App extends Application {
+    //The instance of the app currently in use
     private static App instance;
     private static final Logger logger = LogManager.getLogger(App.class);
 
+    //The stage displayed by the app
     private Stage stage;
 
     //Window to display the game on
@@ -48,6 +54,8 @@ public class App extends Application {
 
     }
 
+    //OPENING SCENES//
+
     /**
      * Opens up a singlepayer game onto the window
      */
@@ -58,6 +66,9 @@ public class App extends Application {
         this.gameWindow.loadGame();
     }
 
+    /**
+     * Opens up a new power up game
+     */
     public void openPowerUpGame() {
         logger.info("Opening power up game");
         this.game = new PowerUpGame(this.gameWindow, this.communicator);
@@ -76,12 +87,6 @@ public class App extends Application {
 
     }
 
-    public void openScores() {
-        logger.info("Opening scores");
-        this.communicator.send("HISCORES");
-        this.gameWindow.loadScores();
-    }
-
     /**
      * Shuts down the game
      */
@@ -91,6 +96,9 @@ public class App extends Application {
         System.exit(0);
     }
 
+    /**
+     * Sets up any default communicator settings
+     */
     public void setupCommunicator() {
         //Checks if we have setup a network protocol for a received message
         this.communicator.addListener(message -> {
@@ -102,8 +110,10 @@ public class App extends Application {
             }
         });
 
+        //By default log any errors
         NetworkProtocol.ERROR.addListener(message -> logger.error(message));
         
+        //We set this up here so we can retrieve the scores when we load the program
         NetworkProtocol.HISCORES.addListener(message -> {
             logger.info("Setting online scores");
             this.gameWindow.getScoresScene().setOnlineScores(message);
@@ -127,6 +137,4 @@ public class App extends Application {
         return instance;
     }
 
-
-    
 }

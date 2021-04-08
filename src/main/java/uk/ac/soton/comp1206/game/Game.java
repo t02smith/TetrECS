@@ -407,12 +407,20 @@ public class Game {
         this.insertPiece(selected[0], selected[1]);
     }
 
+    /**
+     * The user loses a life
+     * Updates the UI
+     */
     public void loseLife() {
         this.challengeScene.loseLife();
         this.lives.set(this.lives.get()-1);
         MultiMedia.playSFX("SFX/lifelose.wav");
     }
 
+    /**
+     * The user gains a life
+     * Updates UI
+     */
     public void addLife() {
         this.challengeScene.addLife();
         this.lives.set(this.lives.get()+1);

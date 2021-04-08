@@ -17,9 +17,7 @@ import uk.ac.soton.comp1206.Network.Communicator.NetworkListener;
 public enum NetworkProtocol {
     HISCORES    ("HISCORES (\\w*:\\d+\\s*)+"),                      //List of high scores
     LIST        ("CHANNELS ((\\w+\\s*)+\\n*)*"),                    //List of open channels
-    CREATE      (""),                                               //Create a channel
     JOIN        ("JOIN (\\w+\\s*)+"),                               //Join a channel by name
-    QUIT        (""),                                               //Disconnect from server
     MSG         ("MSG \\w+:((\\W+)*\\w+(\\W+)*\\s*)+"),             //Send/receive a message in a channel
     NICK        ("NICK \\w+"),                                      //change of nickname -> yours or someones elses
     CHANGE_NICK ("NICK (\\w+):(\\w+)"),                             //Change another player's nickname
@@ -74,7 +72,7 @@ public enum NetworkProtocol {
     //Getters
 
     /**
-     * Gets the expected result format
+     * @return Gets the expected result format
      */
     public String getResult() {
         return this.receive;

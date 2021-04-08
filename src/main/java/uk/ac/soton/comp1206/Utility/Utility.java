@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.scene.image.Image;
-import javafx.scene.media.Media;
 
 /**
  * Utility class to handle file IO
@@ -58,13 +57,6 @@ public abstract class Utility {
             return image;
         }
 
-    }
-
-    public static Media getMedia(String filename) {
-        logger.info("Getting media {}",filename);
-
-        var media = new Media(Utility.class.getResource(filename).toExternalForm());
-        return media;
     }
 
     /**

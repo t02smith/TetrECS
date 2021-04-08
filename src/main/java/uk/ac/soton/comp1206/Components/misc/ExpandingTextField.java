@@ -149,6 +149,7 @@ public class ExpandingTextField extends HBox {
     }
 
     private void updateTitle() {
+        if (this.title.get() == null) return;
         this.nameA.setText(this.title.get().substring(0, (this.title.get().length()/2)));
         this.nameB.setText(this.title.get().substring((this.title.get().length()/2)));
     }

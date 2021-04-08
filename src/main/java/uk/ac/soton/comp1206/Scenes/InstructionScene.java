@@ -18,9 +18,6 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  * @author tcs1g20
  */
 public class InstructionScene extends BaseScene {
-    //Piece display
-
-    //Key bindings + changeable
     
     /**
      * Creates a new instruction scene
@@ -46,10 +43,12 @@ public class InstructionScene extends BaseScene {
             pieces
         );
 
+        //The instruction infographic
         var instructions = new ImageView(Utility.getImage("instructions.png"));
         instructions.setPreserveRatio(true);
-        instructions.setFitWidth(this.window.getWidth()*0.85);
+        instructions.setFitWidth(this.window.getWidth()*0.75);
 
+        //The table of keybindings
         var keyBindings = new KeyBindingDisplay();
 
         var body = new VBox(instructions, keyBindings);
@@ -64,6 +63,4 @@ public class InstructionScene extends BaseScene {
     public void playBackgroundMusic() {
         MultiMedia.playMusic("menu.mp3");
     }
-
-
 }

@@ -22,8 +22,8 @@ public abstract class BaseScene extends Scene {
     //The root component
     protected BorderPane root;
 
-    protected double windowWidth;
-    protected double windowHeight;
+    protected double windowWidth = 700;
+    protected double windowHeight = 500;
 
     /**
      * Creates a basescene
@@ -36,9 +36,6 @@ public abstract class BaseScene extends Scene {
         this.root = (BorderPane)this.getRoot();
 
         this.setKeyBindings();
-
-        this.windowWidth = 700;
-        this.windowHeight = 500;
     }
 
     /**
@@ -65,6 +62,9 @@ public abstract class BaseScene extends Scene {
      */
     public abstract void playBackgroundMusic();
 
+    /**
+     * Sets the dimensions of the window
+     */
     public void setDimension() {
         this.window.setSize(this.windowWidth, this.windowHeight);
     }

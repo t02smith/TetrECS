@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Basic circular queue
+ * @author tcs1g20
  */
 public class CircularQueue<T> {
     private ArrayList<T> elements = new ArrayList<>();
@@ -48,6 +49,9 @@ public class CircularQueue<T> {
         return this.elements.get(pointer);
     }
 
+    /**
+     * @return the size of the queue
+     */
     public int size() {
         return this.elements.size();
     }

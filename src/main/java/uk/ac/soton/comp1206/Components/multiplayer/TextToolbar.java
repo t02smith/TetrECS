@@ -24,6 +24,7 @@ public class TextToolbar extends HBox {
     //Called when text is submitted
     private SubmitListener sml;
 
+    //Whether key actions are enabled
     private boolean keysDisabled;
     
     public TextToolbar(SubmitListener submitListener) {
@@ -60,6 +61,7 @@ public class TextToolbar extends HBox {
         this.getChildren().addAll(this.content, this.send);
         this.getStyleClass().add("msg-toolbar");
 
+        //Changes the state of keys disabled when in use
         this.content.focusedProperty().addListener(event -> {
             if (this.content.isFocused()) {
                 this.keysDisabled = KeyBinding.getKeysDisabled();

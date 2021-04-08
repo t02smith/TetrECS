@@ -21,8 +21,14 @@ public class PowerUpScene extends ChallengeScene {
     //Called when a powerup is used
     private UsePowerUpListener powerUpListener;
 
+    //The label showing how many points a user has
     private Label points;
 
+    /**
+     * Creates a new PowerUpScene
+     * @param window The window its being shown on
+     * @param listener What to do when a user tries to use a powerup
+     */
     public PowerUpScene(GameWindow window, UsePowerUpListener listener) {
         super(window);
         this.powerUpListener = listener;
@@ -49,6 +55,9 @@ public class PowerUpScene extends ChallengeScene {
         powerUpGrid.setAlignment(Pos.CENTER);
         powerUpGrid.setVgap(10);
         
+        //Iterates through the power ups and creates icons in a 2xn grid
+        //Adds required events
+
         var powerUps = PowerUp.values();
         for (int i = 0; i < powerUps.length; i++) {
             var power = powerUps[i];
@@ -61,6 +70,7 @@ public class PowerUpScene extends ChallengeScene {
             price.getStyleClass().add("sidebar-text");
             price.setStyle("-fx-font-size: 12");
 
+            //When you use a power up change its price
             icon.setOnMouseClicked(event -> {
                 if (this.powerUpListener.usePower(power)) {
                     price.setText(String.valueOf(power.getPrice()));
@@ -78,6 +88,10 @@ public class PowerUpScene extends ChallengeScene {
         this.root.setLeft(powerUpMenu);
     }
 
+    /**
+     * Uses a new powerup grid
+     * Same as normal grid but has extra functions like push
+     */
     @Override
     protected void buildGrid() {
         this.grid = new PowerUpGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
@@ -98,6 +112,10 @@ public class PowerUpScene extends ChallengeScene {
         this.powerUpListener = listener;
     }
 
+    /**
+     * Update the user's points in the UI
+     * @param points the user's points
+     */
     public void setPoints(int points) {
         this.points.setText("Points: " + points);
     }

@@ -51,6 +51,11 @@ public enum KeyBinding {
 
     private static final Logger logger = LogManager.getLogger(KeyBinding.class);
 
+    /**
+     * A new keybinding
+     * @param description A textual description of the action
+     * @param defaultKeys The default set of keys bound to it
+     */
     private KeyBinding(String description, KeyCode... defaultKeys) {
         this.defaultKeys = defaultKeys;
         this.description = description;
@@ -143,6 +148,9 @@ public enum KeyBinding {
 
     //GETTERS//
 
+    /**
+     * @return whether keys are disabled or not
+     */
     public static boolean getKeysDisabled() {
         return disableKeys;
     }

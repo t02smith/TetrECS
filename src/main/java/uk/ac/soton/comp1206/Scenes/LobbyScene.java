@@ -25,6 +25,10 @@ public class LobbyScene extends BaseScene {
     //Called when the user creates a channel
     private OnClickListener createChannel;
 
+    /**
+     * Creates a new Lobby scene
+     * @param gw The window to place the lobby scene on
+     */
     public LobbyScene(GameWindow gw) {
         super(gw);
     }

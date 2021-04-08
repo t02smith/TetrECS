@@ -14,7 +14,6 @@ import uk.ac.soton.comp1206.Scenes.InstructionScene;
 import uk.ac.soton.comp1206.Scenes.LobbyScene;
 import uk.ac.soton.comp1206.Scenes.Menu;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
-import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Stack;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.Multiplayer.Channel;
@@ -49,6 +48,7 @@ public class GameWindow {
     private LobbyScene lobbyScene;
     private ChannelScene channel;
 
+    //Called when the game starts
     private GameStartListener gsl;
 
     public GameWindow(Stage stage, int width, int height) {
@@ -97,7 +97,6 @@ public class GameWindow {
     public void loadScene(BaseScene scene) {
         logger.info("Loading scene {}", scene);
 
-        MultiMedia.stopMusic();
         scene.playBackgroundMusic();
         scene.build();
         scene.setDimension();
@@ -116,7 +115,6 @@ public class GameWindow {
             this.stage.setScene(previous);
             previous.setDimension();
 
-            MultiMedia.stopMusic();
             previous.playBackgroundMusic();
         }
     }
@@ -128,7 +126,6 @@ public class GameWindow {
     public void replaceScene(BaseScene scene) {
         logger.info("Replacing current scene");
         scene.build();
-        MultiMedia.stopMusic();
         scene.playBackgroundMusic();
         scene.setDimension();
         this.stage.setScene(scene);
@@ -147,6 +144,8 @@ public class GameWindow {
         this.stage.setMinHeight(height);
         this.stage.setHeight(height);
     }
+
+    //Loading scenes//
 
     //Menu//
 
@@ -168,36 +167,52 @@ public class GameWindow {
         this.gsl.start();
     }
 
-
+    /**
+     * Sets the game scene
+     * Different game modes will have different scenes 
+     *  all of which will be ChallengeScene or a child of it
+     * @param scene The new game scene
+     */
     public void setGameScene(ChallengeScene scene) {
         this.gameScene = scene;
     }
 
+    /**
+     * @return The current game scene
+     */
     public ChallengeScene getGameScene() {
         return this.gameScene;
     }
 
-    //Multiplayer
+    //Multiplayer//
 
-    public void loadMultiplayer() {
-        this.replaceScene(this.gameScene);
-
-        this.gsl.start();
-    }
-
+    /**
+     * Sets the current lobby scene
+     * @param scene The lobby scene
+     */
     public void setLobbyScene(LobbyScene scene) {
         this.lobbyScene = scene;
     }
 
+    /**
+     * Loads the lobby scene
+     */
     public void loadLobby() {
         this.loadScene(this.lobbyScene);
     }
 
+    /**
+     * Loads a current channel
+     * @param channel The channel we are going to display
+     */
     public void loadChannel(Channel channel) {
         this.channel = new ChannelScene(this, channel);
         this.loadScene(this.channel);
     }
 
+    /**
+     * @return The current channel scene
+     */
     public ChannelScene getChannelScene() {
         return this.channel;
     }
@@ -205,6 +220,9 @@ public class GameWindow {
 
     //Help screen//
 
+    /**
+     * Loads the instruction scene
+     */
     public void loadInstruction() {
         this.loadScene(this.instructionScene);
     }
@@ -218,25 +236,35 @@ public class GameWindow {
         this.loadScene(this.scoresScene);
     }
 
+    /**
+     * @return the current scores scene
+     */
     public ScoresScene getScoresScene() {
         return this.scoresScene;
     }
 
+    /**
+     * Sets the listener for whenever we start a game
+     * @param gsl the listener called when we load a game
+     */
     public void addGameStartListener(GameStartListener gsl) {
         this.gsl = gsl;
     }
 
-    public int getWidth() {
-        return this.width;
+    //DIMENSIONS//
+
+    /**
+     * @return The stage's width
+     */
+    public double getWidth() {
+        return this.stage.getWidth();
     }
 
-    public int getHeight() {
-        return this.height;
+    /**
+     * @return The stage's height
+     */
+    public double getHeight() {
+        return this.stage.getHeight();
     }
-
-
-
-
-
 
 }

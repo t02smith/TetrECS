@@ -24,6 +24,10 @@ import uk.ac.soton.comp1206.ui.GameWindow;
  */
 public class Menu extends BaseScene {
 
+    /**
+     * Creates a new menu scene
+     * @param window The window it's being created on
+     */
     public Menu(GameWindow window) {
         super(window);
     }
@@ -51,6 +55,7 @@ public class Menu extends BaseScene {
 
         //TOP//
         
+        //Audio enable/disable
         var empty = new Region();
         HBox.setHgrow(empty, Priority.ALWAYS);
 
@@ -68,7 +73,6 @@ public class Menu extends BaseScene {
             MultiMedia.toggleAudioEnabled();
             cross.setOpacity(cross.getOpacity() == 0 ? 1: 0);
         });
-
 
         var topBar = new HBox(empty, audio);
         this.root.setTop(topBar);
