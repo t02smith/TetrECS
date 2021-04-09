@@ -15,7 +15,7 @@ public class MultiMedia {
     private static final Logger logger = LogManager.getLogger(Utility.class);
 
     //For sound effects
-    private static MediaPlayer audio;
+    private static MediaPlayer sfx;
 
     //For background music
     private static MediaPlayer music;
@@ -23,24 +23,27 @@ public class MultiMedia {
     //Mute the audio
     private static SimpleBooleanProperty audioEnabled = new SimpleBooleanProperty(true);
 
+    //Current volume
+    private static double volume = 1;
+
     /**
      * Plays a given audio file from a given file
      * @param filename The name of the audio file
      */
     public static void playSFX(String filename) {
         if (audioEnabled.get()) {
-            if (audio != null) audio.stop();
+            if (sfx != null) sfx.stop();
 
             var toPlay = MultiMedia.class.getResource("/music/" + filename).toExternalForm();
             logger.info("Playing audio {}", toPlay);
     
-            audio = new MediaPlayer(
+            sfx = new MediaPlayer(
                 new javafx.scene.media.Media(toPlay)
             );
     
-            
+            sfx.setVolume(volume);
 
-            audio.play();
+            sfx.play();
         }
 
     }
@@ -61,7 +64,7 @@ public class MultiMedia {
             );
             music.setCycleCount(Animation.INDEFINITE);
     
-            music.setVolume(0.5);
+            music.setVolume(volume);
             music.play();
         }
     }
@@ -84,5 +87,21 @@ public class MultiMedia {
         audioEnabled.set(!audioEnabled.get());
 
         if (!audioEnabled.get()) stopMusic();
+    }
+
+    /**
+     * Sets the audio volume
+     * @param volume The new volume
+     */
+    public static void setVolume(double newVolume) {
+        logger.info("Setting volume to {}", newVolume);
+        volume = newVolume;
+
+        if (music != null) music.setVolume(newVolume);
+        if (sfx != null) sfx.setVolume(newVolume);
+    }
+
+    public static double getVolume() {
+        return volume*100;
     }
 }

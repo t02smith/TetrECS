@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import uk.ac.soton.comp1206.Components.Game.Grid;
-import uk.ac.soton.comp1206.Components.Game.Sidebar;
+import uk.ac.soton.comp1206.Components.Game.GameInfo;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
 import uk.ac.soton.comp1206.Event.KeyBinding;
@@ -40,7 +40,7 @@ public class ChallengeScene extends BaseScene {
     protected Pair<String, Integer> highScore;
 
     //The sidebar with all the game properties
-    protected Sidebar sidebar;
+    protected GameInfo sidebar;
 
     //Any required listeners for the grids on display
     protected HashMap<String,TileClickListener> listeners = new HashMap<>();
@@ -141,7 +141,7 @@ public class ChallengeScene extends BaseScene {
      * Builds the sidebar
      */
     private void buildSidebar() {
-        this.sidebar = new Sidebar();
+        this.sidebar = new GameInfo();
 
         //Listeners
         this.sidebar.addTileClickListener("next-piece", this.listeners.get("next-piece"));

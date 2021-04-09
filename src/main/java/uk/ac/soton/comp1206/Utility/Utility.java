@@ -120,4 +120,17 @@ public abstract class Utility {
         writeToFile(filename, lines, false);
     }
 
+    /**
+     * Checks if a directory exists
+     * If it doesn't it creates one
+     * @param dirName The name of the directory
+     */
+    public static void checkDirectory(String dirName) {
+        var directory = new File(dirName);
+        if (!directory.exists()) {
+            directory.mkdir();
+            logger.info("Creating directory: {}", dirName);
+        }
+    }
+
 }

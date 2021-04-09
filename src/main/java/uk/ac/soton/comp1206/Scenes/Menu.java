@@ -5,6 +5,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -54,28 +55,8 @@ public class Menu extends BaseScene {
         );
 
         //TOP//
-        
-        //Audio enable/disable
-        var empty = new Region();
-        HBox.setHgrow(empty, Priority.ALWAYS);
 
-        var audioIcon = new ImageView(Utility.getImage("menu/audio.png"));
-        audioIcon.setPreserveRatio(true);
-        audioIcon.setFitHeight(50);
-
-        var cross = new ImageView(Utility.getImage("menu/cross.png"));
-        cross.setPreserveRatio(true);
-        cross.setFitHeight(50);
-        cross.setOpacity(0);
-
-        var audio = new StackPane(audioIcon, cross);
-        audio.setOnMouseClicked(event -> {
-            MultiMedia.toggleAudioEnabled();
-            cross.setOpacity(cross.getOpacity() == 0 ? 1: 0);
-        });
-
-        var topBar = new HBox(empty, audio);
-        this.root.setTop(topBar);
+        this.root.setTop(this.createTopBar());
     }
 
     /**
@@ -154,6 +135,52 @@ public class Menu extends BaseScene {
 
         return icons;
     }
+
+    /**
+     * Creates the items found at the top of the screen
+     *  incl. volume controls
+     * @return The items to be set at the top of the scene
+     */
+    private HBox createTopBar() {
+        var empty = new Region();
+        HBox.setHgrow(empty, Priority.ALWAYS);
+
+        //Audio slider//
+        var volume = new Slider(0, 100, MultiMedia.getVolume());
+        volume.setMajorTickUnit(10);
+        volume.setBlockIncrement(10);
+        volume.setSnapToTicks(true);
+
+        volume.valueProperty().addListener(event -> {
+            MultiMedia.setVolume(volume.getValue()/100);
+        });
+
+        var volumeShell = new VBox(volume);
+        volumeShell.setAlignment(Pos.CENTER);
+
+        //Enable/disable audio//
+        var audioIcon = new ImageView(Utility.getImage("menu/audio.png"));
+        audioIcon.setPreserveRatio(true);
+        audioIcon.setFitHeight(50);
+
+        var cross = new ImageView(Utility.getImage("menu/cross.png"));
+        cross.setPreserveRatio(true);
+        cross.setFitHeight(50);
+        cross.setOpacity(0);
+
+        var audio = new StackPane(audioIcon, cross);
+        audio.setOnMouseClicked(event -> {
+            MultiMedia.toggleAudioEnabled();
+            cross.setOpacity(cross.getOpacity() == 0 ? 1: 0);
+        });
+
+        //
+
+        return new HBox(empty, volumeShell, audio);
+    }
+
+
+
 
     @Override
     public void playBackgroundMusic() {

@@ -51,6 +51,13 @@ public abstract class BaseScene extends Scene {
         });
 
     }
+    
+    /**
+     * Sets the dimensions of the window
+     */
+    public void setDimension() {
+        this.window.setSize(this.windowWidth, this.windowHeight);
+    }
 
     /**
      * Builds the components in the current scene
@@ -62,12 +69,6 @@ public abstract class BaseScene extends Scene {
      */
     public abstract void playBackgroundMusic();
 
-    /**
-     * Sets the dimensions of the window
-     */
-    public void setDimension() {
-        this.window.setSize(this.windowWidth, this.windowHeight);
-    }
 
 
 }

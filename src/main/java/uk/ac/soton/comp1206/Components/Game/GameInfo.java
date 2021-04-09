@@ -23,8 +23,8 @@ import uk.ac.soton.comp1206.game.GamePiece;
  * 
  * @author tcs1g20
  */
-public class Sidebar extends StackPane {
-    private static final Logger logger = LogManager.getLogger(Sidebar.class);
+public class GameInfo extends StackPane {
+    private static final Logger logger = LogManager.getLogger(GameInfo.class);
 
     //Components inside the sidebar
     private VBox components = new VBox();

@@ -1,6 +1,5 @@
 package uk.ac.soton.comp1206.Scenes;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -181,15 +180,17 @@ public class ScoresScene extends BaseScene {
      * Generates and writes a default set of scores to a file
      */
     private void createDefaultScores() {
-        var directory = new File("./scores");
-        if (!directory.exists()) directory.mkdir();
+        //Sees if there is a scores directory
+        Utility.checkDirectory("./scores");
 
+        //Creates a list of default scores
         logger.info("Generating default scores");
         var text = new StringBuilder();
         for (int i = 1; i <= 10; i++) {
             text.append("Tom:" + String.valueOf(i*1500) + "\n");
         }
 
+        //Writes scores to file
         Utility.writeToFile("scores/localScores.txt", text.toString());
 
     }

@@ -103,6 +103,11 @@ public class MultiplayerGame extends Game {
             ((MultiplayerScene)this.challengeScene).toggleOnlinePanel();
         });
 
+        KeyBinding.ESCAPE.setEvent(() -> {
+            this.gameWindow.revertScene();
+            this.updateChannelList.stop();
+        });
+
     }
 
     @Override
@@ -181,6 +186,7 @@ public class MultiplayerGame extends Game {
         
                     this.gameWindow.revertScene();
                     KeyBinding.setKeysDisabled(true);
+                    this.setKeyBindings();
                 });
 
             } else logger.error("You are already in a channel");

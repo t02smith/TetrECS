@@ -41,12 +41,14 @@ public class Channel {
         var userArr = new ArrayList<>(Arrays.asList(users.split("\\s+")));
         userArr.remove(0);
 
+        //Add a user if they are not currently being tracked
         userArr.forEach(user -> {
             if (!this.users.containsKey(user)) {
                 this.users.put(user, new User(user));
             }
         });
 
+        //Remove the user if they are no longer in the channel
         this.users.keySet().removeIf(user -> !userArr.contains(user));
     }
 
