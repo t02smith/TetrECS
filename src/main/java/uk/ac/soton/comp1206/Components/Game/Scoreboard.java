@@ -126,7 +126,7 @@ public class Scoreboard extends VBox {
         for (MutablePair<String, Integer> user: this.scores) {
             if (user.getKey().equals(name)) {
                 user.setValue(score);
-                Platform.runLater(() -> this.updateScoreboard());
+                Platform.runLater(() -> this.sortUsers());
                 break;
             }
         }

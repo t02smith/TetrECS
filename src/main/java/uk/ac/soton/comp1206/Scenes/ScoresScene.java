@@ -78,6 +78,7 @@ public class ScoresScene extends BaseScene {
         }
         
         this.components.getChildren().add(scoreLists);       
+        this.windowWidth = 800;
 
         this.root.setCenter(this.components);
 
