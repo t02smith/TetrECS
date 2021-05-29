@@ -43,11 +43,15 @@ public class App extends Application {
     /**
      * Starts the application
      */
+    @Override
     public void start(Stage stage) {
         instance = this;
         this.stage = stage;
         this.gameWindow = new GameWindow(this.stage, 700, 500);
+
         this.communicator = new Communicator("ws://discord.ecs.soton.ac.uk:9700");
+        new Thread(this.communicator, "Communicator Thread").start();
+
         this.setupCommunicator();
 
         this.stage.show();

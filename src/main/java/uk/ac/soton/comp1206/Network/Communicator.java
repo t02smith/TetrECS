@@ -11,32 +11,35 @@ import com.neovisionaries.ws.client.WebSocketFrame;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javafx.scene.control.Alert;
-
 /**
  * Communicator class
  * 
  */
-public class Communicator {
+public class Communicator implements Runnable {
     private static final Logger logger = LogManager.getLogger(Communicator.class);
 
     //Listeners called when receiving a message
     private final ArrayList<NetworkListener> listeners = new ArrayList<>();
 
+    //Name of the server
+    private String server;
+
+    //Any server messages to send when the socket is active
+    private ArrayList<String> messagesToSend = new ArrayList<>();
+
     //The websocket we connect to
     private WebSocket ws;
 
-    /**
-     * Creates a new Communicator
-     * @param server The server we are trying to connect to
-     */
-    public Communicator(String server) {
+    @Override
+    public void run() {
         try {
             var socketFactory = new WebSocketFactory();
 
-            this.ws = socketFactory.createSocket(server);
+            this.ws = socketFactory.createSocket(this.server);
             this.ws.connect();
-            logger.info("Connected to '{}'", server);
+            logger.info("Connected to '{}'", this.server);
+
+            this.sendQueuedMessages();
 
             this.ws.addListener(new WebSocketAdapter() {
                 @Override
@@ -67,11 +70,23 @@ public class Communicator {
 
         } catch (Exception e) {
             logger.error("Socket error: '{}'", e.getMessage());
-
-            var alert = new Alert(Alert.AlertType.ERROR, "Unable to communicate with the TetrECS server.");
-            alert.showAndWait();
-            System.exit(1);
         }
+    }
+
+    /**
+     * Creates a new Communicator
+     * @param server The server we are trying to connect to
+     */
+    public Communicator(String server) {
+        this.server = server;
+    }
+
+    /**
+     * Sends any queued messages
+     */
+    public void sendQueuedMessages() {
+        this.messagesToSend.forEach(message -> this.send(message));
+        this.messagesToSend.clear();
     }
 
     /**
@@ -80,7 +95,12 @@ public class Communicator {
      */
     public void send(String message) {
         logger.info("Sending message: '{}'", message);
-        this.ws.sendText(message);
+
+        if (this.ws == null) {
+            this.messagesToSend.add(message);
+        } else {
+            this.ws.sendText(message);
+        }
     }
 
     /**
