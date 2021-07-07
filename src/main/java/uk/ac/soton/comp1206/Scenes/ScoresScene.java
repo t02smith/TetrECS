@@ -64,10 +64,16 @@ public class ScoresScene extends BaseScene {
 
         //SCORES//
         var scoreLists = new HBox();
-        scoreLists.getChildren().addAll(
-            this.localScores,
-            this.onlineScores
-        );
+
+        
+        if (this.onlineScores != null) {
+            scoreLists.getChildren().addAll(
+                this.localScores,
+                this.onlineScores
+            );    
+        } else {
+            scoreLists.getChildren().add(this.localScores);
+        }
 
         scoreLists.setAlignment(Pos.TOP_CENTER);
         scoreLists.setSpacing(25);

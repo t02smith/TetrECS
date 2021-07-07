@@ -100,6 +100,7 @@ public class GameWindow {
         scene.playBackgroundMusic();
         scene.build();
         scene.setDimension();
+        scene.resetActiveTags();
         if (this.stage.getScene() != null) this.scenes.push((BaseScene)this.stage.getScene());
         this.stage.setScene(scene);
     }
@@ -114,6 +115,7 @@ public class GameWindow {
             previous.setKeyBindings();
             this.stage.setScene(previous);
             previous.setDimension();
+            previous.resetActiveTags();
 
             previous.playBackgroundMusic();
         }
@@ -128,6 +130,7 @@ public class GameWindow {
         scene.build();
         scene.playBackgroundMusic();
         scene.setDimension();
+        scene.resetActiveTags();
         this.stage.setScene(scene);
     }
 

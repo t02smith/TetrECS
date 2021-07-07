@@ -11,7 +11,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Duration;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Scenes.ChallengeScene;
 import uk.ac.soton.comp1206.Scenes.ScoresScene;
@@ -112,33 +112,32 @@ public class Game {
      */
     protected void setKeyBindings() {
         //Next piece alterations
-        KeyBinding.ROTATE_LEFT.setEvent(() -> {
+        Action.ROTATE_LEFT.setEvent(() -> {
             this.currentPiece.rotateLeft();
             this.challengeScene.setNextPiece(this.currentPiece);
         });
 
-        KeyBinding.ROTATE_RIGHT.setEvent(() -> {
+        Action.ROTATE_RIGHT.setEvent(() -> {
             this.currentPiece.rotateRight();
             this.challengeScene.setNextPiece(this.currentPiece);
         });
 
-        KeyBinding.SWAP.setEvent(() -> this.swapNextPiece());
+        Action.SWAP.setEvent(() -> this.swapNextPiece());
 
         //Place a piece
-        KeyBinding.PLACE.setEvent(() -> this.insertSelected());
+        Action.PLACE.setEvent(() -> this.insertSelected());
 
         //Movement on the board
-        KeyBinding.MOVE_UP.setEvent(() -> this.moveSelected(0, -1));
-        KeyBinding.MOVE_LEFT.setEvent(() -> this.moveSelected(-1, 0));
-        KeyBinding.MOVE_RIGHT.setEvent(() -> this.moveSelected(1, 0));
-        KeyBinding.MOVE_DOWN.setEvent(() -> this.moveSelected(0, 1));
+        Action.MOVE_UP.setEvent(() -> this.moveSelected(0, -1));
+        Action.MOVE_LEFT.setEvent(() -> this.moveSelected(-1, 0));
+        Action.MOVE_RIGHT.setEvent(() -> this.moveSelected(1, 0));
+        Action.MOVE_DOWN.setEvent(() -> this.moveSelected(0, 1));
 
         
-        KeyBinding.ESCAPE.setEvent(() -> {
+        Action.ESCAPE.setEvent(() -> {
             logger.info("Returning to menu");
             this.stopGame();
             this.gameWindow.revertScene();
-            KeyBinding.setKeysDisabled(true);
         });
 
 
@@ -219,8 +218,7 @@ public class Game {
             this.nextPiece();
             this.nextPiece();
 
-            this.gameOver = false;
-            KeyBinding.setKeysDisabled(false);           
+            this.gameOver = false;           
 
             //start timer
             this.gameLoop();
@@ -286,7 +284,6 @@ public class Game {
         this.level.set(0);
         this.multiplier.set(1);
 
-        KeyBinding.setKeysDisabled(true);
     }
 
     /**

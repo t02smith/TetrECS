@@ -11,7 +11,7 @@ import javafx.application.Platform;
 import javafx.util.Duration;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
 import uk.ac.soton.comp1206.Network.Communicator;
 import uk.ac.soton.comp1206.Network.NetworkProtocol;
 import uk.ac.soton.comp1206.Scenes.ChannelScene;
@@ -99,11 +99,11 @@ public class MultiplayerGame extends Game {
     protected void setKeyBindings() {
         super.setKeyBindings();
 
-        KeyBinding.TOGGLE_PANEL.setEvent(() -> {
+        Action.TOGGLE_PANEL.setEvent(() -> {
             ((MultiplayerScene)this.challengeScene).toggleOnlinePanel();
         });
 
-        KeyBinding.ESCAPE.setEvent(() -> {
+        Action.ESCAPE.setEvent(() -> {
             this.gameWindow.revertScene();
             this.updateChannelList.stop();
         });
@@ -128,7 +128,6 @@ public class MultiplayerGame extends Game {
             this.gameOver = false;
 
             MultiMedia.playMusic("game.wav");
-            KeyBinding.setKeysDisabled(false);
 
             this.gameLoop();
         });
@@ -179,13 +178,12 @@ public class MultiplayerGame extends Game {
                 this.displayChannel();
 
                 //Change this keybinding to leave the channel
-                KeyBinding.ESCAPE.setEvent(() -> {
+                Action.ESCAPE.setEvent(() -> {
                     logger.info("Leaving channel");
                     this.leaveChannel();
                     if (this.inGame) this.stopGame();
         
                     this.gameWindow.revertScene();
-                    KeyBinding.setKeysDisabled(true);
                     this.setKeyBindings();
                 });
 

@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 /**
@@ -28,14 +28,14 @@ public class KeyIcon extends StackPane {
     private KeyCode key;
 
     //The action this keyIcon will bind
-    private KeyBinding action;
+    private Action action;
 
     /**
      * Creates a new key icon
      * @param key the key to create an icon of
      * @param action the key action this icon will bind to
      */
-    public KeyIcon(KeyCode key, KeyBinding action) {
+    public KeyIcon(KeyCode key, Action action) {
         this.value = new Label(this.getSymbol(key));
         this.value.getStyleClass().add("key-icon");
 

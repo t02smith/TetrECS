@@ -11,7 +11,8 @@ import uk.ac.soton.comp1206.Components.multiplayer.ChatPane;
 import uk.ac.soton.comp1206.Components.multiplayer.Message;
 import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
 import uk.ac.soton.comp1206.Event.GameStartListener;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
+import uk.ac.soton.comp1206.Event.ActionTag;
 import uk.ac.soton.comp1206.Event.OnClickListener;
 import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
@@ -45,7 +46,7 @@ public class ChannelScene extends BaseScene {
      * @param channel The channel that we have joined
      */
     public ChannelScene(GameWindow gw, Channel channel) {
-        super(gw);
+        super(gw, ActionTag.TYPING);
         this.channel = channel;
     }
 
@@ -95,7 +96,7 @@ public class ChannelScene extends BaseScene {
     @Override
     public void setKeyBindings() {
         this.setOnKeyReleased(event -> {
-            KeyBinding.executeEvent(event.getCode());
+            Action.executeEvent(event.getCode());
         });
     }
 

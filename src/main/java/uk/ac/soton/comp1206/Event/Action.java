@@ -17,25 +17,20 @@ import javafx.scene.input.KeyCode;
  * 
  * @author tcs1g20
  */
-public enum KeyBinding {
-    ROTATE_RIGHT    ("Rotate the next piece 90 degrees right",                          KeyCode.CLOSE_BRACKET            ),
-    ROTATE_LEFT     ("Rotate the next piece 90 degrees left",                           KeyCode.OPEN_BRACKET             ),
-    PLACE           ("Place the next piece on the board at the pointer if possible",    KeyCode.ENTER,          KeyCode.X),
-    MOVE_UP         ("Move the pointer up by one square",                               KeyCode.UP,             KeyCode.W),
-    MOVE_DOWN       ("Move the pointer down by one square",                             KeyCode.DOWN,           KeyCode.S),
-    MOVE_LEFT       ("Move the pointer left by one square",                             KeyCode.LEFT,           KeyCode.A),
-    MOVE_RIGHT      ("Move the pointer right by one square",                            KeyCode.RIGHT,          KeyCode.D),
-    SWAP            ("Swap between the next and reserve piece",                         KeyCode.SPACE,          KeyCode.R),
-    ESCAPE          ("Move back to the previous screen",                                KeyCode.ESCAPE                   ),
-
-    //Multiplayer
-    TOGGLE_PANEL     ("Toggles the online side panel.",                                 KeyCode.TAB,            KeyCode.C);      
+public enum Action {
+    ROTATE_RIGHT    ("Rotate the next piece 90 degrees right",                           ActionTag.GAME,        KeyCode.CLOSE_BRACKET),
+    ROTATE_LEFT     ("Rotate the next piece 90 degrees left",                            ActionTag.GAME,        KeyCode.OPEN_BRACKET),
+    PLACE           ("Place the next piece on the board at the pointer if possible",     ActionTag.GAME,        KeyCode.ENTER, KeyCode.X),
+    MOVE_UP         ("Move the pointer up by one square",                                ActionTag.GAME,        KeyCode.UP, KeyCode.W),
+    MOVE_DOWN       ("Move the pointer down by one square",                              ActionTag.GAME,        KeyCode.DOWN, KeyCode.S),
+    MOVE_LEFT       ("Move the pointer left by one square",                              ActionTag.GAME,        KeyCode.LEFT, KeyCode.A),
+    MOVE_RIGHT      ("Move the pointer right by one square",                             ActionTag.GAME,        KeyCode.RIGHT, KeyCode.D),
+    SWAP            ("Swap between the next and reserve piece",                          ActionTag.GAME,        KeyCode.SPACE, KeyCode.R),
+    ESCAPE          ("Move back to the previous screen",                                 ActionTag.UTILITY,     KeyCode.ESCAPE),
+    TOGGLE_PANEL     ("Toggles the online side panel.",                                  ActionTag.MULTIPLAYER, KeyCode.TAB, KeyCode.C);      
 
     //Hashmap of all the bindings
-    private static HashMap<KeyCode, KeyBinding> bindings;
-
-    //Disable all key commands e.g. when typing
-    private static boolean disableKeys = true;
+    private static HashMap<KeyCode, Action> bindings;
 
     //The keys currently assigned to an event
     private HashSet<KeyCode> keys = new HashSet<>();
@@ -46,19 +41,22 @@ public enum KeyBinding {
     //The description of the action
     private final String description;
 
+    private final ActionTag tag;
+
     //The event for the key
     private KeyListener event;
 
-    private static final Logger logger = LogManager.getLogger(KeyBinding.class);
+    private static final Logger logger = LogManager.getLogger(Action.class);
 
     /**
      * A new keybinding
      * @param description A textual description of the action
      * @param defaultKeys The default set of keys bound to it
      */
-    private KeyBinding(String description, KeyCode... defaultKeys) {
+    private Action(String description, ActionTag tag, KeyCode... defaultKeys) {
         this.defaultKeys = defaultKeys;
         this.description = description;
+        this.tag = tag;
 
         for (KeyCode key: defaultKeys) this.assignKey(null, key);
     }
@@ -69,16 +67,16 @@ public enum KeyBinding {
      */
     public boolean assignKey(KeyCode oldKey, KeyCode newKey) {
         //Static fields are initialized after enum so this was the easiest fix
-        if (KeyBinding.bindings == null) bindings = new HashMap<>();
+        if (Action.bindings == null) bindings = new HashMap<>();
 
         //If the key is already assigned
-        if (KeyBinding.bindings.containsKey(newKey) && newKey != null) return false;
+        if (Action.bindings.containsKey(newKey) && newKey != null) return false;
 
-        KeyBinding.bindings.put(newKey, this);
+        Action.bindings.put(newKey, this);
 
         //Remove the old key from any bindings
         if (oldKey != null) {
-            KeyBinding.bindings.remove(oldKey);
+            Action.bindings.remove(oldKey);
             this.keys.remove(oldKey);
         }
 
@@ -106,7 +104,7 @@ public enum KeyBinding {
     public void removeKey(KeyCode key) {
         if (this.keys.contains(key)) {
             logger.info("{}: keybinding {} removed", this, key);
-            KeyBinding.bindings.remove(key);
+            Action.bindings.remove(key);
             this.keys.remove(key);
         }
     }
@@ -117,7 +115,7 @@ public enum KeyBinding {
     public void resetKeys() {
         logger.info("{}: keybindings reset to default", this);
         this.keys = new HashSet<>();
-        KeyBinding.bindings = new HashMap<>();
+        Action.bindings = new HashMap<>();
         for (KeyCode key: defaultKeys) this.assignKey(null, key);
     }
 
@@ -136,32 +134,15 @@ public enum KeyBinding {
         this.event.onPress();
     }
 
-    /**
-     * Used to disable the use of key actions
-     *  e.g. when typing a message
-     * @param keysDisabled the new state for disableKeys
-     */
-    public static void setKeysDisabled(boolean keysDisabled) {
-        logger.info("Key actions: {}", !keysDisabled);
-        KeyBinding.disableKeys = keysDisabled;
-    }
-
     //GETTERS//
-
-    /**
-     * @return whether keys are disabled or not
-     */
-    public static boolean getKeysDisabled() {
-        return disableKeys;
-    }
 
     /**
      * Gets an action by the key that calls it
      * @param key The key being pressed
      * @return The corresponding action
      */
-    public static KeyBinding getAction(KeyCode key) {
-        return KeyBinding.bindings.get(key);
+    public static Action getAction(KeyCode key) {
+        return Action.bindings.get(key);
     }
 
     /**
@@ -199,7 +180,7 @@ public enum KeyBinding {
      * Resets all keys back to their defaults
      */
     public static void setDefaultKeys() {
-        for (KeyBinding event: KeyBinding.values()) {
+        for (Action event: Action.values()) {
             event.resetKeys();
         }
     }
@@ -209,10 +190,13 @@ public enum KeyBinding {
      * @param pressed The key pressed
      */
     public static void executeEvent(KeyCode pressed) {
-        if (KeyBinding.disableKeys && pressed != KeyCode.ESCAPE) return;
 
-        if (KeyBinding.bindings.containsKey(pressed)) {
-            KeyBinding.bindings.get(pressed).execute();
+        if (Action.bindings.containsKey(pressed)) {
+            var action = Action.bindings.get(pressed);
+
+            if (ActionTag.activeTags.contains(action.tag)) {
+                action.execute();
+            }
         }
         
     }

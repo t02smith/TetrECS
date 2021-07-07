@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Powerups.PowerUpGrid;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
 import uk.ac.soton.comp1206.game.Powerup.PowerUp;
 import uk.ac.soton.comp1206.game.Powerup.PowerUpGame.UsePowerUpListener;
 import uk.ac.soton.comp1206.ui.GameWindow;
@@ -97,9 +97,9 @@ public class PowerUpScene extends ChallengeScene {
         this.grid = new PowerUpGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
         this.grid.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
-                KeyBinding.ROTATE_RIGHT.execute();
+                Action.ROTATE_RIGHT.execute();
             } else if (event.getButton() == MouseButton.MIDDLE) {
-                KeyBinding.SWAP.execute();
+                Action.SWAP.execute();
             }
         });
     }

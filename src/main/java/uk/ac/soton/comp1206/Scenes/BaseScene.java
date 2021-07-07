@@ -1,11 +1,15 @@
 package uk.ac.soton.comp1206.Scenes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
+import uk.ac.soton.comp1206.Event.ActionTag;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
 /**
@@ -22,18 +26,26 @@ public abstract class BaseScene extends Scene {
     //The root component
     protected BorderPane root;
 
+    //Default dimensions
     protected double windowWidth = 700;
     protected double windowHeight = 500;
+
+    //Actions available when in this scene
+    protected ArrayList<ActionTag> tags = new ArrayList<>();
 
     /**
      * Creates a basescene
      *  creates root node, and assigns default key bindings
      * @param window
+     * @param tags List of action tags available on this scene 
      */
-    public BaseScene(GameWindow window) {
+    public BaseScene(GameWindow window, ActionTag... tags) {
         super(new BorderPane(), window.getWidth(), window.getHeight());
         this.window = window;
         this.root = (BorderPane)this.getRoot();
+
+        //Adds any tags
+        this.tags.addAll(Arrays.asList(tags));
 
         this.setKeyBindings();
     }
@@ -43,10 +55,10 @@ public abstract class BaseScene extends Scene {
      */
     public void setKeyBindings() {
         this.setOnKeyReleased(event -> {
-            KeyBinding.executeEvent(event.getCode());
+            Action.executeEvent(event.getCode());
         });
 
-        KeyBinding.ESCAPE.setEvent(() -> {
+        Action.ESCAPE.setEvent(() -> {
             this.window.revertScene();
         });
 
@@ -57,6 +69,14 @@ public abstract class BaseScene extends Scene {
      */
     public void setDimension() {
         this.window.setSize(this.windowWidth, this.windowHeight);
+    }
+
+    public void resetActiveTags() {
+        //Removes any 
+        ActionTag.resetActiveTags();
+
+        //Adds any needed tags to allow certain actions
+        ActionTag.activeTags.addAll(this.tags);
     }
 
     /**

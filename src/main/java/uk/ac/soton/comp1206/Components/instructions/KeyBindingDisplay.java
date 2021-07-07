@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
 
 /**
  * Displays all the key bindings with their associated actions
@@ -15,7 +15,7 @@ import uk.ac.soton.comp1206.Event.KeyBinding;
  */
 public class KeyBindingDisplay extends ScrollPane {
     //The set of actions that can be done by the user
-    private final KeyBinding[] actions = KeyBinding.values();
+    private final Action[] actions = Action.values();
 
     //The key binding the user is currently changing -> null if not being changed
     private KeyIcon changing;
@@ -37,7 +37,7 @@ public class KeyBindingDisplay extends ScrollPane {
 
         //Loops through every action
         for (int i = 0; i < actions.length; i++) {
-            KeyBinding action = actions[i];
+            Action action = actions[i];
 
             //Each action will have its own row
             var keySet = new HBox();

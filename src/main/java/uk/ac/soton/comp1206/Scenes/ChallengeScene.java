@@ -16,7 +16,8 @@ import uk.ac.soton.comp1206.Components.Game.Grid;
 import uk.ac.soton.comp1206.Components.Game.GameInfo;
 import uk.ac.soton.comp1206.Components.Game.Grid.GridSize;
 import uk.ac.soton.comp1206.Components.Game.Tile.TileClickListener;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
+import uk.ac.soton.comp1206.Event.ActionTag;
 import uk.ac.soton.comp1206.Utility.MultiMedia;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.game.GamePiece;
@@ -46,15 +47,25 @@ public class ChallengeScene extends BaseScene {
     protected HashMap<String,TileClickListener> listeners = new HashMap<>();
 
     //The grids dimension
-    protected int width = 5;
-    protected int height = 5;
+    protected final int width = 5;
+    protected final int height = 5;
 
     /**
      * Creates a new challenge scene to play a game
      * @param window the window it's on
      */
     public ChallengeScene(GameWindow window) {
-        super(window);
+        super(window, ActionTag.GAME);
+    }
+
+    /**
+     * Constructor for any child classes that wish to add 
+     * more action tags
+     * @param window
+     * @param tags
+     */
+    public ChallengeScene(GameWindow window, ActionTag... tags) {
+        super(window, tags);
     }
 
     @Override
@@ -112,9 +123,9 @@ public class ChallengeScene extends BaseScene {
         this.grid = new Grid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));        
         this.grid.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
-                KeyBinding.ROTATE_RIGHT.execute();
+                Action.ROTATE_RIGHT.execute();
             } else if (event.getButton() == MouseButton.MIDDLE) {
-                KeyBinding.SWAP.execute();
+                Action.SWAP.execute();
             }
         });
     }

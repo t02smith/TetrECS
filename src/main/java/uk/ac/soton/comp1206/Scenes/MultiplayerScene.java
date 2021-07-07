@@ -18,7 +18,8 @@ import uk.ac.soton.comp1206.Components.multiplayer.MultiplayerGrid;
 import uk.ac.soton.comp1206.Components.multiplayer.OnlinePanel;
 import uk.ac.soton.comp1206.Components.multiplayer.User;
 import uk.ac.soton.comp1206.Components.multiplayer.TextToolbar.SubmitListener;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.Action;
+import uk.ac.soton.comp1206.Event.ActionTag;
 import uk.ac.soton.comp1206.Utility.Utility;
 import uk.ac.soton.comp1206.ui.GameWindow;
 
@@ -43,7 +44,7 @@ public class MultiplayerScene extends ChallengeScene {
     private OnlinePanel onlinePanel;
 
     public MultiplayerScene(GameWindow window, SubmitListener sml) {
-        super(window);
+        super(window, ActionTag.GAME, ActionTag.MULTIPLAYER);
         this.sml = sml;
     }
 
@@ -107,9 +108,9 @@ public class MultiplayerScene extends ChallengeScene {
         this.grid = new MultiplayerGrid(this.width, this.height, GridSize.LARGE, this.listeners.get("game-grid"));
         this.grid.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
-                KeyBinding.ROTATE_RIGHT.execute();
+                Action.ROTATE_RIGHT.execute();
             } else if (event.getButton() == MouseButton.MIDDLE) {
-                KeyBinding.SWAP.execute();
+                Action.SWAP.execute();
             }
         });
     }

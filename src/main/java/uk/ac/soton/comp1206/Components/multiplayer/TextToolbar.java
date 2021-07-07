@@ -7,7 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import uk.ac.soton.comp1206.Event.KeyBinding;
+import uk.ac.soton.comp1206.Event.ActionTag;
 import uk.ac.soton.comp1206.Utility.Utility;
 
 /**
@@ -23,9 +23,6 @@ public class TextToolbar extends HBox {
 
     //Called when text is submitted
     private SubmitListener sml;
-
-    //Whether key actions are enabled
-    private boolean keysDisabled;
     
     public TextToolbar(SubmitListener submitListener) {
         this.sml = submitListener;
@@ -64,9 +61,10 @@ public class TextToolbar extends HBox {
         //Changes the state of keys disabled when in use
         this.content.focusedProperty().addListener(event -> {
             if (this.content.isFocused()) {
-                this.keysDisabled = KeyBinding.getKeysDisabled();
-                if (!this.keysDisabled) KeyBinding.setKeysDisabled(true);
-            } else if (!this.keysDisabled) KeyBinding.setKeysDisabled(this.keysDisabled);
+                ActionTag.tempChangeTags(ActionTag.UTILITY, ActionTag.TYPING);
+            } else {
+                ActionTag.restoreTempTags();
+            }
         });
     }
 
